@@ -153,8 +153,8 @@ jobs:
 
 ### Other examples
 
-- [cargo-hack/.github/workflows/release.yml](https://github.com/taiki-e/cargo-hack/blob/5a4bee38ce517620723453759c8313f5303623b2/.github/workflows/release.yml#L38-L65)
-- [parse-changelog/.github/workflows/release.yml](https://github.com/taiki-e/parse-changelog/blob/182cd01560d38adb7a810260245f64e4a915111c/.github/workflows/release.yml#L38-L65)
+- [cargo-hack/.github/workflows/release.yml](https://github.com/taiki-e/cargo-hack/blob/ef3ce62b69c0675885ed6ae345d8d9c4f8e3b7e1/.github/workflows/release.yml#L38-L66)
+- [parse-changelog/.github/workflows/release.yml](https://github.com/taiki-e/parse-changelog/blob/c930d3fc128c8b80df6d91d8fa2316fddcb344fd/.github/workflows/release.yml#L38-L66)
 
 ## Configuration
 
