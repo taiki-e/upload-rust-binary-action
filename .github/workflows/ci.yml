@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - v[0-9]+
+  schedule:
+    - cron: "0 1 * * *"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install shfmt
+        run: |
+          GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
+          echo "${HOME}/go/bin" >>"${GITHUB_PATH}"
+      - run: scripts/fmt.sh
+      - run: shellcheck **/*.sh *.sh

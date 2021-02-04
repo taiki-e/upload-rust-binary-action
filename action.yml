@@ -1,0 +1,26 @@
+name: Build and upload Rust binary to GitHub Releases
+description: GitHub Action for building and uploading Rust binary to GitHub Releases
+
+inputs:
+  bin:
+    description: Binary name (non-extension portion of filename) to build and upload
+    required: true
+  archive:
+    description: Archive name (non-extension portion of filename) to be uploaded (variables `$bin`, `$target`, `$tag`, and any string)
+    required: false
+    default: "$bin-$target"
+  target:
+    description: Target name, default is host triple
+    required: false
+  tar:
+    description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
+    required: false
+    default: "unix"
+  zip:
+    description: On which platform to distribute the `.zip` file (all, unix, windows, or none)
+    required: false
+    default: "windows"
+
+runs:
+  using: node12
+  main: main.js

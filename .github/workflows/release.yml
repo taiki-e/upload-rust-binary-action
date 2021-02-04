@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  create-release:
+    if: github.repository_owner == 'taiki-e'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          changelog: CHANGELOG.md
+          title: $version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
