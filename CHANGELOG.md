@@ -10,9 +10,14 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.0.1] - 2021-02-12
+
+- Pass `--noprofile` and `--norc` options to bash.
+
 ## [1.0.0] - 2021-02-03
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/taiki-e/upload-rust-binary-action/releases/tag/v1.0.0
