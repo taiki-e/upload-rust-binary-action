@@ -18,6 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install prettier
+        run: |
+          sudo npm install -g prettier
       - name: Install shfmt
         run: |
           GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt

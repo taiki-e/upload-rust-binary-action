@@ -1,4 +1,0 @@
-# Clang-Format configuration
-# https://clang.llvm.org/docs/ClangFormatStyleOptions.html
-
-Cpp11BracedListStyle: false

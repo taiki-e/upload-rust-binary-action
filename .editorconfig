@@ -11,10 +11,12 @@ indent_style = space
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.{js,json,yml,md}]
+[*.{json,yml,md}]
 indent_size = 2
 
 [*.sh]
-indent_size = 2
 binary_next_line = true
 switch_case_indent = true
+
+[*.js]
+quote_type = single
