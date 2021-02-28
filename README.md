@@ -2,7 +2,35 @@
 
 GitHub Action for building and uploading Rust binary to GitHub Releases.
 
+<!-- TOC depthfrom:2 -->
+
+- [Usage](#usage)
+  - [Inputs](#inputs)
+  - [Example workflow: Basic usage](#example-workflow-basic-usage)
+  - [Example workflow: Basic usage (multiple platforms)](#example-workflow-basic-usage-multiple-platforms)
+  - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
+  - [Other examples](#other-examples)
+- [Related Projects](#related-projects)
+- [License](#license)
+
+<!-- /TOC -->
+
 ## Usage
+
+This action builds and uploads Rust binary that specified by `bin` option to
+GitHub Releases.
+
+Currently, this action is basically intended to be used in combination with an action like [create-gh-release-action] that creates a GitHub release when a tag is pushed.
+
+### Inputs
+
+| Name   | Required | Description                                                                      | Type   | Default        |
+|---------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
+| bin     | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
+| archive | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
+| target  | false    | Target triple, default is host triple                                            | String | (host triple)  |
+| tar     | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
+| zip     | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
 
 ### Example workflow: Basic usage
 
@@ -51,7 +79,8 @@ jobs:
 
 ### Example workflow: Basic usage (multiple platforms)
 
-This action supports Linux, macOS, and Windows as a host OS and supports binaries for various targets.
+This action supports Linux, macOS, and Windows as a host OS and supports
+binaries for various targets.
 
 ```yaml
 name: Release
@@ -108,6 +137,8 @@ jobs:
 By default, this action will upload an archive file with a name like
 `$bin-$target.$extension`.
 
+You can customize archive name by `archive` option.
+
 ```yaml
 name: Release
 
@@ -154,25 +185,13 @@ jobs:
 ### Other examples
 
 - [cargo-hack/.github/workflows/release.yml](https://github.com/taiki-e/cargo-hack/blob/5d629a8e4b869215acbd55250f078eb211d2337b/.github/workflows/release.yml#L38-L66)
-- [parse-changelog/.github/workflows/release.yml](https://github.com/taiki-e/parse-changelog/blob/2440e0cf0ea09b2736bb02a6b39b1fa797cee99a/.github/workflows/release.yml#L38-L66)
-
-## Configuration
-
-| Input   | Required | Description                                                                      | Type   | Default        |
-|---------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
-| bin     | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
-| archive | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
-| target  | false    | Target triple, default is host triple                                            | String | (host triple)  |
-| tar     | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
-| zip     | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
-
-See [action.yml](action.yml) for more details.
-
-[create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action
+- [urdf-viz/.github/workflows/release.yml](https://github.com/openrr/urdf-viz/blob/d6f16cbdda66a54a55ac2f14ac0c69819127b2d4/.github/workflows/release.yml#L37-L58)
 
 ## Related Projects
 
 - [create-gh-release-action]: GitHub Action for creating GitHub Releases based on changelog.
+
+[create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action
 
 ## License
 
