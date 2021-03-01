@@ -14,9 +14,9 @@ trim_trailing_whitespace = true
 [*.{json,yml,md}]
 indent_size = 2
 
+[*.{js,yml}]
+quote_type = single
+
 [*.sh]
 binary_next_line = true
 switch_case_indent = true
-
-[*.js]
-quote_type = single

@@ -8,18 +8,18 @@ inputs:
   archive:
     description: Archive name (non-extension portion of filename) to be uploaded (variables `$bin`, `$target`, `$tag`, and any string)
     required: false
-    default: "$bin-$target"
+    default: '$bin-$target'
   target:
     description: Target name, default is host triple
     required: false
   tar:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
-    default: "unix"
+    default: 'unix'
   zip:
     description: On which platform to distribute the `.zip` file (all, unix, windows, or none)
     required: false
-    default: "windows"
+    default: 'windows'
 
 runs:
   using: node12

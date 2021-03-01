@@ -7,7 +7,7 @@ on:
       - main
       - v[0-9]+
   schedule:
-    - cron: "0 1 * * *"
+    - cron: '0 1 * * *'
 
 defaults:
   run:
@@ -19,8 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install prettier
-        run: |
-          sudo npm install -g prettier
+        run: sudo npm install -g prettier
       - name: Install shfmt
         run: |
           GO111MODULE=on go get mvdan.cc/sh/v3/cmd/shfmt
