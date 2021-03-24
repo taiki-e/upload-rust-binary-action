@@ -1,8 +1,8 @@
 # upload-rust-binary-action
 
-GitHub Action for building and uploading Rust binary to GitHub Releases.
+[![build status](https://img.shields.io/github/workflow/status/taiki-e/upload-rust-binary-action/CI/main?style=flat-square&logo=github)](https://github.com/taiki-e/upload-rust-binary-action/actions)
 
-<!-- TOC depthfrom:2 -->
+GitHub Action for building and uploading Rust binary to GitHub Releases.
 
 - [Usage](#usage)
   - [Inputs](#inputs)
@@ -12,8 +12,6 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Other examples](#other-examples)
 - [Related Projects](#related-projects)
 - [License](#license)
-
-<!-- /TOC -->
 
 ## Usage
 
