@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Format all scripts.
+# Format all code.
 #
 # Usage:
-#    ./scripts/fmt.sh
+#    ./tools/fmt.sh
 #
 # Note: This script requires shfmt and prettier.
 
@@ -17,7 +17,7 @@ if [[ -z "${CI:-}" ]]; then
     (
         set -x
         shfmt -l -w $(git ls-files "*.sh")
-        prettier -c $(git ls-files "*.yml")
+        prettier -w $(git ls-files "*.yml")
         prettier -w $(git ls-files "*.js")
     )
 else
