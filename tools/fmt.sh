@@ -17,8 +17,8 @@ if [[ -z "${CI:-}" ]]; then
     (
         set -x
         shfmt -l -w $(git ls-files "*.sh")
-        prettier -w $(git ls-files "*.yml")
-        prettier -w $(git ls-files "*.js")
+        prettier -l -w $(git ls-files "*.yml")
+        prettier -l -w $(git ls-files "*.js")
     )
 else
     (
