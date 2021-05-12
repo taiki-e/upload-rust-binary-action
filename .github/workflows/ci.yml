@@ -7,7 +7,7 @@ on:
       - main
       - v[0-9]+
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '40 1 * * *'
 
 defaults:
   run:
