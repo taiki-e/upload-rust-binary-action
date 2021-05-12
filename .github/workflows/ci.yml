@@ -17,7 +17,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2.3.4
       - name: Install prettier
         run: sudo npm install -g prettier
       - name: Install shfmt
