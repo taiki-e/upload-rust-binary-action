@@ -15,8 +15,10 @@ cd "$(cd "$(dirname "${0}")" && pwd)"/..
 # shellcheck disable=SC2046
 if [[ -z "${CI:-}" ]]; then
     shfmt -l -w $(git ls-files '*.sh')
-    prettier -l -w $(git ls-files '*.yml')
-    prettier -l -w $(git ls-files '*.js')
+    if prettier --version &>/dev/null; then
+        prettier -l -w $(git ls-files '*.yml')
+        prettier -l -w $(git ls-files '*.js')
+    fi
 else
     shfmt -d $(git ls-files '*.sh')
     prettier -c $(git ls-files '*.yml')
