@@ -19,6 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
       - uses: taiki-e/create-gh-release-action@v1
         with:
           changelog: CHANGELOG.md
