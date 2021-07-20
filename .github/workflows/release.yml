@@ -25,5 +25,6 @@ jobs:
         with:
           changelog: CHANGELOG.md
           title: $version
+          branch: 'main|v[0-9]+'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
