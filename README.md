@@ -10,6 +10,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Basic usage (multiple platforms)](#example-workflow-basic-usage-multiple-platforms)
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
   - [Other examples](#other-examples)
+  - [Optimize Rust binary](#optimize-rust-binary)
 - [Related Projects](#related-projects)
 - [License](#license)
 
@@ -71,8 +72,6 @@ jobs:
         env:
           # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # (optional) Optimize the compiled binary.
-          CARGO_PROFILE_RELEASE_LTO: true
 ```
 
 ### Example workflow: Basic usage (multiple platforms)
@@ -126,8 +125,6 @@ jobs:
         env:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # (optional)
-          CARGO_PROFILE_RELEASE_LTO: true
 ```
 
 ### Example workflow: Customize archive name
@@ -176,14 +173,30 @@ jobs:
         env:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # (optional)
-          CARGO_PROFILE_RELEASE_LTO: true
 ```
 
 ### Other examples
 
 - [cargo-hack/.github/workflows/release.yml](https://github.com/taiki-e/cargo-hack/blob/5d629a8e4b869215acbd55250f078eb211d2337b/.github/workflows/release.yml#L38-L66)
 - [urdf-viz/.github/workflows/release.yml](https://github.com/openrr/urdf-viz/blob/d6f16cbdda66a54a55ac2f14ac0c69819127b2d4/.github/workflows/release.yml#L37-L58)
+
+### Optimize Rust binary
+
+You can optimize Rust binaries by passing [profile options](https://doc.rust-lang.org/cargo/reference/profiles.html) via environment variables. For example:
+
+- [lto](https://doc.rust-lang.org/cargo/reference/config.html#profilenamelto)
+
+  ```yaml
+  env:
+    CARGO_PROFILE_RELEASE_LTO: true
+  ```
+
+- [codegen-units](https://doc.rust-lang.org/cargo/reference/config.html#profilenamecodegen-units)
+
+  ```yaml
+  env:
+    CARGO_PROFILE_RELEASE_CODEGEN_UNITS: true
+  ```
 
 ## Related Projects
 
