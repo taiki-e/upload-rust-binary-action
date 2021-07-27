@@ -182,7 +182,10 @@ jobs:
 
 ### Optimize Rust binary
 
-You can optimize Rust binaries by passing [profile options](https://doc.rust-lang.org/cargo/reference/profiles.html) via environment variables. For example:
+You can optimize Rust binaries by passing the profile options.
+The profile options can be specified by [`[profile]` table in `Cargo.toml`](https://doc.rust-lang.org/cargo/reference/profiles.html), [cargo config](https://doc.rust-lang.org/cargo/reference/config.html), [environment variables](https://doc.rust-lang.org/cargo/reference/environment-variables.html#configuration-environment-variables), etc.
+
+The followings are examples of using environment variables to specify profile options:
 
 - [lto](https://doc.rust-lang.org/cargo/reference/config.html#profilenamelto)
 
@@ -195,8 +198,10 @@ You can optimize Rust binaries by passing [profile options](https://doc.rust-lan
 
   ```yaml
   env:
-    CARGO_PROFILE_RELEASE_CODEGEN_UNITS: true
+    CARGO_PROFILE_RELEASE_CODEGEN_UNITS: 1
   ```
+
+**NOTE**: These options may increase the build time.
 
 ## Related Projects
 
