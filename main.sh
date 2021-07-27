@@ -77,7 +77,7 @@ if [[ -n "${strip:-}" ]]; then
 fi
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
     assets+=("${archive}.tar.gz")
-    tar czf ../../../"${assets[0]}" "${bin}"
+    tar acf ../../../"${assets[0]}" "${bin}"
 fi
 if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
     assets+=("${archive}.zip")
