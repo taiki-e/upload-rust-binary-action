@@ -51,7 +51,7 @@ case "${OSTYPE}" in
         strip="strip"
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
-        brew install gnu-tar
+        brew install gnu-tar &>/dev/null
         export PATH=${PATH}:/usr/local/opt/gnu-tar/libexec/gnubin
         ;;
     cygwin* | msys*)
