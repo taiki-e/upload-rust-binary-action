@@ -12,6 +12,10 @@ inputs:
   target:
     description: Target name, default is host triple
     required: false
+  features:
+    description: Comma seperated list of cargo build features to enable
+    required: false
+    default: ''
   tar:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
