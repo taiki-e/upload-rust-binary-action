@@ -13,6 +13,8 @@ if [[ "${GITHUB_REF:?}" != "refs/tags/"* ]]; then
 fi
 tag="${GITHUB_REF#refs/tags/}"
 
+features=${INPUT_FEATURES}
+
 archive="${INPUT_ARCHIVE:?}"
 package=${INPUT_BIN:?}
 if [[ ! "${INPUT_TAR}" =~ ^(all|unix|windows|none)$ ]]; then
@@ -65,7 +67,12 @@ case "${OSTYPE}" in
 esac
 bin="${package}${exe:-}"
 
-$cargo build --bin "${package}" --release --target "${target}"
+build_options=("--bin" "${package}" "--release" "--target" "${target}")
+if [[ -n "${features}" ]]; then
+    build_options+=("--features" "${features}")
+fi
+
+$cargo build "${build_options[@]}"
 
 cd target/"${target}"/release
 archive="${archive/\$bin/${package}}"

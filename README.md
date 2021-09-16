@@ -23,13 +23,14 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Inputs
 
-| Name   | Required | Description                                                                      | Type   | Default        |
-|---------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
-| bin     | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
-| archive | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
-| target  | false    | Target triple, default is host triple                                            | String | (host triple)  |
-| tar     | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
-| zip     | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
+| Name     | Required | Description                                                                      | Type   | Default        |
+|----------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
+| bin      | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
+| archive  | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
+| target   | false    | Target triple, default is host triple                                            | String | (host triple)  |
+| features | false    | Comma seperated list of cargo build features to enable                           | String |                |
+| tar      | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
+| zip      | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
 
 ### Example workflow: Basic usage
 
@@ -170,6 +171,59 @@ jobs:
           #     - $target - Target triple.
           #     - $tag - Tag of this release.
           archive: $bin-$tag-$target
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Example workflow: Build with different features on different platforms
+
+This action enables the `systemd` and `io_uring` features for Linux, and leave macOS, and Windows with default set of features.
+```yaml
+name: Release
+
+on:
+  push:
+    tags:
+      - v[0-9]+.*
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          # (optional)
+          changelog: CHANGELOG.md
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-assets:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            features: systemd,io_uring
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required)
+          bin: ...
+          # (optional) On which platform to distribute the `.tar.gz` file.
+          # [default value: unix]
+          # [possible values: all, unix, windows, none]
+          tar: unix
+          # (optional) On which platform to distribute the `.zip` file.
+          # [default value: windows]
+          # [possible values: all, unix, windows, none]
+          zip: windows
+          # (optional) Build with the given set of features if any.
+          features: ${{ matrix.features || '' }}
         env:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
