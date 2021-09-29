@@ -29,7 +29,7 @@ Currently, this action is basically intended to be used in combination with an a
 | bin      | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
 | archive  | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
 | target   | false    | Target triple, default is host triple                                            | String | (host triple)  |
-| features | false    | Comma seperated list of cargo build features to enable                           | String |                |
+| features | false    | Comma separated list of cargo build features to enable                           | String |                |
 | tar      | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
 | zip      | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
 

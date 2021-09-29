@@ -13,7 +13,7 @@ inputs:
     description: Target name, default is host triple
     required: false
   features:
-    description: Comma seperated list of cargo build features to enable
+    description: Comma separated list of cargo build features to enable
     required: false
     default: ''
   tar:
