@@ -9,6 +9,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Basic usage](#example-workflow-basic-usage)
   - [Example workflow: Basic usage (multiple platforms)](#example-workflow-basic-usage-multiple-platforms)
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
+  - [Example workflow: Build with different features on different platforms](#example-workflow-build-with-different-features-on-different-platforms)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
 - [Related Projects](#related-projects)
@@ -179,6 +180,7 @@ jobs:
 ### Example workflow: Build with different features on different platforms
 
 This action enables the `systemd` and `io_uring` features for Linux, and leave macOS, and Windows with default set of features.
+
 ```yaml
 name: Release
 
