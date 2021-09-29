@@ -7,6 +7,10 @@ error() {
     echo "::error::$*"
 }
 
+warn() {
+    echo "::warning::$*"
+}
+
 if [[ "${GITHUB_REF:?}" != "refs/tags/"* ]]; then
     error "GITHUB_REF should start with 'refs/tags/'"
     exit 1
@@ -46,11 +50,9 @@ fi
 case "${OSTYPE}" in
     linux*)
         platform="unix"
-        strip="strip"
         ;;
     darwin*)
         platform="unix"
-        strip="strip"
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
         brew install gnu-tar &>/dev/null
@@ -65,6 +67,35 @@ case "${OSTYPE}" in
         exit 1
         ;;
 esac
+
+strip=""
+case "${target}" in
+    *-pc-windows-msvc) ;;
+    x86_64-* | i686-*)
+        strip="strip"
+        ;;
+    arm*-linux-*eabi)
+        strip="arm-linux-gnueabi-strip"
+        ;;
+    arm*-linux-*eabihf | thumb*-linux-*eabihf)
+        strip="arm-linux-gnueabihf-strip"
+        ;;
+    arm*-none-eabi | thumb*-none-eabi)
+        strip="arm-none-eabi-strip"
+        ;;
+    aarch64*-linux-*)
+        strip="aarch64-linux-gnu-strip"
+        ;;
+    *) ;;
+esac
+if [[ -n "${strip:-}" ]]; then
+    # shellcheck disable=SC2230 # https://github.com/koalaman/shellcheck/issues/1162
+    if ! which "$strip" &>/dev/null; then
+        warn "$strip not found, skip stripping"
+        strip=""
+    fi
+fi
+
 bin="${package}${exe:-}"
 
 build_options=("--bin" "${package}" "--release" "--target" "${target}")
@@ -80,7 +111,7 @@ archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 assets=()
 if [[ -n "${strip:-}" ]]; then
-    strip "${bin}"
+    $strip "${bin}"
 fi
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
     assets+=("${archive}.tar.gz")
