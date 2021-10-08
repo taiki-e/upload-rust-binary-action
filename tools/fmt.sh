@@ -10,7 +10,7 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-cd "$(cd "$(dirname "${0}")" && pwd)"/..
+cd "$(cd "$(dirname "$0")" && pwd)"/..
 
 # shellcheck disable=SC2046
 if [[ -z "${CI:-}" ]]; then

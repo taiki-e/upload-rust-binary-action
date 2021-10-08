@@ -90,8 +90,8 @@ case "${target}" in
 esac
 if [[ -n "${strip:-}" ]]; then
     # shellcheck disable=SC2230 # https://github.com/koalaman/shellcheck/issues/1162
-    if ! which "$strip" &>/dev/null; then
-        warn "$strip not found, skip stripping"
+    if ! which "${strip}" &>/dev/null; then
+        warn "${strip} not found, skip stripping"
         strip=""
     fi
 fi
@@ -103,7 +103,7 @@ if [[ -n "${features}" ]]; then
     build_options+=("--features" "${features}")
 fi
 
-$cargo build "${build_options[@]}"
+${cargo} build "${build_options[@]}"
 
 cd target/"${target}"/release
 archive="${archive/\$bin/${package}}"
@@ -111,7 +111,7 @@ archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 assets=()
 if [[ -n "${strip:-}" ]]; then
-    $strip "${bin}"
+    ${strip} "${bin}"
 fi
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
     assets+=("${archive}.tar.gz")
