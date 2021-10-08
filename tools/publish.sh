@@ -52,7 +52,7 @@ if git --no-pager tag | grep "${tag}" &>/dev/null; then
     exit 1
 fi
 
-# Create and push tag.
+# Exit if dry run.
 if [[ -n "${dry_run:-}" ]]; then
     echo "warning: skip creating a new tag '${tag}' due to dry run"
     exit 0
