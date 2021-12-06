@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -euo pipefail
 IFS=$'\n\t'
 
@@ -10,6 +9,11 @@ error() {
 warn() {
     echo "::warning::$*"
 }
+
+if [[ $# -gt 0 ]]; then
+    error "invalid argument: '$1'"
+    exit 1
+fi
 
 if [[ "${GITHUB_REF:?}" != "refs/tags/"* ]]; then
     error "GITHUB_REF should start with 'refs/tags/'"
@@ -62,10 +66,7 @@ case "${OSTYPE}" in
         platform="windows"
         exe=".exe"
         ;;
-    *)
-        error "unrecognized OSTYPE: ${OSTYPE}"
-        exit 1
-        ;;
+    *) error "unrecognized OSTYPE: ${OSTYPE}" && exit 1 ;;
 esac
 
 strip=""
@@ -89,8 +90,7 @@ case "${target}" in
     *) ;;
 esac
 if [[ -n "${strip:-}" ]]; then
-    # shellcheck disable=SC2230 # https://github.com/koalaman/shellcheck/issues/1162
-    if ! which "${strip}" &>/dev/null; then
+    if ! type -P "${strip}" &>/dev/null; then
         warn "${strip} not found, skip stripping"
         strip=""
     fi

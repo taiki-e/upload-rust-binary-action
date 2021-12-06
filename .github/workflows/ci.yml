@@ -10,7 +10,7 @@ on:
       - main
       - v[0-9]+
   schedule:
-    - cron: '40 1 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 defaults:
@@ -18,17 +18,16 @@ defaults:
     shell: bash
 
 jobs:
-  check:
+  tidy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           persist-credentials: false
       - name: Install prettier
-        run: sudo npm install -g prettier
+        run: npm install prettier
       - name: Install shfmt
         run: |
           "${GOROOT_1_17_X64}"/bin/go install mvdan.cc/sh/v3/cmd/shfmt@latest
           echo "${HOME}/go/bin" >>"${GITHUB_PATH}"
-      - run: tools/fmt.sh
-      - run: shellcheck **/*.sh *.sh
+      - run: tools/tidy.sh

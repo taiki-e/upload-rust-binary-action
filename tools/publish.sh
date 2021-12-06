@@ -1,4 +1,6 @@
 #!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
 # Publish a new release.
 #
@@ -8,13 +10,10 @@
 # Note:
 # - This script requires parse-changelog <https://github.com/taiki-e/parse-changelog>
 
-set -euo pipefail
-IFS=$'\n\t'
-
 cd "$(cd "$(dirname "$0")" && pwd)"/..
 
 error() {
-    echo "error: $*" >&2
+    echo >&2 "error: $*"
 }
 
 # Parse arguments.
@@ -28,7 +27,7 @@ if [[ "${2:-}" == "--dry-run" ]]; then
     dry_run="--dry-run"
     shift
 fi
-if [[ -n "${2:-}" ]]; then
+if [[ $# -gt 1 ]]; then
     error "invalid argument: '$2'"
     exit 1
 fi
