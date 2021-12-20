@@ -13,9 +13,22 @@ IFS=$'\n\t'
 
 cd "$(cd "$(dirname "$0")" && pwd)"/..
 
+x() {
+    local cmd="$1"
+    shift
+    if [[ -n "${verbose:-}" ]]; then
+        (
+            set -x
+            "$cmd" "$@"
+        )
+    else
+        "$cmd" "$@"
+    fi
+}
+
 if [[ "${1:-}" == "-v" ]]; then
     shift
-    set -x
+    verbose=1
 fi
 if [[ $# -gt 0 ]]; then
     cat <<EOF
@@ -30,26 +43,19 @@ if type -P npm &>/dev/null && type -P "$(npm bin)/prettier" &>/dev/null; then
     prettier="$(npm bin)/prettier"
 fi
 
-if [[ -z "${CI:-}" ]]; then
-    if type -P shfmt &>/dev/null; then
-        shfmt -l -w $(git ls-files '*.sh')
-    else
-        echo >&2 "WARNING: 'shfmt' is not installed"
-    fi
-    if type -P "${prettier}" &>/dev/null; then
-        "${prettier}" -l -w $(git ls-files '*.yml')
-        "${prettier}" -l -w $(git ls-files '*.js')
-    else
-        echo >&2 "WARNING: 'prettier' is not installed"
-    fi
-    if type -P shellcheck &>/dev/null; then
-        shellcheck $(git ls-files '*.sh')
-    else
-        echo >&2 "WARNING: 'shellcheck' is not installed"
-    fi
+if type -P shfmt &>/dev/null; then
+    x shfmt -l -w $(git ls-files '*.sh')
 else
-    shfmt -d $(git ls-files '*.sh')
-    "${prettier}" -c $(git ls-files '*.yml')
-    "${prettier}" -c $(git ls-files '*.js')
-    shellcheck $(git ls-files '*.sh')
+    echo >&2 "WARNING: 'shfmt' is not installed"
+fi
+if type -P "${prettier}" &>/dev/null; then
+    x "${prettier}" -l -w $(git ls-files '*.yml')
+    x "${prettier}" -l -w $(git ls-files '*.js')
+else
+    echo >&2 "WARNING: 'prettier' is not installed"
+fi
+if type -P shellcheck &>/dev/null; then
+    x shellcheck $(git ls-files '*.sh')
+else
+    echo >&2 "WARNING: 'shellcheck' is not installed"
 fi

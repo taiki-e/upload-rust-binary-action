@@ -4,10 +4,10 @@ IFS=$'\n\t'
 
 # Publish a new release.
 #
-# Usage:
-#    ./tools/publish.sh <version>
+# USAGE:
+#    ./tools/publish.sh <VERSION>
 #
-# Note:
+# NOTE:
 # - This script requires parse-changelog <https://github.com/taiki-e/parse-changelog>
 
 cd "$(cd "$(dirname "$0")" && pwd)"/..
