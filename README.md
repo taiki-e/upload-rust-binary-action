@@ -257,7 +257,7 @@ The followings are examples of using environment variables to specify profile op
     CARGO_PROFILE_RELEASE_CODEGEN_UNITS: 1
   ```
 
-**NOTE**: These options may increase the build time.
+**NOTE:** These options may increase the build time.
 
 ## Related Projects
 
