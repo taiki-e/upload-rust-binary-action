@@ -2,22 +2,23 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-error() {
+bail() {
     echo "::error::$*"
+    exit 1
 }
-
 warn() {
     echo "::warning::$*"
 }
+info() {
+    echo >&2 "info: $*"
+}
 
 if [[ $# -gt 0 ]]; then
-    error "invalid argument: '$1'"
-    exit 1
+    bail "invalid argument '$1'"
 fi
 
 if [[ "${GITHUB_REF:?}" != "refs/tags/"* ]]; then
-    error "GITHUB_REF should start with 'refs/tags/'"
-    exit 1
+    bail "GITHUB_REF should start with 'refs/tags/'"
 fi
 tag="${GITHUB_REF#refs/tags/}"
 
@@ -26,14 +27,11 @@ features=${INPUT_FEATURES}
 archive="${INPUT_ARCHIVE:?}"
 package=${INPUT_BIN:?}
 if [[ ! "${INPUT_TAR}" =~ ^(all|unix|windows|none)$ ]]; then
-    error "invalid input 'tar': ${INPUT_TAR}"
-    exit 1
+    bail "invalid input 'tar': ${INPUT_TAR}"
 elif [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
-    error "invalid input 'zip': ${INPUT_ZIP}"
-    exit 1
+    bail "invalid input 'zip': ${INPUT_ZIP}"
 elif [[ "${INPUT_TAR}" == "none" ]] && [[ "${INPUT_ZIP}" == "none" ]]; then
-    error "at least one of INPUT_TAR or INPUT_ZIP must be a value other than 'none'"
-    exit 1
+    bail "at least one of INPUT_TAR or INPUT_ZIP must be a value other than 'none'"
 fi
 
 host=$(rustc -Vv | grep host | sed 's/host: //')
@@ -46,7 +44,9 @@ if [[ "${host}" != "${target}" ]]; then
         *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
         *)
             cargo="cross"
-            cargo install cross
+            if ! type -P cross &>/dev/null; then
+                cargo install cross
+            fi
             ;;
     esac
 fi
@@ -60,13 +60,13 @@ case "${OSTYPE}" in
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
         brew install gnu-tar &>/dev/null
-        export PATH=${PATH}:/usr/local/opt/gnu-tar/libexec/gnubin
+        export PATH="${PATH}:/usr/local/opt/gnu-tar/libexec/gnubin"
         ;;
     cygwin* | msys*)
         platform="windows"
         exe=".exe"
         ;;
-    *) error "unrecognized OSTYPE: ${OSTYPE}" && exit 1 ;;
+    *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
 esac
 
 strip=""
@@ -103,15 +103,15 @@ if [[ -n "${features}" ]]; then
     build_options+=("--features" "${features}")
 fi
 
-${cargo} build "${build_options[@]}"
+"${cargo}" build "${build_options[@]}"
 
-cd target/"${target}"/release
+pushd target/"${target}"/release >/dev/null
 archive="${archive/\$bin/${package}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 assets=()
 if [[ -n "${strip:-}" ]]; then
-    ${strip} "${bin}"
+    "${strip}" "${bin}"
 fi
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
     assets+=("${archive}.tar.gz")
@@ -125,11 +125,10 @@ if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
         7z a ../../../"${archive}.zip" "${bin}"
     fi
 fi
-cd ../../..
+popd >/dev/null
 
 if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-    error "GITHUB_TOKEN not set, skipping deploy"
-    exit 1
+    bail "GITHUB_TOKEN not set, skipping deploy"
 else
     # https://cli.github.com/manual/gh_release_upload
     gh release upload "${tag}" "${assets[@]}" --clobber

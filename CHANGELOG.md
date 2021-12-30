@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Skip the installation of `cross` if it is already installed.
+
+  Previously, on Linux, if the target is different from the host and `cross` supports the target, `cross` was always installed.
+
 ## [1.1.0] - 2021-09-29
 
 - [Add `features` input option.](https://github.com/taiki-e/upload-rust-binary-action/pull/7)

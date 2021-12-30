@@ -1,6 +1,7 @@
 node_modules
 package-lock.json
 package.json
+tmp
 
 # For platform and editor specific settings, it is recommended to add to
 # a global .gitignore file.
