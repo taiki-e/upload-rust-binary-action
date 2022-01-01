@@ -9,9 +9,6 @@ bail() {
 warn() {
     echo "::warning::$*"
 }
-info() {
-    echo >&2 "info: $*"
-}
 
 if [[ $# -gt 0 ]]; then
     bail "invalid argument '$1'"
