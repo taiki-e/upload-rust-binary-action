@@ -2,16 +2,15 @@
 # shellcheck disable=SC2046
 set -euo pipefail
 IFS=$'\n\t'
+cd "$(dirname "$0")"/..
 
 # USAGE:
 #    ./tools/tidy.sh
 #
-# NOTE: This script requires the following tools:
+# Note: This script requires the following tools:
 # - shfmt
 # - prettier
 # - shellcheck
-
-cd "$(cd "$(dirname "$0")" && pwd)"/..
 
 x() {
     local cmd="$1"

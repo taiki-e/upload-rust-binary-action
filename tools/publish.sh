@@ -1,16 +1,15 @@
 #!/bin/bash
 set -euo pipefail
 IFS=$'\n\t'
+cd "$(dirname "$0")"/..
 
 # Publish a new release.
 #
 # USAGE:
 #    ./tools/publish.sh <VERSION>
 #
-# NOTE:
+# Note:
 # - This script requires parse-changelog <https://github.com/taiki-e/parse-changelog>
-
-cd "$(cd "$(dirname "$0")" && pwd)"/..
 
 bail() {
     echo >&2 "error: $*"
@@ -31,19 +30,46 @@ fi
 git diff --exit-code
 git diff --exit-code --staged
 
+# Make sure the same release has not been created in the past.
+if gh release view "${tag}" &>/dev/null; then
+    bail "tag '${tag}' has already been created and pushed"
+fi
+
+tags=$(git --no-pager tag)
+if [[ -n "${tags}" ]]; then
+    # Make sure the same release does not exist in CHANGELOG.md.
+    release_date=$(date --utc '+%Y-%m-%d')
+    if grep -Eq "^## \\[${version//./\\.}\\] - ${release_date}$" CHANGELOG.md; then
+        bail "release ${version} already exist in CHANGELOG.md"
+    fi
+    if grep -Eq "^\\[${version//./\\.}\\]: " CHANGELOG.md; then
+        bail "link to ${version} already exist in CHANGELOG.md"
+    fi
+
+    # Update changelog.
+    remote_url=$(grep -E '^\[Unreleased\]: https://' CHANGELOG.md | sed 's/^\[Unreleased\]: //' | sed 's/\.\.\.HEAD$//')
+    before_tag=$(sed <<<"${remote_url}" 's/^.*\/compare\///')
+    remote_url=$(sed <<<"${remote_url}" 's/\/compare\/v.*$//')
+    sed -i "s/^## \\[Unreleased\\]/## [Unreleased]\\n\\n## [${version}] - ${release_date}/" CHANGELOG.md
+    sed -i "s#^\[Unreleased\]: https://.*#[Unreleased]: ${remote_url}/compare/v${version}...HEAD\\n[${version}]: ${remote_url}/compare/${before_tag}...v${version}#" CHANGELOG.md
+    if ! grep -Eq "^## \\[${version//./\\.}\\] - ${release_date}$" CHANGELOG.md; then
+        bail "failed to update CHANGELOG.md"
+    fi
+    if ! grep -Eq "^\\[${version//./\\.}\\]: " CHANGELOG.md; then
+        bail "failed to update CHANGELOG.md"
+    fi
+fi
+
 # Make sure that a valid release note for this version exists.
 # https://github.com/taiki-e/parse-changelog
 echo "============== CHANGELOG =============="
 parse-changelog CHANGELOG.md "${version}"
 echo "======================================="
 
-if ! grep <CHANGELOG.md -E "^\\[${version//./\\.}\\]: " >/dev/null; then
-    bail "not found link to [${version}] in CHANGELOG.md"
-fi
-
-# Make sure the same release has not been created in the past.
-if gh release view "${tag}" &>/dev/null; then
-    bail "tag '${tag}' has already been created and pushed"
+if [[ -n "${tags}" ]]; then
+    # Create a release commit.
+    git add CHANGELOG.md
+    git commit -m "Release ${version}"
 fi
 
 set -x
@@ -51,12 +77,11 @@ set -x
 git push origin main
 git tag "${tag}"
 git push origin --tags
-sleep 10
 
 version_tag="v${version%%.*}"
 git checkout -b "${version_tag}"
 git push origin refs/heads/"${version_tag}"
-if git --no-pager tag | grep -E "^${version_tag}$" &>/dev/null; then
+if git --no-pager tag | grep -Eq "^${version_tag}$"; then
     git tag -d "${version_tag}"
     git push --delete origin refs/tags/"${version_tag}"
 fi
