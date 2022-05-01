@@ -37,7 +37,7 @@ cargo="cargo"
 if [[ "${host}" != "${target}" ]]; then
     rustup target add "${target}"
     case "${target}" in
-        # https://github.com/rust-embedded/cross#supported-targets
+        # https://github.com/cross-rs/cross#supported-targets
         *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
         *)
             cargo="cross"
