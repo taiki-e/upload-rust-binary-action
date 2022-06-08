@@ -10,6 +10,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Basic usage (multiple platforms)](#example-workflow-basic-usage-multiple-platforms)
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
   - [Example workflow: Build with different features on different platforms](#example-workflow-build-with-different-features-on-different-platforms)
+  - [Example workflow: Cross-compilation](#example-workflow-cross-compilation)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
 - [Related Projects](#related-projects)
@@ -24,14 +25,15 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Inputs
 
-| Name     | Required | Description                                                                      | Type   | Default        |
-|----------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
-| bin      | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
-| archive  | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
-| target   | false    | Target triple, default is host triple                                            | String | (host triple)  |
-| features | false    | Comma separated list of cargo build features to enable                           | String |                |
-| tar      | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
-| zip      | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
+| Name       | Required | Description                                                                      | Type   | Default        |
+|------------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
+| bin        | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
+| archive    | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
+| target     | false    | Target triple, default is host triple                                            | String | (host triple)  |
+| features   | false    | Comma separated list of cargo build features to enable                           | String |                |
+| tar        | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
+| zip        | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
+| build-tool | false    | Tool to build binary (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 
 ### Example workflow: Basic usage
 
@@ -231,6 +233,112 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+### Example workflow: Cross-compilation
+
+By default, this action uses [cross] for cross-compilation (if cross supports that target). In the following example, only aarch64-unknown-linux-gnu uses cross, the rest use cargo.
+
+```yaml
+name: Release
+
+on:
+  push:
+    tags:
+      - v[0-9]+.*
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          # (optional)
+          changelog: CHANGELOG.md
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-assets:
+    strategy:
+      matrix:
+        include:
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required)
+          bin: ...
+          # (optional) Target triple, default is host triple.
+          target: ${{ matrix.target }}
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+However, if the host has another cross-compilation setup, it will be respected.
+The following is an example using [setup-cross-toolchain-action]. In this example, this action uses cargo for all targets.
+
+```yaml
+name: Release
+
+on:
+  push:
+    tags:
+      - v[0-9]+.*
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          # (optional)
+          changelog: CHANGELOG.md
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-assets:
+    strategy:
+      matrix:
+        include:
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: aarch64-apple-darwin
+            os: macos-latest
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install cross-compilation tools
+        uses: taiki-e/setup-cross-toolchain-action@v1
+        with:
+          target: ${{ matrix.target }}
+        if: startsWith(matrix.os, 'ubuntu')
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required)
+          bin: ...
+          # (optional) Target triple, default is host triple.
+          target: ${{ matrix.target }}
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ### Other examples
 
 - [cargo-hack/.github/workflows/release.yml](https://github.com/taiki-e/cargo-hack/blob/5d629a8e4b869215acbd55250f078eb211d2337b/.github/workflows/release.yml#L38-L66)
@@ -264,6 +372,8 @@ The followings are examples of using environment variables to specify profile op
 - [create-gh-release-action]: GitHub Action for creating GitHub Releases based on changelog.
 
 [create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action
+[cross]: https://github.com/cross-rs/cross
+[setup-cross-toolchain-action]: https://github.com/taiki-e/setup-cross-toolchain-action
 
 ## License
 

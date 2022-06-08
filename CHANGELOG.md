@@ -10,9 +10,11 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Respect host cross-compilation setup. ([#16](https://github.com/taiki-e/upload-rust-binary-action/pull/16))
+
 ## [1.3.0] - 2022-05-01
 
-- Update default runtime to node16
+- Update default runtime to node16.
 
 ## [1.2.0] - 2021-12-30
 

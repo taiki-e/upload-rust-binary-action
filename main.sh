@@ -33,6 +33,9 @@ fi
 
 host=$(rustc -Vv | grep host | sed 's/host: //')
 target="${INPUT_TARGET:-"${host}"}"
+target_lower="${target//-/_}"
+target_lower="${target_lower//./_}"
+target_upper="$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")"
 cargo="cargo"
 if [[ "${host}" != "${target}" ]]; then
     rustup target add "${target}"
@@ -40,9 +43,12 @@ if [[ "${host}" != "${target}" ]]; then
         # https://github.com/cross-rs/cross#supported-targets
         *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
         *)
-            cargo="cross"
-            if ! type -P cross &>/dev/null; then
-                cargo install cross
+            # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
+            if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
+                cargo="cross"
+                if ! type -P cross &>/dev/null; then
+                    cargo install cross
+                fi
             fi
             ;;
     esac
