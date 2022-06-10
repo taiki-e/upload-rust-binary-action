@@ -370,9 +370,12 @@ The followings are examples of using environment variables to specify profile op
 ## Related Projects
 
 - [create-gh-release-action]: GitHub Action for creating GitHub Releases based on changelog.
+- [setup-cross-toolchain-action]: GitHub Action for setup toolchains for cross compilation and cross testing for Rust.
+- [install-action]: GitHub Action for installing development tools.
 
 [create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action
 [cross]: https://github.com/cross-rs/cross
+[install-action]: https://github.com/taiki-e/install-action
 [setup-cross-toolchain-action]: https://github.com/taiki-e/setup-cross-toolchain-action
 
 ## License
