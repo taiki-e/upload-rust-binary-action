@@ -47,6 +47,9 @@ GitHub Release.
 ```yaml
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -85,6 +88,9 @@ binaries for various targets.
 
 ```yaml
 name: Release
+
+permissions:
+  contents: write
 
 on:
   push:
@@ -141,6 +147,9 @@ You can customize archive name by `archive` option.
 ```yaml
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -185,6 +194,9 @@ This action enables the `systemd` and `io_uring` features for Linux, and leave m
 
 ```yaml
 name: Release
+
+permissions:
+  contents: write
 
 on:
   push:
@@ -240,6 +252,9 @@ By default, this action uses [cross] for cross-compilation (if cross supports th
 ```yaml
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -289,6 +304,9 @@ The following is an example using [setup-cross-toolchain-action]. In this exampl
 
 ```yaml
 name: Release
+
+permissions:
+  contents: write
 
 on:
   push:
