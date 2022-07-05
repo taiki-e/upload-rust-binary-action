@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Support building and uploading multiple binaries at the same step. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))
+
 ## [1.5.0] - 2022-07-05
 
 - Add `include` input option to include additional files. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))

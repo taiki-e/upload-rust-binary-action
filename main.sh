@@ -21,7 +21,6 @@ tag="${GITHUB_REF#refs/tags/}"
 
 features="${INPUT_FEATURES:-}"
 archive="${INPUT_ARCHIVE:?}"
-package="${INPUT_BIN:?}"
 if [[ ! "${INPUT_TAR}" =~ ^(all|unix|windows|none)$ ]]; then
     bail "invalid input 'tar': ${INPUT_TAR}"
 elif [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
@@ -36,6 +35,23 @@ case "${leading_dir}" in
     false) leading_dir="" ;;
     *) bail "'leading_dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
 esac
+
+bin_name="${INPUT_BIN:?}"
+bin_names=()
+if [[ -n "${bin_name}" ]]; then
+    # We can expand a glob by expanding a variable without quote, but that way
+    # has a security issue of shell injection.
+    if [[ "${bin_name}" == *"?"* ]] || [[ "${bin_name}" == *"*"* ]] || [[ "${bin_name}" == *"["* ]]; then
+        # This check is not for security but for diagnostic purposes.
+        # We quote the filename, so without this uses get an error like
+        # "cp: cannot stat 'app-*': No such file or directory".
+        bail "glob pattern in 'bin' input option is not supported yet"
+    fi
+    while read -rd,; do bin_names+=("${REPLY}"); done <<<"${bin_name},"
+fi
+if [[ ${#bin_names[@]} -gt 1 ]] && [[ "${archive}" == *"\$bin"* ]]; then
+    bail "when multiple binary names are specified, default archive name or '\$bin' variable cannot be used in 'archive' option"
+fi
 
 include="${INPUT_INCLUDE:-}"
 includes=()
@@ -119,9 +135,12 @@ if [[ -n "${strip:-}" ]]; then
     fi
 fi
 
-bin="${package}${exe:-}"
-
-build_options=("--bin" "${package}" "--release" "--target" "${target}")
+build_options=("--release" "--target" "${target}")
+bins=()
+for bin_name in "${bin_names[@]}"; do
+    bins+=("${bin_name}${exe:-}")
+    build_options+=("--bin" "${bin_name}")
+done
 if [[ -n "${features}" ]]; then
     build_options+=("--features" "${features}")
 fi
@@ -129,16 +148,20 @@ fi
 "${cargo}" build "${build_options[@]}"
 
 if [[ -n "${strip:-}" ]]; then
-    "${strip}" target/"${target}"/release/"${bin}"
+    for bin_exe in "${bins[@]}"; do
+        "${strip}" target/"${target}"/release/"${bin_exe}"
+    done
 fi
 
-archive="${archive/\$bin/${package}}"
+archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 assets=()
 mkdir /tmp/"${archive}"
-filenames=("${bin}")
-cp target/"${target}"/release/"${bin}" /tmp/"${archive}"/
+filenames=("${bins[@]}")
+for bin_exe in "${bins[@]}"; do
+    cp target/"${target}"/release/"${bin_exe}" /tmp/"${archive}"/
+done
 for include in "${includes[@]}"; do
     cp -r "${include}" /tmp/"${archive}"/
     filenames+=("$(basename "${include}")")
@@ -148,7 +171,7 @@ if [[ -n "${leading_dir}" ]]; then
     # with leading directory
     #
     # /${archive}
-    # /${archive}/${bin}
+    # /${archive}/${bins}
     # /${archive}/${includes}
     if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
         assets+=(/tmp/"${archive}.tar.gz")
@@ -165,7 +188,7 @@ if [[ -n "${leading_dir}" ]]; then
 else
     # without leading directory
     #
-    # /${bin}
+    # /${bins}
     # /${includes}
     pushd "${archive}" >/dev/null
     if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
