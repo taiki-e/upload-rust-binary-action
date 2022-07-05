@@ -13,9 +13,8 @@ inputs:
     description: Target name, default is host triple
     required: false
   features:
-    description: Comma separated list of cargo build features to enable
+    description: Comma-separated list of cargo build features to enable
     required: false
-    default: ''
   tar:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
@@ -24,6 +23,15 @@ inputs:
     description: On which platform to distribute the `.zip` file (all, unix, windows, or none)
     required: false
     default: 'windows'
+  include:
+    description: >
+      Comma-separated list of additional files to be included to archive.
+      Note that glob pattern is not supported yet.
+    required: false
+  leading_dir:
+    description: Whether to create the leading directory in the archive or not
+    required: false
+    default: 'false'
 
 runs:
   using: node16

@@ -19,16 +19,36 @@ if [[ "${GITHUB_REF:?}" != "refs/tags/"* ]]; then
 fi
 tag="${GITHUB_REF#refs/tags/}"
 
-features=${INPUT_FEATURES}
-
+features="${INPUT_FEATURES:-}"
 archive="${INPUT_ARCHIVE:?}"
-package=${INPUT_BIN:?}
+package="${INPUT_BIN:?}"
 if [[ ! "${INPUT_TAR}" =~ ^(all|unix|windows|none)$ ]]; then
     bail "invalid input 'tar': ${INPUT_TAR}"
 elif [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
     bail "invalid input 'zip': ${INPUT_ZIP}"
 elif [[ "${INPUT_TAR}" == "none" ]] && [[ "${INPUT_ZIP}" == "none" ]]; then
-    bail "at least one of INPUT_TAR or INPUT_ZIP must be a value other than 'none'"
+    bail "at least one of 'tar' or 'zip' must be a value other than 'none'"
+fi
+
+leading_dir="${INPUT_LEADING_DIR:-}"
+case "${leading_dir}" in
+    true) leading_dir="1" ;;
+    false) leading_dir="" ;;
+    *) bail "'leading_dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
+esac
+
+include="${INPUT_INCLUDE:-}"
+includes=()
+if [[ -n "${include}" ]]; then
+    # We can expand a glob by expanding a variable without quote, but that way
+    # has a security issue of shell injection.
+    if [[ "${include}" == *"?"* ]] || [[ "${include}" == *"*"* ]] || [[ "${include}" == *"["* ]]; then
+        # This check is not for security but for diagnostic purposes.
+        # We quote the filename, so without this uses get an error like
+        # "cp: cannot stat 'LICENSE-*': No such file or directory".
+        bail "glob pattern in 'include' input option is not supported yet"
+    fi
+    while read -rd,; do includes+=("${REPLY}"); done <<<"${include},"
 fi
 
 host=$(rustc -Vv | grep host | sed 's/host: //')
@@ -108,27 +128,62 @@ fi
 
 "${cargo}" build "${build_options[@]}"
 
-pushd target/"${target}"/release >/dev/null
+if [[ -n "${strip:-}" ]]; then
+    "${strip}" target/"${target}"/release/"${bin}"
+fi
+
 archive="${archive/\$bin/${package}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 assets=()
-if [[ -n "${strip:-}" ]]; then
-    "${strip}" "${bin}"
-fi
-if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
-    assets+=("${archive}.tar.gz")
-    tar acf ../../../"${assets[0]}" "${bin}"
-fi
-if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
-    assets+=("${archive}.zip")
-    if [[ "${platform}" == "unix" ]]; then
-        zip ../../../"${archive}.zip" "${bin}"
-    else
-        7z a ../../../"${archive}.zip" "${bin}"
+mkdir /tmp/"${archive}"
+filenames=("${bin}")
+cp target/"${target}"/release/"${bin}" /tmp/"${archive}"/
+for include in "${includes[@]}"; do
+    cp -r "${include}" /tmp/"${archive}"/
+    filenames+=("$(basename "${include}")")
+done
+pushd /tmp >/dev/null
+if [[ -n "${leading_dir}" ]]; then
+    # with leading directory
+    #
+    # /${archive}
+    # /${archive}/${bin}
+    # /${archive}/${includes}
+    if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
+        assets+=(/tmp/"${archive}.tar.gz")
+        tar acf "${archive}.tar.gz" "${archive}"
     fi
+    if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
+        assets+=(/tmp/"${archive}.zip")
+        if [[ "${platform}" == "unix" ]]; then
+            zip -r "${archive}.zip" "${archive}"
+        else
+            7z a "${archive}.zip" "${archive}"
+        fi
+    fi
+else
+    # without leading directory
+    #
+    # /${bin}
+    # /${includes}
+    pushd "${archive}" >/dev/null
+    if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
+        assets+=(/tmp/"${archive}.tar.gz")
+        tar acf ../"${archive}.tar.gz" "${filenames[@]}"
+    fi
+    if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
+        assets+=(/tmp/"${archive}.zip")
+        if [[ "${platform}" == "unix" ]]; then
+            zip -r ../"${archive}.zip" "${filenames[@]}"
+        else
+            7z a ../"${archive}.zip" "${filenames[@]}"
+        fi
+    fi
+    popd >/dev/null
 fi
 popd >/dev/null
+rm -rf /tmp/"${archive}"
 
 if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     bail "GITHUB_TOKEN not set, skipping deploy"

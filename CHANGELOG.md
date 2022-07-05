@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `include` input option to include additional files. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))
+
 ## [1.4.0] - 2022-06-08
 
 - Respect host cross-compilation setup. ([#16](https://github.com/taiki-e/upload-rust-binary-action/pull/16))

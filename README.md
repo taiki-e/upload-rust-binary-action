@@ -11,6 +11,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
   - [Example workflow: Build with different features on different platforms](#example-workflow-build-with-different-features-on-different-platforms)
   - [Example workflow: Cross-compilation](#example-workflow-cross-compilation)
+  - [Example workflow: Include additional files](#example-workflow-include-additional-files)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
 - [Related Projects](#related-projects)
@@ -25,14 +26,16 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Inputs
 
-| Name       | Required | Description                                                                      | Type   | Default        |
-|------------|:--------:|----------------------------------------------------------------------------------|--------|----------------|
-| bin        | **true** | Binary name (non-extension portion of filename) to build and upload              | String |                |
-| archive    | false    | Archive name (non-extension portion of filename) to be uploaded                  | String | `$bin-$target` |
-| target     | false    | Target triple, default is host triple                                            | String | (host triple)  |
-| features   | false    | Comma separated list of cargo build features to enable                           | String |                |
-| tar        | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
-| zip        | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
+| Name        | Required | Description                                                                      | Type    | Default        |
+|-------------|:--------:|----------------------------------------------------------------------------------|---------|----------------|
+| bin         | **true** | Binary name (non-extension portion of filename) to build and upload              | String  |                |
+| archive     | false    | Archive name (non-extension portion of filename) to be uploaded                  | String  | `$bin-$target` |
+| target      | false    | Target triple, default is host triple                                            | String  | (host triple)  |
+| features    | false    | Comma-separated list of cargo build features to enable                           | String  |                |
+| tar         | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String  | `unix`         |
+| zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String  | `windows`      |
+| include     | false    | Comma-separated list of additional files to be included to the archive           | String  |                |
+| leading_dir | false    | Whether to create the leading directory in the archive or not　　　　　　　　　　　　| Boolean | `false`        |
 
 ### Example workflow: Basic usage
 
@@ -354,6 +357,82 @@ jobs:
         env:
           # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+### Example workflow: Include additional files
+
+```yaml
+name: Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    tags:
+      - v[0-9]+.*
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          # (optional) Path to changelog.
+          changelog: CHANGELOG.md
+        env:
+          # (required) GitHub token for creating GitHub Releases.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required) Binary name (non-extension portion of filename) to build and upload.
+          bin: ...
+          # (optional) Comma-separated list of additional files to be included to archive.
+          # Note that glob pattern is not supported yet.
+          include: LICENSE,README.md
+        env:
+          # (required) GitHub token for uploading assets to GitHub Releases.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+By default, the expanded archive does not include the leading directory. In the above example, the directory structure would be as follows:
+
+```text
+/<bin>
+/LICENSE
+/README.md
+```
+
+You can use the `leading_dir` option to create the leading directory.
+
+```yaml
+- uses: taiki-e/upload-rust-binary-action@v1
+  with:
+    # (required) Binary name (non-extension portion of filename) to build and upload.
+    bin: ...
+    # (optional) Comma-separated list of additional files to be included to archive.
+    # Note that glob pattern is not supported yet.
+    include: LICENSE,README.md
+    # (optional) Whether to create the leading directory in the archive or not. default to false.
+    leading_dir: true
+  env:
+    # (required) GitHub token for uploading assets to GitHub Releases.
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+In the above example, the directory structure would be as follows:
+
+```text
+/<archive>/
+/<archive>/<bin>
+/<archive>/LICENSE
+/<archive>/README.md
 ```
 
 ### Other examples
