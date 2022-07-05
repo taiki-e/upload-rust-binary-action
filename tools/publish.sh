@@ -35,6 +35,10 @@ if gh release view "${tag}" &>/dev/null; then
     bail "tag '${tag}' has already been created and pushed"
 fi
 
+if ! git branch | grep -q '\* main'; then
+    bail "current branch is not 'main'"
+fi
+
 tags=$(git --no-pager tag)
 if [[ -n "${tags}" ]]; then
     # Make sure the same release does not exist in CHANGELOG.md.
@@ -74,19 +78,19 @@ fi
 
 set -x
 
-git push origin main
 git tag "${tag}"
+git push origin main
 git push origin --tags
 
-version_tag="v${version%%.*}"
-git checkout -b "${version_tag}"
-git push origin refs/heads/"${version_tag}"
-if git --no-pager tag | grep -Eq "^${version_tag}$"; then
-    git tag -d "${version_tag}"
-    git push --delete origin refs/tags/"${version_tag}"
+major_version_tag="v${version%%.*}"
+git checkout -b "${major_version_tag}"
+git push origin refs/heads/"${major_version_tag}"
+if git --no-pager tag | grep -Eq "^${major_version_tag}$"; then
+    git tag -d "${major_version_tag}"
+    git push --delete origin refs/tags/"${major_version_tag}"
 fi
-git tag "${version_tag}"
+git tag "${major_version_tag}"
 git checkout main
-git branch -d "${version_tag}"
+git branch -d "${major_version_tag}"
 
 git push origin --tags
