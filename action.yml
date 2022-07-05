@@ -32,6 +32,9 @@ inputs:
     description: Whether to create the leading directory in the archive or not
     required: false
     default: 'false'
+  build_tool:
+    description: Tool to build binaries (cargo or cross)
+    required: false
 
 runs:
   using: node16

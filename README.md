@@ -36,6 +36,7 @@ Currently, this action is basically intended to be used in combination with an a
 | zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
 | include     | false    | Comma-separated list of additional files to be included to the archive                       | String  |                |
 | leading_dir | false    | Whether to create the leading directory in the archive or not　　　　　　　　　　　　            | Boolean | `false`        |
+| build_tool  | false    | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 
 ### Example workflow: Basic usage
 
@@ -384,6 +385,56 @@ jobs:
           target: ${{ matrix.target }}
         env:
           # (required) GitHub token for uploading assets to GitHub Releases.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+If the heuristic to detect host cross-compilation setups does not work well, or if you want to force the use of cargo or cross, you can use the `build_tool` input option.
+
+```yaml
+name: Release
+
+on:
+  push:
+    tags:
+      - v[0-9]+.*
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: taiki-e/create-gh-release-action@v1
+        with:
+          # (optional)
+          changelog: CHANGELOG.md
+        env:
+          # (required)
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-assets:
+    strategy:
+      matrix:
+        include:
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-latest
+            build_tool: cross
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            build_tool: cargo
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install cross-compilation tools
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          # (required)
+          bin: ...
+          # (optional) Target triple, default is host triple.
+          target: ${{ matrix.target }}
+          # (optional) Tool to build binaries (cargo, or cross)
+          build_tool: ${{ matrix.build_tool }}
+        env:
+          # (required)
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
