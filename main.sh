@@ -72,22 +72,22 @@ target="${INPUT_TARGET:-"${host}"}"
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
 target_upper="$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")"
-cargo="cargo"
-if [[ "${host}" != "${target}" ]]; then
-    rustup target add "${target}"
-    case "${target}" in
-        # https://github.com/cross-rs/cross#supported-targets
-        *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
-        *)
-            # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
-            if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
-                cargo="cross"
-                if ! type -P cross &>/dev/null; then
-                    cargo install cross
+build_tool="${INPUT_BUILD_TOOL:-}"
+if [[ -z "${build_tool}" ]]; then
+    build_tool="cargo"
+    if [[ "${host}" != "${target}" ]]; then
+        rustup target add "${target}"
+        case "${target}" in
+            # https://github.com/cross-rs/cross#supported-targets
+            *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
+            *)
+                # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
+                if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
+                    build_tool="cross"
                 fi
-            fi
-            ;;
-    esac
+                ;;
+        esac
+    fi
 fi
 
 case "${OSTYPE}" in
@@ -145,7 +145,16 @@ if [[ -n "${features}" ]]; then
     build_options+=("--features" "${features}")
 fi
 
-"${cargo}" build "${build_options[@]}"
+case "${build_tool}" in
+    cargo) cargo build "${build_options[@]}" ;;
+    cross)
+        if ! type -P cross &>/dev/null; then
+            cargo install cross
+        fi
+        cross build "${build_options[@]}"
+        ;;
+    *) bail "unrecognized build tool '${build_tool}'" ;;
+esac
 
 if [[ -n "${strip:-}" ]]; then
     for bin_exe in "${bins[@]}"; do
