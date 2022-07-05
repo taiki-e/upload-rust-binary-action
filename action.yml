@@ -3,7 +3,7 @@ description: GitHub Action for building and uploading Rust binary to GitHub Rele
 
 inputs:
   bin:
-    description: Binary name (non-extension portion of filename) to build and upload
+    description: Comma-separated list of binary names (non-extension portion of filename) to build and upload
     required: true
   archive:
     description: Archive name (non-extension portion of filename) to be uploaded (variables `$bin`, `$target`, `$tag`, and any string)

@@ -26,16 +26,16 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Inputs
 
-| Name        | Required | Description                                                                      | Type    | Default        |
-|-------------|:--------:|----------------------------------------------------------------------------------|---------|----------------|
-| bin         | **true** | Binary name (non-extension portion of filename) to build and upload              | String  |                |
-| archive     | false    | Archive name (non-extension portion of filename) to be uploaded                  | String  | `$bin-$target` |
-| target      | false    | Target triple, default is host triple                                            | String  | (host triple)  |
-| features    | false    | Comma-separated list of cargo build features to enable                           | String  |                |
-| tar         | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String  | `unix`         |
-| zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String  | `windows`      |
-| include     | false    | Comma-separated list of additional files to be included to the archive           | String  |                |
-| leading_dir | false    | Whether to create the leading directory in the archive or not　　　　　　　　　　　　| Boolean | `false`        |
+| Name        | Required | Description                                                                                  | Type    | Default        |
+|-------------|:--------:|----------------------------------------------------------------------------------------------|---------|----------------|
+| bin         | **true** | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
+| archive     | false    | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
+| target      | false    | Target triple, default is host triple                                                        | String  | (host triple)  |
+| features    | false    | Comma-separated list of cargo build features to enable                                       | String  |                |
+| tar         | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
+| zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
+| include     | false    | Comma-separated list of additional files to be included to the archive                       | String  |                |
+| leading_dir | false    | Whether to create the leading directory in the archive or not　　　　　　　　　　　　            | Boolean | `false`        |
 
 ### Example workflow: Basic usage
 
@@ -76,11 +76,34 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Binary name (non-extension portion of filename) to build and upload.
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
           bin: ...
         env:
           # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+You can specify multiple binaries when the root manifest is a virtual manifest or specified binaries are in the same crate.
+
+```yaml
+- uses: taiki-e/upload-rust-binary-action@v1
+  with:
+    # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+    # Note that glob pattern is not supported yet.
+    bin: app1,app2
+    # (optional) Archive name (non-extension portion of filename) to be uploaded.
+    # [default value: $bin-$target]
+    # [possible values: the following variables and any string]
+    #   variables:
+    #     - $bin    - Binary name (non-extension portion of filename).
+    #     - $target - Target triple.
+    #     - $tag    - Tag of this release.
+    # When multiple binary names are specified, default archive name or $bin variable cannot be used.
+    archive: app-$target
+  env:
+    # (required) GitHub token for uploading assets to GitHub Releases.
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Basic usage (multiple platforms)
@@ -106,10 +129,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/create-gh-release-action@v1
         with:
-          # (optional)
+          # (optional) Path to changelog.
           changelog: CHANGELOG.md
         env:
-          # (required)
+          # (required) GitHub token for creating GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
@@ -124,7 +147,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required)
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
@@ -135,7 +159,7 @@ jobs:
           # [possible values: all, unix, windows, none]
           zip: windows
         env:
-          # (required)
+          # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -164,10 +188,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/create-gh-release-action@v1
         with:
-          # (optional)
+          # (optional) Path to changelog.
           changelog: CHANGELOG.md
         env:
-          # (required)
+          # (required) GitHub token for creating GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
@@ -181,12 +205,13 @@ jobs:
           # [default value: $bin-$target]
           # [possible values: the following variables and any string]
           #   variables:
-          #     - $bin - Binary name (non-extension portion of filename).
+          #     - $bin    - Binary name (non-extension portion of filename).
           #     - $target - Target triple.
-          #     - $tag - Tag of this release.
+          #     - $tag    - Tag of this release.
+          # When multiple binary names are specified, default archive name or $bin variable cannot be used.
           archive: $bin-$tag-$target
         env:
-          # (required)
+          # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -212,10 +237,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/create-gh-release-action@v1
         with:
-          # (optional)
+          # (optional) Path to changelog.
           changelog: CHANGELOG.md
         env:
-          # (required)
+          # (required) GitHub token for creating GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
@@ -230,7 +255,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required)
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
@@ -243,7 +269,7 @@ jobs:
           # (optional) Build with the given set of features if any.
           features: ${{ matrix.features || '' }}
         env:
-          # (required)
+          # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -269,10 +295,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/create-gh-release-action@v1
         with:
-          # (optional)
+          # (optional) Path to changelog.
           changelog: CHANGELOG.md
         env:
-          # (required)
+          # (required) GitHub token for creating GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
@@ -292,12 +318,13 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required)
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
         env:
-          # (required)
+          # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -322,10 +349,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/create-gh-release-action@v1
         with:
-          # (optional)
+          # (optional) Path to changelog.
           changelog: CHANGELOG.md
         env:
-          # (required)
+          # (required) GitHub token for creating GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
@@ -350,12 +377,13 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required)
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
         env:
-          # (required)
+          # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -391,7 +419,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Binary name (non-extension portion of filename) to build and upload.
+          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Comma-separated list of additional files to be included to archive.
           # Note that glob pattern is not supported yet.
@@ -414,7 +443,8 @@ You can use the `leading_dir` option to create the leading directory.
 ```yaml
 - uses: taiki-e/upload-rust-binary-action@v1
   with:
-    # (required) Binary name (non-extension portion of filename) to build and upload.
+    # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+    # Note that glob pattern is not supported yet.
     bin: ...
     # (optional) Comma-separated list of additional files to be included to archive.
     # Note that glob pattern is not supported yet.
@@ -422,7 +452,7 @@ You can use the `leading_dir` option to create the leading directory.
     # (optional) Whether to create the leading directory in the archive or not. default to false.
     leading_dir: true
   env:
-    # (required) GitHub token for uploading assets to GitHub Releases.
+    # (required)
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
@@ -437,8 +467,8 @@ In the above example, the directory structure would be as follows:
 
 ### Other examples
 
-- [cargo-hack/.github/workflows/release.yml](https://github.com/taiki-e/cargo-hack/blob/5d629a8e4b869215acbd55250f078eb211d2337b/.github/workflows/release.yml#L38-L66)
-- [urdf-viz/.github/workflows/release.yml](https://github.com/openrr/urdf-viz/blob/d6f16cbdda66a54a55ac2f14ac0c69819127b2d4/.github/workflows/release.yml#L37-L58)
+- [taiki-e/cargo-hack](https://github.com/taiki-e/cargo-hack/blob/202e6e59d491c9202ce148c9ef423853267226db/.github/workflows/release.yml#L47-L84)
+- [tokio-rs/console](https://github.com/tokio-rs/console/blob/9699300ec7901b71dce0d3555a7be2c86ec4e533/.github/workflows/release.yaml#L28-L43)
 
 ### Optimize Rust binary
 
