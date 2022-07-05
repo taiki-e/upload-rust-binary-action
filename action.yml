@@ -35,6 +35,9 @@ inputs:
   build_tool:
     description: Tool to build binaries (cargo or cross)
     required: false
+  checksum:
+    description: Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)
+    required: false
 
 runs:
   using: node16

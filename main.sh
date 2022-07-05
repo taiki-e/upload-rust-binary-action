@@ -67,6 +67,18 @@ if [[ -n "${include}" ]]; then
     while read -rd,; do includes+=("${REPLY}"); done <<<"${include},"
 fi
 
+checksum="${INPUT_CHECKSUM:-}"
+checksums=()
+if [[ -n "${checksum}" ]]; then
+    while read -rd,; do
+        checksums+=("${REPLY}")
+        case "${REPLY}" in
+            sha256 | sha512 | sha1 | md5) ;;
+            *) bail "'checksum' input option must be 'sha256', 'sha512', 'sha1', or 'md5': '${REPLY}'" ;;
+        esac
+    done <<<"${checksum},"
+fi
+
 host=$(rustc -Vv | grep host | sed 's/host: //')
 target="${INPUT_TARGET:-"${host}"}"
 target_lower="${target//-/_}"
@@ -166,6 +178,7 @@ archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 assets=()
+cwd=$(pwd)
 mkdir /tmp/"${archive}"
 filenames=("${bins[@]}")
 for bin_exe in "${bins[@]}"; do
@@ -183,15 +196,15 @@ if [[ -n "${leading_dir}" ]]; then
     # /${archive}/${bins}
     # /${archive}/${includes}
     if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
-        assets+=(/tmp/"${archive}.tar.gz")
-        tar acf "${archive}.tar.gz" "${archive}"
+        assets+=("${archive}.tar.gz")
+        tar acf "${cwd}/${archive}.tar.gz" "${archive}"
     fi
     if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
-        assets+=(/tmp/"${archive}.zip")
+        assets+=("${archive}.zip")
         if [[ "${platform}" == "unix" ]]; then
-            zip -r "${archive}.zip" "${archive}"
+            zip -r "${cwd}/${archive}.zip" "${archive}"
         else
-            7z a "${archive}.zip" "${archive}"
+            7z a "${cwd}/${archive}.zip" "${archive}"
         fi
     fi
 else
@@ -201,15 +214,15 @@ else
     # /${includes}
     pushd "${archive}" >/dev/null
     if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
-        assets+=(/tmp/"${archive}.tar.gz")
-        tar acf ../"${archive}.tar.gz" "${filenames[@]}"
+        assets+=("${archive}.tar.gz")
+        tar acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
     fi
     if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
-        assets+=(/tmp/"${archive}.zip")
+        assets+=("${archive}.zip")
         if [[ "${platform}" == "unix" ]]; then
-            zip -r ../"${archive}.zip" "${filenames[@]}"
+            zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
         else
-            7z a ../"${archive}.zip" "${filenames[@]}"
+            7z a "${cwd}/${archive}.zip" "${filenames[@]}"
         fi
     fi
     popd >/dev/null
@@ -217,9 +230,15 @@ fi
 popd >/dev/null
 rm -rf /tmp/"${archive}"
 
+final_assets=("${assets[@]}")
+for checksum in "${checksums[@]}"; do
+    "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
+    final_assets+=("${archive}.${checksum}")
+done
+
 if [[ -z "${GITHUB_TOKEN:-}" ]]; then
     bail "GITHUB_TOKEN not set, skipping deploy"
 else
     # https://cli.github.com/manual/gh_release_upload
-    gh release upload "${tag}" "${assets[@]}" --clobber
+    gh release upload "${tag}" "${final_assets[@]}" --clobber
 fi

@@ -34,8 +34,9 @@ Currently, this action is basically intended to be used in combination with an a
 | features    | false    | Comma-separated list of cargo build features to enable                                       | String  |                |
 | tar         | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
 | zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
+| checksum    | false    | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
 | include     | false    | Comma-separated list of additional files to be included to the archive                       | String  |                |
-| leading_dir | false    | Whether to create the leading directory in the archive or not　　　　　　　　　　　　            | Boolean | `false`        |
+| leading_dir | false    | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
 | build_tool  | false    | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 
 ### Example workflow: Basic usage
