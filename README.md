@@ -33,7 +33,6 @@ Currently, this action is basically intended to be used in combination with an a
 | features   | false    | Comma separated list of cargo build features to enable                           | String |                |
 | tar        | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix`         |
 | zip        | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)    | String | `windows`      |
-| build-tool | false    | Tool to build binary (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 
 ### Example workflow: Basic usage
 
