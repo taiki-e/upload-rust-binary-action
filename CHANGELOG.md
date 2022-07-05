@@ -10,9 +10,11 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
-- Support building and uploading multiple binaries at the same step. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))
+- Support building and uploading multiple binaries at the same step. ([#18](https://github.com/taiki-e/upload-rust-binary-action/pull/18))
 
-- Add `build_tool` input option to specify the tool to build binaries.
+- Add `checksum` input option to upload checksum. ([#21](https://github.com/taiki-e/upload-rust-binary-action/pull/21))
+
+- Add `build_tool` input option to specify the tool to build binaries. ([#20](https://github.com/taiki-e/upload-rust-binary-action/pull/20))
 
 ## [1.5.0] - 2022-07-05
 
