@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.5.0] - 2022-07-05
+
 - Add `include` input option to include additional files. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))
 
 ## [1.4.0] - 2022-06-08
@@ -44,7 +46,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.4.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.4.0...v1.5.0
 [1.4.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.3.0...v1.4.0
 [1.3.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.2.0...v1.3.0
 [1.2.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.1.0...v1.2.0
