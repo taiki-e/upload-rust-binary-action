@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix unbound variable error on macOS.
+
 ## [1.6.0] - 2022-07-05
 
 - Support building and uploading multiple binaries at the same step. ([#18](https://github.com/taiki-e/upload-rust-binary-action/pull/18))

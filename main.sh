@@ -184,7 +184,7 @@ filenames=("${bins[@]}")
 for bin_exe in "${bins[@]}"; do
     cp target/"${target}"/release/"${bin_exe}" /tmp/"${archive}"/
 done
-for include in "${includes[@]}"; do
+for include in ${includes[@]+"${includes[@]}"}; do
     cp -r "${include}" /tmp/"${archive}"/
     filenames+=("$(basename "${include}")")
 done
@@ -231,7 +231,7 @@ popd >/dev/null
 rm -rf /tmp/"${archive}"
 
 final_assets=("${assets[@]}")
-for checksum in "${checksums[@]}"; do
+for checksum in ${checksums[@]+"${checksums[@]}"}; do
     "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
     final_assets+=("${archive}.${checksum}")
 done
