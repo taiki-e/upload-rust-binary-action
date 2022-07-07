@@ -36,6 +36,7 @@ Currently, this action is basically intended to be used in combination with an a
 | zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
 | checksum    | false    | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
 | include     | false    | Comma-separated list of additional files to be included to the archive                       | String  |                |
+| asset       | false    | Comma-separated list of additional files to be uploaded separately                           | String  |                |
 | leading_dir | false    | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
 | build_tool  | false    | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 
@@ -435,11 +436,13 @@ jobs:
           # (optional) Tool to build binaries (cargo, or cross)
           build_tool: ${{ matrix.build_tool }}
         env:
-          # (required)
+          # (required) GitHub token for uploading assets to GitHub Releases.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Include additional files
+
+If you want include additional file *to the archive*, you can use the `include` option.
 
 ```yaml
 name: Release
@@ -482,7 +485,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-By default, the expanded archive does not include the leading directory. In the above example, the directory structure would be as follows:
+By default, the expanded archive does not include the leading directory. In the above example, the directory structure of the archive would be as follows:
 
 ```text
 /<bin>
@@ -504,17 +507,45 @@ You can use the `leading_dir` option to create the leading directory.
     # (optional) Whether to create the leading directory in the archive or not. default to false.
     leading_dir: true
   env:
-    # (required)
+    # (required) GitHub token for uploading assets to GitHub Releases.
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-In the above example, the directory structure would be as follows:
+In the above example, the directory structure of the archive would be as follows:
 
 ```text
 /<archive>/
 /<archive>/<bin>
 /<archive>/LICENSE
 /<archive>/README.md
+```
+
+If you want upload additional file *separately*, you can use the `asset` option.
+
+```yaml
+upload-assets:
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+    - uses: taiki-e/upload-rust-binary-action@v1
+      with:
+        # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+        # Note that glob pattern is not supported yet.
+        bin: ...
+        # (optional) Comma-separated list of additional files to be uploaded separately.
+        # Note that glob pattern is not supported yet.
+        asset: LICENSE,README.md
+      env:
+        # (required) GitHub token for uploading assets to GitHub Releases.
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+In the above example, the following 3 files will be uploaded:
+
+```text
+<bin>-<target>.tar.gz
+LICENSE
+README.md
 ```
 
 ### Other examples

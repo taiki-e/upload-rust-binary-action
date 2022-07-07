@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `asset` input option to upload additional files separately. ([#23](https://github.com/taiki-e/upload-rust-binary-action/pull/23))
+
 ## [1.6.1] - 2022-07-06
 
 - Fix unbound variable error on macOS.
@@ -24,7 +26,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [1.5.0] - 2022-07-05
 
-- Add `include` input option to include additional files. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))
+- Add `include` input option to include additional files to the archive. ([#17](https://github.com/taiki-e/upload-rust-binary-action/pull/17))
 
 ## [1.4.0] - 2022-06-08
 
