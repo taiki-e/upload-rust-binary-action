@@ -21,12 +21,11 @@ tag="${GITHUB_REF#refs/tags/}"
 
 features="${INPUT_FEATURES:-}"
 archive="${INPUT_ARCHIVE:?}"
+
 if [[ ! "${INPUT_TAR}" =~ ^(all|unix|windows|none)$ ]]; then
     bail "invalid input 'tar': ${INPUT_TAR}"
 elif [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
     bail "invalid input 'zip': ${INPUT_ZIP}"
-elif [[ "${INPUT_TAR}" == "none" ]] && [[ "${INPUT_ZIP}" == "none" ]]; then
-    bail "at least one of 'tar' or 'zip' must be a value other than 'none'"
 fi
 
 leading_dir="${INPUT_LEADING_DIR:-}"
@@ -67,6 +66,20 @@ if [[ -n "${include}" ]]; then
     while read -rd,; do includes+=("${REPLY}"); done <<<"${include},"
 fi
 
+asset="${INPUT_ASSET:-}"
+assets=()
+if [[ -n "${asset}" ]]; then
+    # We can expand a glob by expanding a variable without quote, but that way
+    # has a security issue of shell injection.
+    if [[ "${asset}" == *"?"* ]] || [[ "${asset}" == *"*"* ]] || [[ "${asset}" == *"["* ]]; then
+        # This check is not for security but for diagnostic purposes.
+        # We quote the filename, so without this uses get an error like
+        # "cp: cannot stat 'LICENSE-*': No such file or directory".
+        bail "glob pattern in 'asset' input option is not supported yet"
+    fi
+    while read -rd,; do assets+=("${REPLY}"); done <<<"${asset},"
+fi
+
 checksum="${INPUT_CHECKSUM:-}"
 checksums=()
 if [[ -n "${checksum}" ]]; then
@@ -101,6 +114,9 @@ if [[ -z "${build_tool}" ]]; then
         esac
     fi
 fi
+archive="${archive/\$bin/${bin_names[0]}}"
+archive="${archive/\$target/${target}}"
+archive="${archive/\$tag/${tag}}"
 
 case "${OSTYPE}" in
     linux*)
@@ -174,64 +190,64 @@ if [[ -n "${strip:-}" ]]; then
     done
 fi
 
-archive="${archive/\$bin/${bin_names[0]}}"
-archive="${archive/\$target/${target}}"
-archive="${archive/\$tag/${tag}}"
-assets=()
-cwd=$(pwd)
-mkdir /tmp/"${archive}"
-filenames=("${bins[@]}")
-for bin_exe in "${bins[@]}"; do
-    cp target/"${target}"/release/"${bin_exe}" /tmp/"${archive}"/
-done
-for include in ${includes[@]+"${includes[@]}"}; do
-    cp -r "${include}" /tmp/"${archive}"/
-    filenames+=("$(basename "${include}")")
-done
-pushd /tmp >/dev/null
-if [[ -n "${leading_dir}" ]]; then
-    # with leading directory
-    #
-    # /${archive}
-    # /${archive}/${bins}
-    # /${archive}/${includes}
-    if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
-        assets+=("${archive}.tar.gz")
-        tar acf "${cwd}/${archive}.tar.gz" "${archive}"
-    fi
-    if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
-        assets+=("${archive}.zip")
-        if [[ "${platform}" == "unix" ]]; then
-            zip -r "${cwd}/${archive}.zip" "${archive}"
-        else
-            7z a "${cwd}/${archive}.zip" "${archive}"
+if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
+    cwd=$(pwd)
+    mkdir /tmp/"${archive}"
+    filenames=("${bins[@]}")
+    for bin_exe in "${bins[@]}"; do
+        cp target/"${target}"/release/"${bin_exe}" /tmp/"${archive}"/
+    done
+    for include in ${includes[@]+"${includes[@]}"}; do
+        cp -r "${include}" /tmp/"${archive}"/
+        filenames+=("$(basename "${include}")")
+    done
+    pushd /tmp >/dev/null
+    if [[ -n "${leading_dir}" ]]; then
+        # with leading directory
+        #
+        # /${archive}
+        # /${archive}/${bins}
+        # /${archive}/${includes}
+        if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
+            assets+=("${archive}.tar.gz")
+            tar acf "${cwd}/${archive}.tar.gz" "${archive}"
         fi
-    fi
-else
-    # without leading directory
-    #
-    # /${bins}
-    # /${includes}
-    pushd "${archive}" >/dev/null
-    if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
-        assets+=("${archive}.tar.gz")
-        tar acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
-    fi
-    if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
-        assets+=("${archive}.zip")
-        if [[ "${platform}" == "unix" ]]; then
-            zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
-        else
-            7z a "${cwd}/${archive}.zip" "${filenames[@]}"
+        if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
+            assets+=("${archive}.zip")
+            if [[ "${platform}" == "unix" ]]; then
+                zip -r "${cwd}/${archive}.zip" "${archive}"
+            else
+                7z a "${cwd}/${archive}.zip" "${archive}"
+            fi
         fi
+    else
+        # without leading directory
+        #
+        # /${bins}
+        # /${includes}
+        pushd "${archive}" >/dev/null
+        if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
+            assets+=("${archive}.tar.gz")
+            tar acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
+        fi
+        if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
+            assets+=("${archive}.zip")
+            if [[ "${platform}" == "unix" ]]; then
+                zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
+            else
+                7z a "${cwd}/${archive}.zip" "${filenames[@]}"
+            fi
+        fi
+        popd >/dev/null
     fi
     popd >/dev/null
+    rm -rf /tmp/"${archive}"
 fi
-popd >/dev/null
-rm -rf /tmp/"${archive}"
 
+# Checksum of all assets except for .<checksum> files.
 final_assets=("${assets[@]}")
 for checksum in ${checksums[@]+"${checksums[@]}"}; do
+    # TODO: Should we allow customizing the name of checksum files?
     "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
     final_assets+=("${archive}.${checksum}")
 done
