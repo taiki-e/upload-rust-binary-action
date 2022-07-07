@@ -163,7 +163,10 @@ if [[ -n "${strip:-}" ]]; then
     fi
 fi
 
-build_options=("--release" "--target" "${target}")
+build_options=("--release")
+if [[ -n "${INPUT_TARGET:-}" ]]; then
+    build_options=("--target" "${target}")
+fi
 bins=()
 for bin_name in "${bin_names[@]}"; do
     bins+=("${bin_name}${exe:-}")

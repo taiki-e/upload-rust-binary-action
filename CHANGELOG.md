@@ -12,6 +12,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 - Add `asset` input option to upload additional files separately. ([#23](https://github.com/taiki-e/upload-rust-binary-action/pull/23))
 
+- `--target` flag no longer passed to cargo when `target` input option is not specified.
+
 ## [1.6.1] - 2022-07-06
 
 - Fix unbound variable error on macOS.
