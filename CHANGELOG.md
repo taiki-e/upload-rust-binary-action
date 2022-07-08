@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix "no such file" error when `target` input option is passed.
+
 ## [1.7.0] - 2022-07-07
 
 - Add `asset` input option to upload additional files separately. ([#23](https://github.com/taiki-e/upload-rust-binary-action/pull/23))

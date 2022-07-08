@@ -164,7 +164,9 @@ if [[ -n "${strip:-}" ]]; then
 fi
 
 build_options=("--release")
+target_dir="target/release"
 if [[ -n "${INPUT_TARGET:-}" ]]; then
+    target_dir="target/${target}/release"
     build_options=("--target" "${target}")
 fi
 bins=()
@@ -189,7 +191,7 @@ esac
 
 if [[ -n "${strip:-}" ]]; then
     for bin_exe in "${bins[@]}"; do
-        "${strip}" target/"${target}"/release/"${bin_exe}"
+        "${strip}" "${target_dir}/${bin_exe}"
     done
 fi
 
@@ -198,7 +200,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     mkdir /tmp/"${archive}"
     filenames=("${bins[@]}")
     for bin_exe in "${bins[@]}"; do
-        cp target/"${target}"/release/"${bin_exe}" /tmp/"${archive}"/
+        cp "${target_dir}/${bin_exe}" /tmp/"${archive}"/
     done
     for include in ${includes[@]+"${includes[@]}"}; do
         cp -r "${include}" /tmp/"${archive}"/
