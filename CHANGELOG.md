@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.7.1] - 2022-07-08
+
 - Fix "no such file" error when `target` input option is passed.
 
 ## [1.7.0] - 2022-07-07
@@ -66,7 +68,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.1...HEAD
+[1.7.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.0...v1.7.1
 [1.7.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.6.1...v1.7.0
 [1.6.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.6.0...v1.6.1
 [1.6.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.5.0...v1.6.0
