@@ -167,7 +167,7 @@ build_options=("--release")
 target_dir="target/release"
 if [[ -n "${INPUT_TARGET:-}" ]]; then
     target_dir="target/${target}/release"
-    build_options=("--target" "${target}")
+    build_options+=("--target" "${target}")
 fi
 bins=()
 for bin_name in "${bin_names[@]}"; do
