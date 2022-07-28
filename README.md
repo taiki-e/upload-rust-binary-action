@@ -14,6 +14,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Include additional files](#example-workflow-include-additional-files)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
+- [Compatibility](#compatibility)
 - [Related Projects](#related-projects)
 - [License](#license)
 
@@ -575,6 +576,18 @@ The followings are examples of using environment variables to specify profile op
   ```
 
 **Note:** These options may increase the build time.
+
+## Compatibility
+
+This action has been tested for action runners hosted by GitHub.
+To use this action in self-hosted runners or in containers, you will need to install at least the following:
+
+- rustup, cargo, rustc
+- bash, GNU Coreutils
+- gh (GitHub CLI)
+- tar, zip (only Unix-like)
+- 7z (only Windows)
+- brew (only macOS)
 
 ## Related Projects
 
