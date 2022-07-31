@@ -92,7 +92,7 @@ if [[ -n "${checksum}" ]]; then
     done <<<"${checksum},"
 fi
 
-host=$(rustc -Vv | grep host | sed 's/host: //')
+host=$(rustc -Vv | grep host | cut -c 7-)
 target="${INPUT_TARGET:-"${host}"}"
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
@@ -126,8 +126,10 @@ case "${OSTYPE}" in
         platform="unix"
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
-        brew install gnu-tar &>/dev/null
-        export PATH="${PATH}:/usr/local/opt/gnu-tar/libexec/gnubin"
+        tar="gtar"
+        if ! type -P gtar; then
+            brew install gnu-tar &>/dev/null
+        fi
         ;;
     cygwin* | msys*)
         platform="windows"
@@ -215,7 +217,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         # /${archive}/${includes}
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            tar acf "${cwd}/${archive}.tar.gz" "${archive}"
+            "${tar}" acf "${cwd}/${archive}.tar.gz" "${archive}"
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
@@ -233,7 +235,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         pushd "${archive}" >/dev/null
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            tar acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
+            "${tar}" acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")

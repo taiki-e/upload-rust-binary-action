@@ -583,11 +583,10 @@ This action has been tested for action runners hosted by GitHub.
 To use this action in self-hosted runners or in containers, you will need to install at least the following:
 
 - rustup, cargo, rustc
-- bash, GNU Coreutils
+- bash, GNU Coreutils, GNU grep, GNU tar
 - gh (GitHub CLI)
-- tar, zip (only Unix-like)
+- zip (only Unix-like)
 - 7z (only Windows)
-- brew (only macOS)
 
 ## Related Projects
 
