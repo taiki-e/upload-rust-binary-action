@@ -118,6 +118,7 @@ archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 
+tar="tar"
 case "${OSTYPE}" in
     linux*)
         platform="unix"
