@@ -200,16 +200,17 @@ fi
 
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
     cwd=$(pwd)
-    mkdir /tmp/"${archive}"
+    tmpdir=$(mktemp -d)
+    mkdir "${tmpdir:?}/${archive}"
     filenames=("${bins[@]}")
     for bin_exe in "${bins[@]}"; do
-        cp "${target_dir}/${bin_exe}" /tmp/"${archive}"/
+        cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
     done
     for include in ${includes[@]+"${includes[@]}"}; do
-        cp -r "${include}" /tmp/"${archive}"/
+        cp -r "${include}" "${tmpdir}/${archive}"/
         filenames+=("$(basename "${include}")")
     done
-    pushd /tmp >/dev/null
+    pushd "${tmpdir}" >/dev/null
     if [[ -n "${leading_dir}" ]]; then
         # with leading directory
         #
@@ -249,7 +250,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         popd >/dev/null
     fi
     popd >/dev/null
-    rm -rf /tmp/"${archive}"
+    rm -rf "${tmpdir:?}/${archive}"
 fi
 
 # Checksum of all assets except for .<checksum> files.
