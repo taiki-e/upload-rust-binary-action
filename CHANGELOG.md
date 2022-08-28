@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `no_default_features` input option. ([#28](https://github.com/taiki-e/upload-rust-binary-action/pull/28), thanks @samtay)
+
 ## [1.7.2] - 2022-07-08
 
 - Fix regression introduced in 1.7.0.
