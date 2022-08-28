@@ -35,6 +35,13 @@ case "${leading_dir}" in
     *) bail "'leading_dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
 esac
 
+no_default_features="${INPUT_NO_DEFAULT_FEATURES:-}"
+case "${no_default_features}" in
+    true) no_default_features="1" ;;
+    false) no_default_features="" ;;
+    *) bail "'no_default_features' input option must be 'true' or 'false': '${no_default_features}'" ;;
+esac
+
 bin_name="${INPUT_BIN:?}"
 bin_names=()
 if [[ -n "${bin_name}" ]]; then
@@ -179,6 +186,9 @@ for bin_name in "${bin_names[@]}"; do
 done
 if [[ -n "${features}" ]]; then
     build_options+=("--features" "${features}")
+fi
+if [[ -n "${no_default_features}" ]]; then
+    build_options+=("--no-default-features")
 fi
 
 case "${build_tool}" in

@@ -17,6 +17,10 @@ inputs:
   features:
     description: Comma-separated list of cargo build features to enable
     required: false
+  no_default_features:
+    description: Whether to disable cargo build default features
+    required: false
+    default: 'false'
   tar:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
