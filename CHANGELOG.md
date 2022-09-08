@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.9.0] - 2022-09-08
+
 - Add `token` input option to use the specified token instead of `GITHUB_TOKEN` environment variable.
 
 - Add `ref` input option to use the specified tag ref instead of `GITHUB_REF` environment variable.
@@ -80,7 +82,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.9.0...HEAD
+[1.9.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.2...v1.8.0
 [1.7.2]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.1...v1.7.2
 [1.7.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.0...v1.7.1
