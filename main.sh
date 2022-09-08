@@ -17,11 +17,11 @@ fi
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
 ref="${INPUT_REF:-"${GITHUB_REF:-}"}"
 
-if [[ -z "${token:-}" ]]; then
+if [[ -z "${token}" ]]; then
     bail "neither GITHUB_TOKEN environment variable nor 'token' input option is set"
 fi
 
-if [[ "${ref:?}" != "refs/tags/"* ]]; then
+if [[ "${ref}" != "refs/tags/"* ]]; then
     bail "tag ref should start with 'refs/tags/': '${ref}'"
 fi
 tag="${ref#refs/tags/}"

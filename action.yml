@@ -52,11 +52,13 @@ inputs:
   token:
     description: >
       GitHub token for creating GitHub Releases.
+
       If not set this option, the GITHUB_TOKEN environment variable will be used.
     required: false
   ref:
     description: >
       Fully-formed tag ref for this release.
+
       If not set this option, the GITHUB_REF environment variable (automatically set by GitHub Actions) will be used.
     required: false
 
