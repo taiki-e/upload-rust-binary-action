@@ -27,20 +27,24 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Inputs
 
-| Name                | Required | Description                                                                                  | Type    | Default        |
-|---------------------|:--------:|----------------------------------------------------------------------------------------------|---------|----------------|
-| bin                 | **true** | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
-| archive             | false    | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
-| target              | false    | Target triple, default is host triple                                                        | String  | (host triple)  |
-| features            | false    | Comma-separated list of cargo build features to enable                                       | String  |                |
-| no_default_features | false    | Whether to disable cargo build default features                                              | Boolean | `false`        |
-| tar                 | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
-| zip                 | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
-| checksum            | false    | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
-| include             | false    | Comma-separated list of additional files to be included to the archive                       | String  |                |
-| asset               | false    | Comma-separated list of additional files to be uploaded separately                           | String  |                |
-| leading_dir         | false    | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
-| build_tool          | false    | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
+| Name                | Required     | Description                                                                                  | Type    | Default        |
+|---------------------|:------------:|----------------------------------------------------------------------------------------------|---------|----------------|
+| bin                 | **true**     | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
+| token               | **true** [^1]| GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more)            | String  |                |
+| archive             | false        | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
+| target              | false        | Target triple, default is host triple                                                        | String  | (host triple)  |
+| features            | false        | Comma-separated list of cargo build features to enable                                       | String  |                |
+| no_default_features | false        | Whether to disable cargo build default features                                              | Boolean | `false`        |
+| tar                 | false        | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
+| zip                 | false        | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
+| checksum            | false        | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
+| include             | false        | Comma-separated list of additional files to be included to the archive                       | String  |                |
+| asset               | false        | Comma-separated list of additional files to be uploaded separately                           | String  |                |
+| leading_dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
+| build_tool          | false        | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
+| ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
+
+[^1]: Required one of `token` input option or `GITHUB_TOKEN` environment variable.
 
 ### Example workflow: Basic usage
 
@@ -71,9 +75,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     runs-on: ubuntu-latest
@@ -84,9 +87,8 @@ jobs:
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
           # Note that glob pattern is not supported yet.
           bin: ...
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 You can specify multiple binaries when the root manifest is a virtual manifest or specified binaries are in the same crate.
@@ -106,9 +108,8 @@ You can specify multiple binaries when the root manifest is a virtual manifest o
     #     - $tag    - Tag of this release.
     # When multiple binary names are specified, default archive name or $bin variable cannot be used.
     archive: app-$target
-  env:
     # (required) GitHub token for uploading assets to GitHub Releases.
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Basic usage (multiple platforms)
@@ -136,9 +137,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     strategy:
@@ -163,9 +163,8 @@ jobs:
           # [default value: windows]
           # [possible values: all, unix, windows, none]
           zip: windows
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Customize archive name
@@ -195,9 +194,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     runs-on: ubuntu-latest
@@ -215,9 +213,8 @@ jobs:
           #     - $tag    - Tag of this release.
           # When multiple binary names are specified, default archive name or $bin variable cannot be used.
           archive: $bin-$tag-$target
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Build with different features on different platforms
@@ -244,9 +241,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     strategy:
@@ -273,9 +269,8 @@ jobs:
           zip: windows
           # (optional) Build with the given set of features if any.
           features: ${{ matrix.features || '' }}
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Cross-compilation
@@ -302,9 +297,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     strategy:
@@ -328,9 +322,8 @@ jobs:
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 However, if the host has another cross-compilation setup, it will be respected.
@@ -356,9 +349,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     strategy:
@@ -387,9 +379,8 @@ jobs:
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 If the heuristic to detect host cross-compilation setups does not work well, or if you want to force the use of cargo or cross, you can use the `build_tool` input option.
@@ -411,9 +402,8 @@ jobs:
         with:
           # (optional)
           changelog: CHANGELOG.md
-        env:
           # (required)
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     strategy:
@@ -437,9 +427,8 @@ jobs:
           target: ${{ matrix.target }}
           # (optional) Tool to build binaries (cargo, or cross)
           build_tool: ${{ matrix.build_tool }}
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Include additional files
@@ -466,9 +455,8 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-        env:
           # (required) GitHub token for creating GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     runs-on: ubuntu-latest
@@ -482,9 +470,8 @@ jobs:
           # (optional) Comma-separated list of additional files to be included to archive.
           # Note that glob pattern is not supported yet.
           include: LICENSE,README.md
-        env:
           # (required) GitHub token for uploading assets to GitHub Releases.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 By default, the expanded archive does not include the leading directory. In the above example, the directory structure of the archive would be as follows:
@@ -508,9 +495,8 @@ You can use the `leading_dir` option to create the leading directory.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
     leading_dir: true
-  env:
     # (required) GitHub token for uploading assets to GitHub Releases.
-    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 In the above example, the directory structure of the archive would be as follows:
@@ -537,9 +523,8 @@ upload-assets:
         # (optional) Comma-separated list of additional files to be uploaded separately.
         # Note that glob pattern is not supported yet.
         asset: LICENSE,README.md
-      env:
         # (required) GitHub token for uploading assets to GitHub Releases.
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 In the above example, the following 3 files will be uploaded:

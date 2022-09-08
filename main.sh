@@ -14,10 +14,17 @@ if [[ $# -gt 0 ]]; then
     bail "invalid argument '$1'"
 fi
 
-if [[ "${GITHUB_REF:?}" != "refs/tags/"* ]]; then
-    bail "GITHUB_REF should start with 'refs/tags/'"
+token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
+ref="${INPUT_REF:-"${GITHUB_REF:-}"}"
+
+if [[ -z "${token:-}" ]]; then
+    bail "neither GITHUB_TOKEN environment variable nor 'token' input option is set"
 fi
-tag="${GITHUB_REF#refs/tags/}"
+
+if [[ "${ref:?}" != "refs/tags/"* ]]; then
+    bail "tag ref should start with 'refs/tags/': '${ref}'"
+fi
+tag="${ref#refs/tags/}"
 
 features="${INPUT_FEATURES:-}"
 archive="${INPUT_ARCHIVE:?}"
@@ -271,9 +278,5 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
     final_assets+=("${archive}.${checksum}")
 done
 
-if [[ -z "${GITHUB_TOKEN:-}" ]]; then
-    bail "GITHUB_TOKEN not set, skipping deploy"
-else
-    # https://cli.github.com/manual/gh_release_upload
-    gh release upload "${tag}" "${final_assets[@]}" --clobber
-fi
+# https://cli.github.com/manual/gh_release_upload
+GITHUB_TOKEN="${token}" gh release upload "${tag}" "${final_assets[@]}" --clobber

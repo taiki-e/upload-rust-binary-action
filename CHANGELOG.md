@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `token` input option to use the specified token instead of `GITHUB_TOKEN` environment variable.
+
+- Add `ref` input option to use the specified tag ref instead of `GITHUB_REF` environment variable.
+
 ## [1.8.0] - 2022-08-28
 
 - Add `no_default_features` input option. ([#28](https://github.com/taiki-e/upload-rust-binary-action/pull/28), thanks @samtay)
