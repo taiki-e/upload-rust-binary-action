@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix "command not found" when `checksum` input option is passed on macOS. ([#30](https://github.com/taiki-e/upload-rust-binary-action/pull/30))
+
 ## [1.9.0] - 2022-09-08
 
 - Add `token` input option to use the specified token instead of `GITHUB_TOKEN` environment variable.

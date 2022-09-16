@@ -274,7 +274,22 @@ fi
 final_assets=("${assets[@]}")
 for checksum in ${checksums[@]+"${checksums[@]}"}; do
     # TODO: Should we allow customizing the name of checksum files?
-    "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
+    if type -P "${checksum}sum"; then
+        "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
+    else
+        case "${OSTYPE}" in
+            darwin*)
+                # GitHub-hosted macOS runner does not install GNU Coreutils by default.
+                # https://github.com/actions/runner-images/issues/90
+                case "${checksum}" in
+                    sha*) shasum -a "${checksum#sha}" "${assets[@]}" >"${archive}.${checksum}" ;;
+                    md5) md5 "${assets[@]}" >"${archive}.${checksum}" ;;
+                    *) bail "unrecognized 'checksum' input option '${checksum}'" ;;
+                esac
+                ;;
+            *) bail "'${checksum}sum' command not found" ;;
+        esac
+    fi
     final_assets+=("${archive}.${checksum}")
 done
 
