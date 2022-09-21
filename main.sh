@@ -142,7 +142,7 @@ case "${OSTYPE}" in
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
         tar="gtar"
-        if ! type -P gtar; then
+        if ! type -P gtar &>/dev/null; then
             brew install gnu-tar &>/dev/null
         fi
         ;;
@@ -274,7 +274,7 @@ fi
 final_assets=("${assets[@]}")
 for checksum in ${checksums[@]+"${checksums[@]}"}; do
     # TODO: Should we allow customizing the name of checksum files?
-    if type -P "${checksum}sum"; then
+    if type -P "${checksum}sum" &>/dev/null; then
         "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
     else
         case "${OSTYPE}" in
