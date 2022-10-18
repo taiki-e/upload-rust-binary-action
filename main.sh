@@ -197,6 +197,10 @@ fi
 if [[ -n "${no_default_features}" ]]; then
     build_options+=("--no-default-features")
 fi
+manifest_path="${INPUT_MANIFEST_PATH:-}"
+if [[ -n "${manifest_path}" ]]; then
+    build_options+=("--manifest-path" "${manifest_path}")
+fi
 
 case "${build_tool}" in
     cargo) cargo build "${build_options[@]}" ;;

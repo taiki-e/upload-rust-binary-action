@@ -21,6 +21,9 @@ inputs:
     description: Whether to disable cargo build default features
     required: false
     default: 'false'
+  manifest_path:
+    description: Override cargo manifest path
+    required: false
   tar:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
