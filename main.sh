@@ -200,6 +200,7 @@ fi
 manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
     build_options+=("--manifest-path" "${manifest_path}")
+    build_options+=("--target-dir" "target")
 fi
 
 case "${build_tool}" in
