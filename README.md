@@ -14,6 +14,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Include additional files](#example-workflow-include-additional-files)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
+- [Supported events](#supported-events)
 - [Compatibility](#compatibility)
 - [Related Projects](#related-projects)
 - [License](#license)
@@ -562,6 +563,40 @@ The followings are examples of using environment variables to specify profile op
   ```
 
 **Note:** These options may increase the build time.
+
+## Supported events
+
+The following two events are supported by default:
+
+- tags ([`on.push.tags`](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#push))
+
+  For example:
+
+  ```yaml
+  on:
+    push:
+      tags:
+        - v[0-9]+.*
+  ```
+
+- GitHub release ([`on.release`](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#release))
+
+  For example:
+
+  ```yaml
+  on:
+    release:
+      types: [created]
+  ```
+
+You can upload binaries from any event by specifying the `ref` input option.
+
+For example, to upload binaries to the `my_tag` tag, specify `ref` input option as follows:
+
+```yaml
+with:
+  ref: refs/tags/my_tag
+```
 
 ## Compatibility
 
