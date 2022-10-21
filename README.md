@@ -589,7 +589,7 @@ The following two events are supported by default:
       types: [created]
   ```
 
-You can upload binaries from any event by specifying the `ref` input option.
+You can upload binaries from arbitrary event to arbitrary tag by specifying the `ref` input option.
 
 For example, to upload binaries to the `my_tag` tag, specify `ref` input option as follows:
 
