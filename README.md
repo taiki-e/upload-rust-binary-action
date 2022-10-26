@@ -43,6 +43,7 @@ Currently, this action is basically intended to be used in combination with an a
 | leading_dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
 | build_tool          | false        | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 | ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
+| manifest_path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
 
 [^1]: Required one of `token` input option or `GITHUB_TOKEN` environment variable.
 
