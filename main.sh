@@ -153,6 +153,7 @@ case "${OSTYPE}" in
     *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
 esac
 
+# TODO: check profile.release.strip in root Cargo.toml and skip strip on our end if it is set.
 strip=""
 case "${target}" in
     *-pc-windows-msvc) ;;
@@ -171,7 +172,6 @@ case "${target}" in
     aarch64*-linux-*)
         strip="aarch64-linux-gnu-strip"
         ;;
-    *) ;;
 esac
 if [[ -n "${strip:-}" ]]; then
     if ! type -P "${strip}" &>/dev/null; then
@@ -181,7 +181,6 @@ if [[ -n "${strip:-}" ]]; then
 fi
 
 build_options=("--release")
-target_dir=""
 bins=()
 for bin_name in "${bin_names[@]}"; do
     bins+=("${bin_name}${exe:-}")
