@@ -181,11 +181,7 @@ if [[ -n "${strip:-}" ]]; then
 fi
 
 build_options=("--release")
-target_dir="target/release"
-if [[ -n "${INPUT_TARGET:-}" ]]; then
-    target_dir="target/${target}/release"
-    build_options+=("--target" "${target}")
-fi
+target_dir=""
 bins=()
 for bin_name in "${bin_names[@]}"; do
     bins+=("${bin_name}${exe:-}")
@@ -196,6 +192,19 @@ if [[ -n "${features}" ]]; then
 fi
 if [[ -n "${no_default_features}" ]]; then
     build_options+=("--no-default-features")
+fi
+manifest_path="${INPUT_MANIFEST_PATH:-}"
+if [[ -n "${manifest_path}" ]]; then
+    build_options+=("--manifest-path" "${manifest_path}")
+    target_dir=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}" | jq -r '."target_directory"')
+else
+    target_dir=$(cargo metadata --format-version=1 --no-deps | jq -r '."target_directory"')
+fi
+if [[ -n "${INPUT_TARGET:-}" ]]; then
+    build_options+=("--target" "${target}")
+    target_dir="${target_dir}/${target}/release"
+else
+    target_dir="${target_dir}/release"
 fi
 
 case "${build_tool}" in
