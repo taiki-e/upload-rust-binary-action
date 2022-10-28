@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.10.0] - 2022-10-28
+
 - Add `manifest_path` input option. ([#32](https://github.com/taiki-e/upload-rust-binary-action/pull/32), thanks @GeorgeHahn)
 
 ## [1.9.1] - 2022-09-16
@@ -88,7 +90,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.9.1...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.10.0...HEAD
+[1.10.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.9.1...v1.10.0
 [1.9.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.9.0...v1.9.1
 [1.9.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.7.2...v1.8.0
