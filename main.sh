@@ -69,14 +69,6 @@ fi
 include="${INPUT_INCLUDE:-}"
 includes=()
 if [[ -n "${include}" ]]; then
-    # We can expand a glob by expanding a variable without quote, but that way
-    # has a security issue of shell injection.
-    if [[ "${include}" == *"?"* ]] || [[ "${include}" == *"*"* ]] || [[ "${include}" == *"["* ]]; then
-        # This check is not for security but for diagnostic purposes.
-        # We quote the filename, so without this uses get an error like
-        # "cp: cannot stat 'LICENSE-*': No such file or directory".
-        bail "glob pattern in 'include' input option is not supported yet"
-    fi
     while read -rd,; do includes+=("${REPLY}"); done <<<"${include},"
 fi
 
