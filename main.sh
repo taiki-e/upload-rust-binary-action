@@ -232,7 +232,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
     done
     for include in ${includes[@]+"${includes[@]}"}; do
-        cp -r "${include}" "${tmpdir}/${archive}"/
+        cp -r ${include} "${tmpdir}/${archive}"/
         filenames+=("$(basename "${include}")")
     done
     pushd "${tmpdir}" >/dev/null
