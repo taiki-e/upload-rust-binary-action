@@ -254,14 +254,14 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         pushd "${archive}" >/dev/null
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            "${tar}" acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
+            "${tar}" acf "${cwd}/${archive}.tar.gz" ${filenames[@]}
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
             if [[ "${platform}" == "unix" ]]; then
-                zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
+                zip -r "${cwd}/${archive}.zip" ${filenames[@]}
             else
-                7z a "${cwd}/${archive}.zip" "${filenames[@]}"
+                7z a "${cwd}/${archive}.zip" ${filenames[@]}
             fi
         fi
         popd >/dev/null
