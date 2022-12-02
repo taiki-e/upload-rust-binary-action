@@ -69,14 +69,6 @@ fi
 include="${INPUT_INCLUDE:-}"
 includes=()
 if [[ -n "${include}" ]]; then
-    # We can expand a glob by expanding a variable without quote, but that way
-    # has a security issue of shell injection.
-    if [[ "${include}" == *"?"* ]] || [[ "${include}" == *"*"* ]] || [[ "${include}" == *"["* ]]; then
-        # This check is not for security but for diagnostic purposes.
-        # We quote the filename, so without this uses get an error like
-        # "cp: cannot stat 'LICENSE-*': No such file or directory".
-        bail "glob pattern in 'include' input option is not supported yet"
-    fi
     while read -rd,; do includes+=("${REPLY}"); done <<<"${include},"
 fi
 
@@ -232,7 +224,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
     done
     for include in ${includes[@]+"${includes[@]}"}; do
-        cp -r "${include}" "${tmpdir}/${archive}"/
+        cp -r ${include} "${tmpdir}/${archive}"/ || true
         filenames+=("$(basename "${include}")")
     done
     pushd "${tmpdir}" >/dev/null
@@ -244,14 +236,14 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         # /${archive}/${includes}
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            "${tar}" acf "${cwd}/${archive}.tar.gz" "${archive}"
+            "${tar}" acf "${cwd}/${archive}.tar.gz" "${archive}" || true
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
             if [[ "${platform}" == "unix" ]]; then
-                zip -r "${cwd}/${archive}.zip" "${archive}"
+                zip -r "${cwd}/${archive}.zip" "${archive}" || true
             else
-                7z a "${cwd}/${archive}.zip" "${archive}"
+                7z a "${cwd}/${archive}.zip" "${archive}" || true
             fi
         fi
     else
@@ -262,14 +254,14 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         pushd "${archive}" >/dev/null
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            "${tar}" acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
+            "${tar}" acf "${cwd}/${archive}.tar.gz" ${filenames[@]} || true
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
             if [[ "${platform}" == "unix" ]]; then
-                zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
+                zip -r "${cwd}/${archive}.zip" ${filenames[@]} || true
             else
-                7z a "${cwd}/${archive}.zip" "${filenames[@]}"
+                7z a "${cwd}/${archive}.zip" ${filenames[@]} || true
             fi
         fi
         popd >/dev/null

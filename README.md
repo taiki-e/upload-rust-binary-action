@@ -472,7 +472,6 @@ jobs:
           # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Comma-separated list of additional files to be included to archive.
-          # Note that glob pattern is not supported yet.
           include: LICENSE,README.md
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -495,7 +494,6 @@ You can use the `leading_dir` option to create the leading directory.
     # Note that glob pattern is not supported yet.
     bin: ...
     # (optional) Comma-separated list of additional files to be included to archive.
-    # Note that glob pattern is not supported yet.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
     leading_dir: true
