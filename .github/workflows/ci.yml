@@ -19,12 +19,4 @@ defaults:
 
 jobs:
   tidy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: taiki-e/install-action@shellcheck
-      - uses: taiki-e/install-action@shfmt
-      - run: tools/tidy.sh
-        if: always()
+    uses: taiki-e/workflows/.github/workflows/tidy-no-rust.yml@main
