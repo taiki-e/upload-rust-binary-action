@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Diagnostics improvements.
+
 ## [1.10.0] - 2022-10-28
 
 - Add `manifest_path` input option. ([#32](https://github.com/taiki-e/upload-rust-binary-action/pull/32), thanks @GeorgeHahn)

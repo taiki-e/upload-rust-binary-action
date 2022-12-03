@@ -2,6 +2,14 @@
 set -euo pipefail
 IFS=$'\n\t'
 
+x() {
+    local cmd="$1"
+    shift
+    (
+        set -x
+        "${cmd}" "$@"
+    )
+}
 bail() {
     echo "::error::$*"
     exit 1
@@ -207,19 +215,19 @@ else
 fi
 
 case "${build_tool}" in
-    cargo) cargo build "${build_options[@]}" ;;
+    cargo) x cargo build "${build_options[@]}" ;;
     cross)
         if ! type -P cross &>/dev/null; then
-            cargo install cross
+            x cargo install cross
         fi
-        cross build "${build_options[@]}"
+        x cross build "${build_options[@]}"
         ;;
     *) bail "unrecognized build tool '${build_tool}'" ;;
 esac
 
 if [[ -n "${strip:-}" ]]; then
     for bin_exe in "${bins[@]}"; do
-        "${strip}" "${target_dir}/${bin_exe}"
+        x "${strip}" "${target_dir}/${bin_exe}"
     done
 fi
 
