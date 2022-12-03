@@ -315,4 +315,4 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
 done
 
 # https://cli.github.com/manual/gh_release_upload
-GITHUB_TOKEN="${token}" gh release upload "${tag}" "${final_assets[@]}" --clobber
+GITHUB_TOKEN="${token}" x gh release upload "${tag}" "${final_assets[@]}" --clobber
