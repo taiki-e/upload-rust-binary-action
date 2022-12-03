@@ -123,7 +123,7 @@ build_tool="${INPUT_BUILD_TOOL:-}"
 if [[ -z "${build_tool}" ]]; then
     build_tool="cargo"
     if [[ "${host}" != "${target}" ]]; then
-        rustup target add "${target}"
+        x rustup target add "${target}"
         case "${target}" in
             # https://github.com/cross-rs/cross#supported-targets
             *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
