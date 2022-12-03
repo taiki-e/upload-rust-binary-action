@@ -546,26 +546,53 @@ README.md
 
 ### Optimize Rust binary
 
-You can optimize Rust binaries by passing the profile options.
+You can optimize performance or size of Rust binaries by passing the profile options.
 The profile options can be specified by [`[profile]` table in `Cargo.toml`](https://doc.rust-lang.org/cargo/reference/profiles.html), [cargo config](https://doc.rust-lang.org/cargo/reference/config.html), [environment variables](https://doc.rust-lang.org/cargo/reference/environment-variables.html#configuration-environment-variables), etc.
 
-The followings are examples of using environment variables to specify profile options:
+The followings are examples to specify profile options:
 
-- [lto](https://doc.rust-lang.org/cargo/reference/config.html#profilenamelto)
+- [lto](https://doc.rust-lang.org/cargo/reference/profiles.html#lto)
+
+  With profile:
+
+  ```toml
+  [profile.release]
+  lto = true
+  ```
+
+  With environment variable:
 
   ```yaml
   env:
     CARGO_PROFILE_RELEASE_LTO: true
   ```
 
-- [codegen-units](https://doc.rust-lang.org/cargo/reference/config.html#profilenamecodegen-units)
+- [codegen-units](https://doc.rust-lang.org/cargo/reference/profiles.html#codegen-units)
+
+  With profile:
+
+  ```toml
+  [profile.release]
+  codegen-units = 1
+  ```
+
+  With environment variable:
 
   ```yaml
   env:
     CARGO_PROFILE_RELEASE_CODEGEN_UNITS: 1
   ```
 
-**Note:** These options may increase the build time.
+- [strip](https://doc.rust-lang.org/cargo/reference/profiles.html#strip)
+
+  With profile:
+
+  ```toml
+  [profile.release]
+  strip = true
+  ```
+
+**Note:** Some of these options may increase the build time.
 
 ## Supported events
 

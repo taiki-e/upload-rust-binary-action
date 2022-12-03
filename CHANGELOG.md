@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Skip stripping if cargo's [`strip` profile option](https://doc.rust-lang.org/cargo/reference/profiles.html#strip) is set.
+
 - Diagnostics improvements.
 
 ## [1.10.0] - 2022-10-28

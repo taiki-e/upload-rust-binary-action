@@ -161,33 +161,6 @@ case "${OSTYPE}" in
     *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
 esac
 
-# TODO: check profile.release.strip in root Cargo.toml and skip strip on our end if it is set.
-strip=""
-case "${target}" in
-    *-pc-windows-msvc) ;;
-    x86_64-* | i686-*)
-        strip="strip"
-        ;;
-    arm*-linux-*eabi)
-        strip="arm-linux-gnueabi-strip"
-        ;;
-    arm*-linux-*eabihf | thumb*-linux-*eabihf)
-        strip="arm-linux-gnueabihf-strip"
-        ;;
-    arm*-none-eabi | thumb*-none-eabi)
-        strip="arm-none-eabi-strip"
-        ;;
-    aarch64*-linux-*)
-        strip="aarch64-linux-gnu-strip"
-        ;;
-esac
-if [[ -n "${strip:-}" ]]; then
-    if ! type -P "${strip}" &>/dev/null; then
-        warn "${strip} not found, skip stripping"
-        strip=""
-    fi
-fi
-
 build_options=("--release")
 bins=()
 for bin_name in "${bin_names[@]}"; do
@@ -203,15 +176,47 @@ fi
 manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
     build_options+=("--manifest-path" "${manifest_path}")
-    target_dir=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}" | jq -r '."target_directory"')
+    metadata=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}")
+    target_dir=$(jq <<<"${metadata}" -r '."target_directory"')
 else
-    target_dir=$(cargo metadata --format-version=1 --no-deps | jq -r '."target_directory"')
+    metadata=$(cargo metadata --format-version=1 --no-deps)
+    target_dir=$(jq <<<"${metadata}" -r '."target_directory"')
 fi
 if [[ -n "${INPUT_TARGET:-}" ]]; then
     build_options+=("--target" "${target}")
     target_dir="${target_dir}/${target}/release"
 else
     target_dir="${target_dir}/release"
+fi
+
+strip=""
+workspace_root=$(jq <<<"${metadata}" -r '."workspace_root"')
+# TODO: This is a somewhat rough check as it does not look at the type of profile.
+if ! grep -Eq 'strip\s*=' "${workspace_root}/Cargo.toml"; then
+    case "${target}" in
+        *-pc-windows-msvc) ;;
+        x86_64-* | i686-*)
+            strip="strip"
+            ;;
+        arm*-linux-*eabi)
+            strip="arm-linux-gnueabi-strip"
+            ;;
+        arm*-linux-*eabihf | thumb*-linux-*eabihf)
+            strip="arm-linux-gnueabihf-strip"
+            ;;
+        arm*-none-eabi | thumb*-none-eabi)
+            strip="arm-none-eabi-strip"
+            ;;
+        aarch64*-linux-*)
+            strip="aarch64-linux-gnu-strip"
+            ;;
+    esac
+    if [[ -n "${strip:-}" ]]; then
+        if ! type -P "${strip}" &>/dev/null; then
+            warn "${strip} not found, skip stripping"
+            strip=""
+        fi
+    fi
 fi
 
 case "${build_tool}" in
