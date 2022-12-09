@@ -541,8 +541,8 @@ README.md
 
 ### Other examples
 
-- [taiki-e/cargo-hack](https://github.com/taiki-e/cargo-hack/blob/202e6e59d491c9202ce148c9ef423853267226db/.github/workflows/release.yml#L47-L84)
-- [tokio-rs/console](https://github.com/tokio-rs/console/blob/9699300ec7901b71dce0d3555a7be2c86ec4e533/.github/workflows/release.yaml#L28-L43)
+- [cargo-hack](https://github.com/taiki-e/cargo-hack/blob/202e6e59d491c9202ce148c9ef423853267226db/.github/workflows/release.yml#L47-L84)
+- [tokio-console](https://github.com/tokio-rs/console/blob/9699300ec7901b71dce0d3555a7be2c86ec4e533/.github/workflows/release.yaml#L28-L43)
 
 ### Optimize Rust binary
 
