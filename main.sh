@@ -177,10 +177,10 @@ manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
     build_options+=("--manifest-path" "${manifest_path}")
     metadata=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}")
-    target_dir=$(jq <<<"${metadata}" -r '."target_directory"')
+    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
 else
     metadata=$(cargo metadata --format-version=1 --no-deps)
-    target_dir=$(jq <<<"${metadata}" -r '."target_directory"')
+    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
 fi
 if [[ -n "${INPUT_TARGET:-}" ]]; then
     build_options+=("--target" "${target}")
@@ -190,7 +190,7 @@ else
 fi
 
 strip=""
-workspace_root=$(jq <<<"${metadata}" -r '."workspace_root"')
+workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 # TODO: This is a somewhat rough check as it does not look at the type of profile.
 if ! grep -Eq 'strip\s*=' "${workspace_root}/Cargo.toml"; then
     case "${target}" in
