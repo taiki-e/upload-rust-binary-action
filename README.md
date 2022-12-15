@@ -1,6 +1,6 @@
 # upload-rust-binary-action
 
-[![build status](https://img.shields.io/github/workflow/status/taiki-e/upload-rust-binary-action/CI/main?style=flat-square&logo=github)](https://github.com/taiki-e/upload-rust-binary-action/actions)
+[![build status](https://img.shields.io/github/actions/workflow/status/taiki-e/upload-rust-binary-action/ci.yml?branch=main&style=flat-square&logo=github)](https://github.com/taiki-e/upload-rust-binary-action/actions)
 
 GitHub Action for building and uploading Rust binary to GitHub Releases.
 
