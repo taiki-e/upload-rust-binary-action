@@ -192,7 +192,7 @@ fi
 strip=""
 workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 # TODO: This is a somewhat rough check as it does not look at the type of profile.
-if ! grep -Eq 'strip\s*=' "${workspace_root}/Cargo.toml"; then
+if ! grep -Eq '^strip\s*=' "${workspace_root}/Cargo.toml"; then
     case "${target}" in
         *-pc-windows-msvc) ;;
         x86_64-* | i?86-*) strip="strip" ;;
