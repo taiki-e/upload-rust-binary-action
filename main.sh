@@ -290,17 +290,24 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
     if type -P "${checksum}sum" &>/dev/null; then
         "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
     else
-        case "${OSTYPE}" in
-            darwin*)
-                # GitHub-hosted macOS runner does not install GNU Coreutils by default.
-                # https://github.com/actions/runner-images/issues/90
-                case "${checksum}" in
-                    sha*) shasum -a "${checksum#sha}" "${assets[@]}" >"${archive}.${checksum}" ;;
-                    md5) md5 "${assets[@]}" >"${archive}.${checksum}" ;;
-                    *) bail "unrecognized 'checksum' input option '${checksum}'" ;;
-                esac
+        # GitHub-hosted macOS runner does not install GNU Coreutils by default.
+        # https://github.com/actions/runner-images/issues/90
+        case "${checksum}" in
+            sha*)
+                if type -P shasum &>/dev/null; then
+                    shasum -a "${checksum#sha}" "${assets[@]}" >"${archive}.${checksum}"
+                else
+                    bail "checksum for '${checksum}' requires '${checksum}sum' or 'shasum' command; consider installing one of them"
+                fi
                 ;;
-            *) bail "'${checksum}sum' command not found" ;;
+            md5)
+                if type -P md5 &>/dev/null; then
+                    md5 "${assets[@]}" >"${archive}.${checksum}"
+                else
+                    bail "checksum for '${checksum}' requires '${checksum}sum' or 'md5' command; consider installing one of them"
+                fi
+                ;;
+            *) bail "unrecognized 'checksum' input option '${checksum}'" ;;
         esac
     fi
     final_assets+=("${archive}.${checksum}")
