@@ -195,21 +195,13 @@ workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 if ! grep -Eq 'strip\s*=' "${workspace_root}/Cargo.toml"; then
     case "${target}" in
         *-pc-windows-msvc) ;;
-        x86_64-* | i686-*)
-            strip="strip"
-            ;;
-        arm*-linux-*eabi)
-            strip="arm-linux-gnueabi-strip"
-            ;;
-        arm*-linux-*eabihf | thumb*-linux-*eabihf)
-            strip="arm-linux-gnueabihf-strip"
-            ;;
-        arm*-none-eabi | thumb*-none-eabi)
-            strip="arm-none-eabi-strip"
-            ;;
-        aarch64*-linux-*)
-            strip="aarch64-linux-gnu-strip"
-            ;;
+        x86_64-* | i?86-*) strip="strip" ;;
+        arm*-linux-*eabi) strip="arm-linux-gnueabi-strip" ;;
+        arm*-linux-*eabihf | thumb*-linux-*eabihf) strip="arm-linux-gnueabihf-strip" ;;
+        arm*-none-eabi* | thumb*-none-eabi*) strip="arm-none-eabi-strip" ;;
+        aarch64*-linux-*) strip="aarch64-linux-gnu-strip" ;;
+        powerpc64le-*-linux-*) strip="powerpc64le-linux-gnu-strip" ;;
+        s390x-*-linux-*) strip="s390x-linux-gnu-strip" ;;
     esac
     if [[ -n "${strip:-}" ]]; then
         if ! type -P "${strip}" &>/dev/null; then
