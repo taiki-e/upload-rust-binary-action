@@ -120,6 +120,8 @@ You can specify multiple binaries when the root manifest is a virtual manifest o
 This action supports Linux, macOS, and Windows as a host OS and supports
 binaries for various targets.
 
+See also [cross-compilation example](#example-workflow-cross-compilation).
+
 ```yaml
 name: Release
 
