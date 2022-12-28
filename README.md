@@ -25,7 +25,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
 This action builds and uploads Rust binary that specified by `bin` option to
 GitHub Releases.
 
-Currently, this action is basically intended to be used in combination with an action like [create-gh-release-action] that creates a GitHub release when a tag is pushed.
+Currently, this action is basically intended to be used in combination with an action like [create-gh-release-action] that creates a GitHub release when a tag is pushed. See also [supported events](#supported-events).
 
 ### Inputs
 
