@@ -114,7 +114,7 @@ if [[ -n "${checksum}" ]]; then
     done <<<"${checksum},"
 fi
 
-host=$(rustc -Vv | grep host | cut -c 7-)
+host=$(rustc -Vv | grep 'host: ' | cut -c 7-)
 target="${INPUT_TARGET:-"${host}"}"
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
