@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix installation of cross.
+
+- Improve support for stripping.
+
 ## [1.11.0] - 2022-12-03
 
 - Skip stripping by this action if cargo's [`strip` profile option](https://doc.rust-lang.org/cargo/reference/profiles.html#strip) is set.
