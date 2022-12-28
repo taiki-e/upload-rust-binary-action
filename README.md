@@ -279,7 +279,7 @@ jobs:
 
 By default, this action uses [cross] for cross-compilation (if cross supports that target). In the following example, only aarch64-unknown-linux-gnu uses cross, the rest use cargo.
 
-If cross is not installed, this action calls `cargo install cross` to install cross. If you want to speed up the installation of cross or use an older version of cross, consider using [install-action].
+If cross is not installed, this action calls `cargo install cross --locked` to install cross. If you want to speed up the installation of cross or use an older version of cross, consider using [install-action].
 
 ```yaml
 name: Release

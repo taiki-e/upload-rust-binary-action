@@ -215,7 +215,7 @@ case "${build_tool}" in
     cargo) x cargo build "${build_options[@]}" ;;
     cross)
         if ! type -P cross &>/dev/null; then
-            x cargo install cross
+            x cargo install cross --locked
         fi
         x cross build "${build_options[@]}"
         ;;
