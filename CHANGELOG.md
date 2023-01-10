@@ -12,7 +12,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [1.12.0] - 2023-01-10
 
-- Support universal macOS binary as `target: universal-apple-darwin`.
+- Support universal macOS binary as `target: universal-apple-darwin`. ([#38](https://github.com/taiki-e/upload-rust-binary-action/pull/38))
 
 ## [1.11.1] - 2022-12-28
 
