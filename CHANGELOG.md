@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Support universal macOS binary as `target: universal-apple-darwin`.
+
 ## [1.11.1] - 2022-12-28
 
 - Fix installation of cross.

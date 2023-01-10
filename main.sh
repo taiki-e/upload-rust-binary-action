@@ -123,10 +123,13 @@ build_tool="${INPUT_BUILD_TOOL:-}"
 if [[ -z "${build_tool}" ]]; then
     build_tool="cargo"
     if [[ "${host}" != "${target}" ]]; then
-        x rustup target add "${target}"
+        case "${target}" in
+            universal-apple-darwin) x rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
+            *) x rustup target add "${target}" ;;
+        esac
         case "${target}" in
             # https://github.com/cross-rs/cross#supported-targets
-            *windows-msvc | *windows-gnu | *darwin | *fuchsia | *redox) ;;
+            *-windows-msvc* | *-windows-gnu* | *-darwin* | *-fuchsia* | *-redox*) ;;
             *)
                 # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
                 if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
@@ -182,12 +185,6 @@ else
     metadata=$(cargo metadata --format-version=1 --no-deps)
     target_dir=$(jq <<<"${metadata}" -r '.target_directory')
 fi
-if [[ -n "${INPUT_TARGET:-}" ]]; then
-    build_options+=("--target" "${target}")
-    target_dir="${target_dir}/${target}/release"
-else
-    target_dir="${target_dir}/release"
-fi
 
 strip=""
 workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
@@ -211,22 +208,53 @@ if ! grep -Eq '^strip\s*=' "${workspace_root}/Cargo.toml"; then
     fi
 fi
 
-case "${build_tool}" in
-    cargo) x cargo build "${build_options[@]}" ;;
-    cross)
-        if ! type -P cross &>/dev/null; then
-            x cargo install cross --locked
-        fi
-        x cross build "${build_options[@]}"
-        ;;
-    *) bail "unrecognized build tool '${build_tool}'" ;;
-esac
+build() {
+    case "${build_tool}" in
+        cargo) x cargo build "${build_options[@]}" "$@" ;;
+        cross)
+            if ! type -P cross &>/dev/null; then
+                x cargo install cross --locked
+            fi
+            x cross build "${build_options[@]}" "$@"
+            ;;
+        *) bail "unrecognized build tool '${build_tool}'" ;;
+    esac
+}
+do_strip() {
+    target_dir="$1"
+    if [[ -n "${strip:-}" ]]; then
+        for bin_exe in "${bins[@]}"; do
+            x "${strip}" "${target_dir}/${bin_exe}"
+        done
+    fi
+}
 
-if [[ -n "${strip:-}" ]]; then
-    for bin_exe in "${bins[@]}"; do
-        x "${strip}" "${target_dir}/${bin_exe}"
-    done
-fi
+case "${INPUT_TARGET:-}" in
+    '')
+        build
+        target_dir="${target_dir}/release"
+        do_strip "${target_dir}"
+        ;;
+    universal-apple-darwin)
+        # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
+        build --target aarch64-apple-darwin
+        build --target x86_64-apple-darwin
+        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/release"
+        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/release"
+        target_dir="${target_dir}/${target}/release"
+        mkdir -p "${target_dir}"
+        do_strip "${aarch64_target_dir}"
+        do_strip "${x86_64_target_dir}"
+        for bin_exe in "${bins[@]}"; do
+            x lipo -create -output "${target_dir}/${bin_exe}" "${aarch64_target_dir}/${bin_exe}" "${x86_64_target_dir}/${bin_exe}"
+        done
+        ;;
+    *)
+        build --target "${target}"
+        target_dir="${target_dir}/${target}/release"
+        do_strip "${target_dir}"
+        ;;
+esac
 
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
     cwd=$(pwd)

@@ -1,4 +1,5 @@
 coreutils
 gtar
+lipo
 mktemp
 tmpdir
