@@ -114,6 +114,15 @@ if [[ -n "${checksum}" ]]; then
     done <<<"${checksum},"
 fi
 
+pgp_public_key="${INPUT_PGP_PUBLIC_KEY:-}"
+if [[ -n "${pgp_public_key}" ]]; then
+    warn "support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details"
+elif [[ -n "${INPUT_PGP_PRIVATE_KEY:-}" ]]; then
+    bail "'pgp_private_key' input option may only be together with 'pgp_public_key' input option"
+elif [[ -n "${INPUT_PGP_PASSPHRASE:-}" ]]; then
+    bail "'pgp_passphrase' input option may only be together with 'pgp_public_key' input option"
+fi
+
 host=$(rustc -Vv | grep 'host: ' | cut -c 7-)
 target="${INPUT_TARGET:-"${host}"}"
 target_lower="${target//-/_}"
@@ -340,6 +349,36 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
     fi
     final_assets+=("${archive}.${checksum}")
 done
+
+assets=("${final_assets[@]}")
+run_gpg() {
+    x "${gpg_cmd[@]}" --no-tty "$@"
+}
+if [[ -n "${pgp_public_key}" ]]; then
+    gpg_cmd=()
+    if type -P gpg2 &>/dev/null; then
+        gpg_cmd+=(gpg2 --use-agent)
+    elif type -P gpg &>/dev/null; then
+        gpg_cmd+=(gpg)
+    else
+        bail "PGP signing requires 'gpg2' or 'gpg' command; consider installing one of them"
+    fi
+    run_gpg --version
+    if grep <<<"${pgp_public_key}" -q "^-----BEGIN PGP PUBLIC KEY BLOCK-----"; then
+        run_gpg <<<"${pgp_public_key}" --output .public-key.gpg --dearmor -
+    else
+        run_gpg --output .public-key.gpg --dearmor "${pgp_public_key}"
+    fi
+    if [[ -n "${INPUT_PGP_PRIVATE_KEY:-}" ]]; then
+        run_gpg <<<"${INPUT_PGP_PRIVATE_KEY}" --batch --import -
+    fi
+    for asset in "${assets[@]}"; do
+        final_assets+=("${asset}.sig")
+        run_gpg <<<"${INPUT_PGP_PASSPHRASE:-}" --batch --passphrase-fd 0 --pinentry-mode loopback --detach-sig "${asset}"
+        run_gpg --no-default-keyring --keyring ./.public-key.gpg --verify "${asset}.sig" "${asset}"
+    done
+    rm -f ./.public-key.gpg
+fi
 
 # https://cli.github.com/manual/gh_release_upload
 GITHUB_TOKEN="${token}" x gh release upload "${tag}" "${final_assets[@]}" --clobber

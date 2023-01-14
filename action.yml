@@ -64,6 +64,38 @@ inputs:
 
       If not set this option, the GITHUB_REF environment variable (automatically set by GitHub Actions) will be used.
     required: false
+  pgp_public_key:
+    description: >
+      Public key used for PGP signing.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+
+      This must be an armored key or path to it.
+
+      > gpg --output <output-path> --armor --export <key-id>
+
+      This key is not strictly needed for signing, but is used to verify that
+      signing was done correctly with the private key corresponding to this key.
+    required: false
+  pgp_private_key:
+    description: >
+      Private key used for PGP signing.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+
+      This must be an armored key. Unlike pgp_public_key, path is not allowed.
+
+      > gpg --output <output-file> --armor --export-secret-key <key-id>
+
+      If you have already imported the private key, you do not need to specify this.
+    required: false
+  pgp_passphrase:
+    description: >
+      Passphrase of PGP private key. Default to empty string.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+    required: false
+    default: ''
 
 runs:
   using: node16

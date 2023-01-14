@@ -2,4 +2,5 @@ coreutils
 gtar
 lipo
 mktemp
+pinentry
 tmpdir
