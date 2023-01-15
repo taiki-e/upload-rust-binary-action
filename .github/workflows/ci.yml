@@ -19,4 +19,4 @@ defaults:
 
 jobs:
   tidy:
-    uses: taiki-e/workflows/.github/workflows/tidy-no-rust.yml@main
+    uses: taiki-e/workflows/.github/workflows/tidy.yml@main
