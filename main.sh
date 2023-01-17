@@ -18,6 +18,9 @@ warn() {
     echo "::warning::$*"
 }
 
+export CARGO_NET_RETRY=10
+export RUSTUP_MAX_RETRIES=10
+
 if [[ $# -gt 0 ]]; then
     bail "invalid argument '$1'"
 fi
