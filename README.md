@@ -636,8 +636,8 @@ with:
 
 ## Compatibility
 
-This action has been tested for action runners hosted by GitHub.
-To use this action in self-hosted runners or in containers, you will need to install at least the following:
+This action has been tested for GitHub-hosted runners (Ubuntu, macOS, Windows).
+To use this action in self-hosted runners or in containers, at least the following tools are required:
 
 - rustup, cargo, rustc
 - bash, GNU Coreutils, GNU grep, GNU tar
