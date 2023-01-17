@@ -341,6 +341,7 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
             *) bail "unrecognized 'checksum' input option '${checksum}'" ;;
         esac
     fi
+    x cat "${archive}.${checksum}"
     final_assets+=("${archive}.${checksum}")
 done
 
