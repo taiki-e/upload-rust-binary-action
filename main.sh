@@ -195,7 +195,7 @@ workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 if ! grep -Eq '^strip\s*=' "${workspace_root}/Cargo.toml"; then
     case "${target}" in
         *-pc-windows-msvc) ;;
-        x86_64-* | i?86-*) strip="strip" ;;
+        x86_64* | i?86-*) strip="strip" ;;
         arm*-linux-*eabi) strip="arm-linux-gnueabi-strip" ;;
         arm*-linux-*eabihf | thumb*-linux-*eabihf) strip="arm-linux-gnueabihf-strip" ;;
         arm*-none-eabi* | thumb*-none-eabi*) strip="arm-none-eabi-strip" ;;
