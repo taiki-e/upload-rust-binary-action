@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Diagnostics improvements.
+
 ## [1.12.0] - 2023-01-10
 
 - Support universal macOS binary as `target: universal-apple-darwin`. ([#38](https://github.com/taiki-e/upload-rust-binary-action/pull/38))

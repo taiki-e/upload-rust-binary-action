@@ -33,7 +33,7 @@ if [[ -z "${token}" ]]; then
 fi
 
 if [[ "${ref}" != "refs/tags/"* ]]; then
-    bail "tag ref should start with 'refs/tags/': '${ref}'"
+    bail "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more"
 fi
 tag="${ref#refs/tags/}"
 
