@@ -65,6 +65,7 @@ inputs:
       If not set this option, the GITHUB_REF environment variable (automatically set by GitHub Actions) will be used.
     required: false
 
+# TODO: allow kebab-case input option names?
 # Note:
 # - inputs.* should be manually mapped to INPUT_* due to https://github.com/actions/runner/issues/665
 # - Use GITHUB_*/RUNNER_* instead of github.*/runner.* due to https://github.com/actions/runner/issues/2185
