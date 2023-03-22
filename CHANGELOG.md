@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Switch to composite action ([#42](https://github.com/taiki-e/upload-rust-binary-action/pull/42))
+
 ## [1.12.1] - 2023-03-19
 
 - Diagnostics improvements.
