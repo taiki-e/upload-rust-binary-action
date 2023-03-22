@@ -65,6 +65,27 @@ inputs:
       If not set this option, the GITHUB_REF environment variable (automatically set by GitHub Actions) will be used.
     required: false
 
+# Note:
+# - inputs.* should be manually mapped to INPUT_* due to https://github.com/actions/runner/issues/665
+# - Use GITHUB_*/RUNNER_* instead of github.*/runner.* due to https://github.com/actions/runner/issues/2185
 runs:
-  using: node16
-  main: main.js
+  using: composite
+  steps:
+    - run: bash --noprofile --norc "${GITHUB_ACTION_PATH:?}/main.sh"
+      shell: bash
+      env:
+        INPUT_BIN: ${{ inputs.bin }}
+        INPUT_ARCHIVE: ${{ inputs.archive }}
+        INPUT_TARGET: ${{ inputs.target }}
+        INPUT_FEATURES: ${{ inputs.features }}
+        INPUT_NO_DEFAULT_FEATURES: ${{ inputs.no_default_features }}
+        INPUT_MANIFEST_PATH: ${{ inputs.manifest_path }}
+        INPUT_TAR: ${{ inputs.tar }}
+        INPUT_ZIP: ${{ inputs.zip }}
+        INPUT_INCLUDE: ${{ inputs.include }}
+        INPUT_ASSET: ${{ inputs.asset }}
+        INPUT_LEADING_DIR: ${{ inputs.leading_dir }}
+        INPUT_BUILD_TOOL: ${{ inputs.build_tool }}
+        INPUT_CHECKSUM: ${{ inputs.checksum }}
+        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_REF: ${{ inputs.ref }}
