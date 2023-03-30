@@ -14,6 +14,14 @@ trap 's=$?; echo >&2 "$0: Error on line "${LINENO}": ${BASH_COMMAND}"; exit ${s}
 # Note: This script requires the following tools:
 # - parse-changelog <https://github.com/taiki-e/parse-changelog>
 
+x() {
+    local cmd="$1"
+    shift
+    (
+        set -x
+        "${cmd}" "$@"
+    )
+}
 bail() {
     echo >&2 "error: $*"
     exit 1
@@ -40,6 +48,7 @@ if gh release view "${tag}" &>/dev/null; then
     bail "tag '${tag}' has already been created and pushed"
 fi
 
+# Make sure that the release was created from an allowed branch.
 if ! git branch | grep -q '\* main$'; then
     bail "current branch is not 'main'"
 fi
@@ -88,25 +97,10 @@ echo "======================================="
 
 if [[ -n "${tags}" ]]; then
     # Create a release commit.
-    git add "${changelog}"
-    git commit -m "Release ${version}"
+    x git add "${changelog}"
+    x git commit -m "Release ${version}"
 fi
 
-set -x
-
-git tag "${tag}"
-git push origin main
-git push origin --tags
-
-major_version_tag="v${version%%.*}"
-git checkout -b "${major_version_tag}"
-git push origin refs/heads/"${major_version_tag}"
-if git --no-pager tag | grep -Eq "^${major_version_tag}$"; then
-    git tag -d "${major_version_tag}"
-    git push --delete origin refs/tags/"${major_version_tag}"
-fi
-git tag "${major_version_tag}"
-git checkout main
-git branch -d "${major_version_tag}"
-
-git push origin --tags
+x git tag "${tag}"
+x git push origin main
+x git push origin --tags
