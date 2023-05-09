@@ -167,7 +167,13 @@ case "${OSTYPE}" in
     *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
 esac
 
-build_options=("--release")
+declare -a build_options=()
+
+if [[ -n "${INPUT_PROFILE}" ]]; then
+    build_options+=("--profile" "${INPUT_PROFILE}")
+else
+    build_options+=("--release")
+fi
 bins=()
 for bin_name in "${bin_names[@]}"; do
     bins+=("${bin_name}${exe:-}")
