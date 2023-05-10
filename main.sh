@@ -241,16 +241,16 @@ do_strip() {
 case "${INPUT_TARGET:-}" in
     '')
         build
-        target_dir="${target_dir}/release"
+        target_dir="${target_dir}/${INPUT_PROFILE}"
         do_strip "${target_dir}"
         ;;
     universal-apple-darwin)
         # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
         build --target aarch64-apple-darwin
         build --target x86_64-apple-darwin
-        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/release"
-        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/release"
-        target_dir="${target_dir}/${target}/release"
+        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${INPUT_PROFILE}"
+        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${INPUT_PROFILE}"
+        target_dir="${target_dir}/${target}/${INPUT_PROFILE}"
         mkdir -p "${target_dir}"
         do_strip "${aarch64_target_dir}"
         do_strip "${x86_64_target_dir}"
@@ -260,7 +260,7 @@ case "${INPUT_TARGET:-}" in
         ;;
     *)
         build --target "${target}"
-        target_dir="${target_dir}/${target}/release"
+        target_dir="${target_dir}/${target}/${INPUT_PROFILE}"
         do_strip "${target_dir}"
         ;;
 esac
