@@ -169,6 +169,17 @@ esac
 
 input_profile=${INPUT_PROFILE:-release}
 
+# There are some special profiles that correspond to different target directory
+# names.
+# See: https://doc.rust-lang.org/nightly/cargo/reference/profiles.html#custom-profiles
+if [[ ${input_profile} = "bench" ]]; then
+    input_profile="release"
+elif [[ ${input_profile} = "dev" ]]; then
+    input_profile="debug"
+elif [[ ${input_profile} = "test" ]]; then
+    input_profile="debug"
+fi
+
 declare -a build_options=()
 
 if [[ -n "${input_profile}" ]]; then
