@@ -167,10 +167,12 @@ case "${OSTYPE}" in
     *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
 esac
 
+input_profile=${INPUT_PROFILE:-release}
+
 declare -a build_options=()
 
-if [[ -n "${INPUT_PROFILE}" ]]; then
-    build_options+=("--profile" "${INPUT_PROFILE}")
+if [[ -n "${input_profile}" ]]; then
+    build_options+=("--profile" "${input_profile}")
 else
     build_options+=("--release")
 fi
@@ -241,16 +243,16 @@ do_strip() {
 case "${INPUT_TARGET:-}" in
     '')
         build
-        target_dir="${target_dir}/${INPUT_PROFILE}"
+        target_dir="${target_dir}/${input_profile}"
         do_strip "${target_dir}"
         ;;
     universal-apple-darwin)
         # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
         build --target aarch64-apple-darwin
         build --target x86_64-apple-darwin
-        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${INPUT_PROFILE}"
-        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${INPUT_PROFILE}"
-        target_dir="${target_dir}/${target}/${INPUT_PROFILE}"
+        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${input_profile}"
+        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${input_profile}"
+        target_dir="${target_dir}/${target}/${input_profile}"
         mkdir -p "${target_dir}"
         do_strip "${aarch64_target_dir}"
         do_strip "${x86_64_target_dir}"
@@ -260,7 +262,7 @@ case "${INPUT_TARGET:-}" in
         ;;
     *)
         build --target "${target}"
-        target_dir="${target_dir}/${target}/${INPUT_PROFILE}"
+        target_dir="${target_dir}/${target}/${input_profile}"
         do_strip "${target_dir}"
         ;;
 esac
