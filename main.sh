@@ -169,17 +169,6 @@ esac
 
 input_profile=${INPUT_PROFILE:-release}
 
-# There are some special profiles that correspond to different target directory
-# names.
-# See: https://doc.rust-lang.org/nightly/cargo/reference/profiles.html#custom-profiles
-if [[ ${input_profile} = "bench" ]]; then
-    input_profile="release"
-elif [[ ${input_profile} = "dev" ]]; then
-    input_profile="debug"
-elif [[ ${input_profile} = "test" ]]; then
-    input_profile="debug"
-fi
-
 declare -a build_options=()
 
 if [[ -n "${input_profile}" ]]; then
@@ -187,6 +176,21 @@ if [[ -n "${input_profile}" ]]; then
 else
     build_options+=("--release")
 fi
+
+# There are some special profiles that correspond to different target directory
+# names. If we don't hit one of those conditionals then we just use the profile
+# name.
+# See: https://doc.rust-lang.org/nightly/cargo/reference/profiles.html#custom-profiles
+profile_directory=${input_profile}
+
+if [[ ${input_profile} = "bench" ]]; then
+    profile_directory="release"
+elif [[ ${input_profile} = "dev" ]]; then
+    profile_directory="debug"
+elif [[ ${input_profile} = "test" ]]; then
+    profile_directory="debug"
+fi
+
 bins=()
 for bin_name in "${bin_names[@]}"; do
     bins+=("${bin_name}${exe:-}")
@@ -202,10 +206,10 @@ manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
     build_options+=("--manifest-path" "${manifest_path}")
     metadata=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}")
-    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
+    target_dir=$(jq <<<"${metadata}" -r '.profile_directory')
 else
     metadata=$(cargo metadata --format-version=1 --no-deps)
-    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
+    target_dir=$(jq <<<"${metadata}" -r '.profile_directory')
 fi
 
 strip=""
@@ -254,16 +258,16 @@ do_strip() {
 case "${INPUT_TARGET:-}" in
     '')
         build
-        target_dir="${target_dir}/${input_profile}"
+        target_dir="${target_dir}/${profile_directory}"
         do_strip "${target_dir}"
         ;;
     universal-apple-darwin)
         # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
         build --target aarch64-apple-darwin
         build --target x86_64-apple-darwin
-        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${input_profile}"
-        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${input_profile}"
-        target_dir="${target_dir}/${target}/${input_profile}"
+        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${profile_directory}"
+        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${profile_directory}"
+        target_dir="${target_dir}/${target}/${profile_directory}"
         mkdir -p "${target_dir}"
         do_strip "${aarch64_target_dir}"
         do_strip "${x86_64_target_dir}"
@@ -273,7 +277,7 @@ case "${INPUT_TARGET:-}" in
         ;;
     *)
         build --target "${target}"
-        target_dir="${target_dir}/${target}/${input_profile}"
+        target_dir="${target_dir}/${target}/${profile_directory}"
         do_strip "${target_dir}"
         ;;
 esac
