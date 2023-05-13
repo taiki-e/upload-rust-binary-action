@@ -167,7 +167,30 @@ case "${OSTYPE}" in
     *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
 esac
 
-build_options=("--release")
+input_profile=${INPUT_PROFILE:-release}
+
+declare -a build_options=()
+
+if [[ -n "${input_profile}" ]]; then
+    build_options+=("--profile" "${input_profile}")
+else
+    build_options+=("--release")
+fi
+
+# There are some special profiles that correspond to different target directory
+# names. If we don't hit one of those conditionals then we just use the profile
+# name.
+# See: https://doc.rust-lang.org/nightly/cargo/reference/profiles.html#custom-profiles
+profile_directory=${input_profile}
+
+if [[ ${input_profile} = "bench" ]]; then
+    profile_directory="release"
+elif [[ ${input_profile} = "dev" ]]; then
+    profile_directory="debug"
+elif [[ ${input_profile} = "test" ]]; then
+    profile_directory="debug"
+fi
+
 bins=()
 for bin_name in "${bin_names[@]}"; do
     bins+=("${bin_name}${exe:-}")
@@ -235,16 +258,16 @@ do_strip() {
 case "${INPUT_TARGET:-}" in
     '')
         build
-        target_dir="${target_dir}/release"
+        target_dir="${target_dir}/${profile_directory}"
         do_strip "${target_dir}"
         ;;
     universal-apple-darwin)
         # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
         build --target aarch64-apple-darwin
         build --target x86_64-apple-darwin
-        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/release"
-        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/release"
-        target_dir="${target_dir}/${target}/release"
+        aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${profile_directory}"
+        x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${profile_directory}"
+        target_dir="${target_dir}/${target}/${profile_directory}"
         mkdir -p "${target_dir}"
         do_strip "${aarch64_target_dir}"
         do_strip "${x86_64_target_dir}"
@@ -254,7 +277,7 @@ case "${INPUT_TARGET:-}" in
         ;;
     *)
         build --target "${target}"
-        target_dir="${target_dir}/${target}/release"
+        target_dir="${target_dir}/${target}/${profile_directory}"
         do_strip "${target_dir}"
         ;;
 esac
