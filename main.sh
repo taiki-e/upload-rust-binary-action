@@ -206,10 +206,10 @@ manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
     build_options+=("--manifest-path" "${manifest_path}")
     metadata=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}")
-    target_dir=$(jq <<<"${metadata}" -r '.profile_directory')
+    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
 else
     metadata=$(cargo metadata --format-version=1 --no-deps)
-    target_dir=$(jq <<<"${metadata}" -r '.profile_directory')
+    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
 fi
 
 strip=""
