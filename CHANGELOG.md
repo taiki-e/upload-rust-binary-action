@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.14.0] - 2023-05-13
+
 - Add `profile` input option to allow specifying custom profiles. ([#44](https://github.com/taiki-e/upload-rust-binary-action/pull/44), thanks @afnanenayet)
 
 ## [1.13.0] - 2023-03-22
@@ -116,7 +118,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.13.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.14.0...HEAD
+[1.14.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.12.0...v1.12.1
 [1.12.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.11.1...v1.12.0
