@@ -46,6 +46,7 @@ Currently, this action is basically intended to be used in combination with an a
 | build_tool          | false        | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 | ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
 | manifest_path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
+| profile             | false        | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
 
 [^1]: Required one of `token` input option or `GITHUB_TOKEN` environment variable.
 

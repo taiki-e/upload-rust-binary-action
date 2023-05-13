@@ -168,28 +168,20 @@ case "${OSTYPE}" in
 esac
 
 input_profile=${INPUT_PROFILE:-release}
-
-declare -a build_options=()
-
-if [[ -n "${input_profile}" ]]; then
-    build_options+=("--profile" "${input_profile}")
-else
-    build_options+=("--release")
-fi
+case "${input_profile}" in
+    release) build_options=("--release") ;;
+    *) build_options=("--profile" "${input_profile}") ;;
+esac
 
 # There are some special profiles that correspond to different target directory
 # names. If we don't hit one of those conditionals then we just use the profile
 # name.
 # See: https://doc.rust-lang.org/nightly/cargo/reference/profiles.html#custom-profiles
-profile_directory=${input_profile}
-
-if [[ ${input_profile} = "bench" ]]; then
-    profile_directory="release"
-elif [[ ${input_profile} = "dev" ]]; then
-    profile_directory="debug"
-elif [[ ${input_profile} = "test" ]]; then
-    profile_directory="debug"
-fi
+case "${input_profile}" in
+    bench) profile_directory="release" ;;
+    dev | test) profile_directory="debug" ;;
+    *) profile_directory=${input_profile} ;;
+esac
 
 bins=()
 for bin_name in "${bin_names[@]}"; do

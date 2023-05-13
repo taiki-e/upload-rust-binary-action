@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `profile` input option to allow specifying custom profiles. ([#44](https://github.com/taiki-e/upload-rust-binary-action/pull/44), thanks @afnanenayet)
+
 ## [1.13.0] - 2023-03-22
 
 - Switch to composite action ([#42](https://github.com/taiki-e/upload-rust-binary-action/pull/42))
