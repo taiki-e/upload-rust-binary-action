@@ -94,4 +94,4 @@ runs:
         INPUT_CHECKSUM: ${{ inputs.checksum }}
         INPUT_TOKEN: ${{ inputs.token }}
         INPUT_REF: ${{ inputs.ref }}
-        INPUT_PROFILE: ${{ input.profile }}
+        INPUT_PROFILE: ${{ inputs.profile }}
