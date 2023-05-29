@@ -642,7 +642,7 @@ To use this action in self-hosted runners or in containers, at least the followi
 
 - rustup, cargo, rustc
 - bash, GNU Coreutils, GNU grep, GNU tar
-- gh (GitHub CLI)
+- [gh (GitHub CLI)](https://github.com/cli/cli#installation)
 - zip (only Unix-like)
 - 7z (only Windows)
 
