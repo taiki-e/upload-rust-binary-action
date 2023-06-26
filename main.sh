@@ -119,6 +119,9 @@ if [[ -n "${checksum}" ]]; then
 fi
 
 host=$(rustc -Vv | grep 'host: ' | cut -c 7-)
+rustc_version=$(rustc -Vv | grep 'release: ' | cut -c 10-)
+rustc_minor_version="${rustc_version#*.}"
+rustc_minor_version="${rustc_minor_version%%.*}"
 target="${INPUT_TARGET:-"${host}"}"
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
@@ -256,8 +259,13 @@ case "${INPUT_TARGET:-}" in
         ;;
     universal-apple-darwin)
         # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
-        build --target aarch64-apple-darwin
-        build --target x86_64-apple-darwin
+        # multi-target builds requires 1.64
+        if [[ "${rustc_minor_version}" -ge 64 ]]; then
+            build --target aarch64-apple-darwin --target x86_64-apple-darwin
+        else
+            build --target aarch64-apple-darwin
+            build --target x86_64-apple-darwin
+        fi
         aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${profile_directory}"
         x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${profile_directory}"
         target_dir="${target_dir}/${target}/${profile_directory}"

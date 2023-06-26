@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Use [multi-target builds](https://blog.rust-lang.org/2022/09/22/Rust-1.64.0.html#cargo-improvements-workspace-inheritance-and-multi-target-builds) for `universal-apple-darwin` (universal macOS binary) on Rust 1.64+. This makes `universal-apple-darwin` builds up to about 2x faster.
+
 ## [1.14.0] - 2023-05-13
 
 - Add `profile` input option to allow specifying custom profiles. ([#44](https://github.com/taiki-e/upload-rust-binary-action/pull/44), thanks @afnanenayet)
