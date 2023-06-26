@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.15.0] - 2023-06-26
+
 - Use [multi-target builds](https://blog.rust-lang.org/2022/09/22/Rust-1.64.0.html#cargo-improvements-workspace-inheritance-and-multi-target-builds) for `universal-apple-darwin` (universal macOS binary) on Rust 1.64+. This could make `universal-apple-darwin` builds up to about 2x faster.
 
 ## [1.14.0] - 2023-05-13
@@ -120,7 +122,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.14.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.15.0...HEAD
+[1.15.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.12.1...v1.13.0
 [1.12.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.12.0...v1.12.1
