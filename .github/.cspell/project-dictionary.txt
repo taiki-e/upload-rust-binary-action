@@ -3,3 +3,6 @@ gtar
 lipo
 mktemp
 tmpdir
+debuginfo
+debuginfos
+objcopy
