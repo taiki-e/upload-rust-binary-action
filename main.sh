@@ -47,6 +47,13 @@ elif [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
     bail "invalid input 'zip': ${INPUT_ZIP}"
 fi
 
+split_debuginfo="${INPUT_SPLIT_DEBUGINFO:-}"
+case "${split_debuginfo}" in
+    true) split_debuginfo="1" ;;
+    false) split_debuginfo="" ;;
+    *) bail "'split_debuginfo' input option must be 'true' or 'false': '${split_debuginfo}'" ;;
+esac
+
 leading_dir="${INPUT_LEADING_DIR:-}"
 case "${leading_dir}" in
     true) leading_dir="1" ;;
@@ -245,6 +252,11 @@ build() {
 do_strip() {
     target_dir="$1"
     if [[ -n "${strip:-}" ]]; then
+        if [[ -n "${split_debuginfo}" ]]; then
+            for bin_exe in "${bins[@]}"; do
+                x objcopy --only-keep-debug "${target_dir}/${bin_exe}" "${target_dir}/${bin_exe}.debug"
+            done
+        fi
         for bin_exe in "${bins[@]}"; do
             x "${strip}" "${target_dir}/${bin_exe}"
         done

@@ -68,6 +68,10 @@ inputs:
     description: The cargo profile to build. This defaults to the release profile.
     required: false
     default: 'release'
+  split_debuginfo:
+    description: Split debuginfos off of the production binary using objcopy before stripping.
+    required: false
+    default: 'false'
 
 # TODO: allow kebab-case input option names?
 # Note:
@@ -95,3 +99,4 @@ runs:
         INPUT_TOKEN: ${{ inputs.token }}
         INPUT_REF: ${{ inputs.ref }}
         INPUT_PROFILE: ${{ inputs.profile }}
+        INPUT_SPLIT_DEBUGINFO: ${{ inputs.split_debuginfo }}
