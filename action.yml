@@ -68,6 +68,54 @@ inputs:
     description: The cargo profile to build. This defaults to the release profile.
     required: false
     default: 'release'
+  pgp_public_key:
+    description: >
+      Public key used for PGP signing.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+
+      This must be an armored key or path to it.
+      For example, the file output by the following command:
+
+      > gpg --output <output-path> --armor --export <key-id>
+
+      This key is not strictly needed for signing, but is used to verify that
+      signing was done correctly with the private key corresponding to this key.
+    required: false
+  pgp_private_key:
+    description: >
+      Private key used for PGP signing.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+
+      This must be an armored key. Unlike pgp_public_key, path is not allowed.
+      For example, the contents of the file output by the following command:
+
+      > gpg --output <output-file> --armor --export-secret-key <key-id>
+
+      If you have already imported the private key, you do not need to specify this.
+    required: false
+  pgp_passphrase:
+    description: >
+      Passphrase of PGP private key. Default to empty string.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+    required: false
+    default: ''
+  pgp_sign_target:
+    description: >
+      Comma-separated list of file kinds to be signed with PGP.
+
+      List can contains any of the followings:
+      - checksum: .<checksum> files
+      - asset: all assets to be uploaded except for .<checksum> files
+
+      Signing files inside the asset (e.g., rust binaries contained in the
+      archive) is not yet supported.
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+    required: false
+    default: '' # TODO: default?
 
 # TODO: allow kebab-case input option names?
 # Note:
@@ -95,3 +143,7 @@ runs:
         INPUT_TOKEN: ${{ inputs.token }}
         INPUT_REF: ${{ inputs.ref }}
         INPUT_PROFILE: ${{ inputs.profile }}
+        INPUT_PGP_PUBLIC_KEY: ${{ inputs.pgp_public_key }}
+        INPUT_PGP_PRIVATE_KEY: ${{ inputs.pgp_private_key }}
+        INPUT_PGP_PASSPHRASE: ${{ inputs.pgp_passphrase }}
+        INPUT_PGP_SIGN_TARGET: ${{ inputs.pgp_sign_target }}
