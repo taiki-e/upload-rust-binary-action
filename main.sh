@@ -123,10 +123,15 @@ rustc_version=$(rustc -Vv | grep 'release: ' | cut -c 10-)
 rustc_minor_version="${rustc_version#*.}"
 rustc_minor_version="${rustc_minor_version%%.*}"
 target="${INPUT_TARGET:-"${host}"}"
+build_tool="${INPUT_BUILD_TOOL:-}"
+if [[ "${build_tool}" == "cargo-zigbuild" ]]; then
+    # cargo-zigbuild supports .<glibc_version> suffix
+    zigbuild_target="${target}"
+    target="${target%%.*}"
+fi
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
 target_upper="$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")"
-build_tool="${INPUT_BUILD_TOOL:-}"
 if [[ -z "${build_tool}" ]]; then
     build_tool="cargo"
     if [[ "${host}" != "${target}" ]]; then
@@ -239,6 +244,17 @@ build() {
             fi
             x cross build "${build_options[@]}" "$@"
             ;;
+        cargo-zigbuild)
+            if ! type -P cargo-zigbuild &>/dev/null; then
+                x pip3 install cargo-zigbuild
+            fi
+            case "${INPUT_TARGET:-}" in
+                '') ;;
+                universal2-apple-darwin) x rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
+                *) x rustup target add "${target}" ;;
+            esac
+            x cargo zigbuild "${build_options[@]}" "$@"
+            ;;
         *) bail "unrecognized build tool '${build_tool}'" ;;
     esac
 }
@@ -277,7 +293,7 @@ case "${INPUT_TARGET:-}" in
         done
         ;;
     *)
-        build --target "${target}"
+        build --target "${zigbuild_target:-"${target}"}"
         target_dir="${target_dir}/${target}/${profile_directory}"
         do_strip "${target_dir}"
         ;;

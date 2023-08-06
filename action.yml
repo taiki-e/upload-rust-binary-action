@@ -47,7 +47,7 @@ inputs:
     required: false
     default: 'false'
   build_tool:
-    description: Tool to build binaries (cargo or cross)
+    description: Tool to build binaries (cargo, cross, or cargo-zigbuild)
     required: false
   checksum:
     description: Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)

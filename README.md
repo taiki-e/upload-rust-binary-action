@@ -12,6 +12,9 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
   - [Example workflow: Build with different features on different platforms](#example-workflow-build-with-different-features-on-different-platforms)
   - [Example workflow: Cross-compilation](#example-workflow-cross-compilation)
+    - [cross](#cross)
+    - [setup-cross-toolchain-action](#setup-cross-toolchain-action)
+    - [cargo-zigbuild](#cargo-zigbuild)
   - [Example workflow: Include additional files](#example-workflow-include-additional-files)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
@@ -43,7 +46,7 @@ Currently, this action is basically intended to be used in combination with an a
 | include             | false        | Comma-separated list of additional files to be included to the archive                       | String  |                |
 | asset               | false        | Comma-separated list of additional files to be uploaded separately                           | String  |                |
 | leading_dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
-| build_tool          | false        | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
+| build_tool          | false        | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 | ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
 | manifest_path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
 | profile             | false        | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
@@ -281,6 +284,8 @@ jobs:
 
 ### Example workflow: Cross-compilation
 
+#### cross
+
 By default, this action uses [cross] for cross-compilation (if cross supports that target). In the following example, only aarch64-unknown-linux-gnu uses cross, the rest use cargo.
 
 If cross is not installed, this action calls `cargo install cross --locked` to install cross. If you want to speed up the installation of cross or use an older version of cross, consider using [install-action].
@@ -336,6 +341,8 @@ jobs:
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+#### setup-cross-toolchain-action
 
 However, if the host has another cross-compilation setup, it will be respected.
 The following is an example using [setup-cross-toolchain-action]. In this example, this action uses cargo for all targets.
@@ -394,7 +401,11 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-If the heuristic to detect host cross-compilation setups does not work well, or if you want to force the use of cargo or cross, you can use the `build_tool` input option.
+#### cargo-zigbuild
+
+if you want to use [cargo-zigbuild], if the heuristic to detect host cross-compilation setups does not work well, or if you want to force the use of cargo or cross, you can use the `build_tool` input option.
+
+If cargo-zigbuild is not installed, this action calls `pip3 install cargo-zigbuild` to install cargo-zigbuild.
 
 ```yaml
 name: Release
@@ -420,23 +431,26 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: aarch64-unknown-linux-gnu
+          - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
-            build_tool: cross
+            build_tool: cargo-zigbuild
+          # cargo-zigbuild's glibc version suffix is also supported.
+          - target: aarch64-unknown-linux-gnu.2.17
+            os: ubuntu-latest
+            build_tool: cargo-zigbuild
           - target: aarch64-apple-darwin
             os: macos-latest
             build_tool: cargo
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install cross-compilation tools
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required)
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
-          # (optional) Tool to build binaries (cargo, or cross)
+          # (optional) Tool to build binaries (cargo, cross, or cargo-zigbuild)
           build_tool: ${{ matrix.build_tool }}
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -654,6 +668,7 @@ To use this action in self-hosted runners or in containers, at least the followi
 - [cache-cargo-install-action]: GitHub Action for `cargo install` with cache.
 
 [cache-cargo-install-action]: https://github.com/taiki-e/cache-cargo-install-action
+[cargo-zigbuild]: https://github.com/rust-cross/cargo-zigbuild
 [create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action
 [cross]: https://github.com/cross-rs/cross
 [install-action]: https://github.com/taiki-e/install-action
