@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Support [cargo-zigbuild](https://github.com/rust-cross/cargo-zigbuild) as build tool. ([#50](https://github.com/taiki-e/upload-rust-binary-action/pull/50))
+
 ## [1.15.0] - 2023-06-26
 
 - Use [multi-target builds](https://blog.rust-lang.org/2022/09/22/Rust-1.64.0.html#cargo-improvements-workspace-inheritance-and-multi-target-builds) for `universal-apple-darwin` (universal macOS binary) on Rust 1.64+. This could make `universal-apple-darwin` builds up to about 2x faster.
