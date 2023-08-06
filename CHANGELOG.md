@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.16.0] - 2023-08-06
+
 - Support [cargo-zigbuild](https://github.com/rust-cross/cargo-zigbuild) as build tool. ([#50](https://github.com/taiki-e/upload-rust-binary-action/pull/50))
 
 ## [1.15.0] - 2023-06-26
@@ -124,7 +126,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.15.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.0...HEAD
+[1.16.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.12.1...v1.13.0
