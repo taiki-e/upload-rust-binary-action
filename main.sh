@@ -131,7 +131,7 @@ if [[ "${build_tool}" == "cargo-zigbuild" ]]; then
 fi
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
-target_upper="$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")"
+target_upper=$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")
 if [[ -z "${build_tool}" ]]; then
     build_tool="cargo"
     if [[ "${host}" != "${target}" ]]; then
