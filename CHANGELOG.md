@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.16.1] - 2023-09-09
+
 - Improve robustness for temporary network failures.
 
 ## [1.16.0] - 2023-08-06
@@ -128,7 +130,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.1...HEAD
+[1.16.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.0...v1.16.1
 [1.16.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.13.0...v1.14.0
