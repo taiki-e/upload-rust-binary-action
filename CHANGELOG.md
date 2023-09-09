@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Improve robustness for temporary network failures.
+
 ## [1.16.0] - 2023-08-06
 
 - Support [cargo-zigbuild](https://github.com/rust-cross/cargo-zigbuild) as build tool. ([#50](https://github.com/taiki-e/upload-rust-binary-action/pull/50))

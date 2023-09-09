@@ -11,6 +11,16 @@ x() {
         "${cmd}" "$@"
     )
 }
+retry() {
+    for i in {1..10}; do
+        if "$@"; then
+            return 0
+        else
+            sleep "${i}"
+        fi
+    done
+    "$@"
+}
 bail() {
     echo "::error::$*"
     exit 1
@@ -386,4 +396,4 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
 done
 
 # https://cli.github.com/manual/gh_release_upload
-GITHUB_TOKEN="${token}" x gh release upload "${tag}" "${final_assets[@]}" --clobber
+GITHUB_TOKEN="${token}" retry gh release upload "${tag}" "${final_assets[@]}" --clobber
