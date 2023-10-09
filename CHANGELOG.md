@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.17.0] - 2023-10-09
+
 - Add `dry-run` input option. ([#55](https://github.com/taiki-e/upload-rust-binary-action/pull/55))
 
 - Allow "kebab-case" input option names. ([#56](https://github.com/taiki-e/upload-rust-binary-action/pull/56))
@@ -136,7 +138,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.1...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.0...HEAD
+[1.17.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.1...v1.17.0
 [1.16.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.0...v1.16.1
 [1.16.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.14.0...v1.15.0
