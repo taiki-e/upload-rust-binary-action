@@ -50,6 +50,7 @@ Currently, this action is basically intended to be used in combination with an a
 | ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
 | manifest_path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
 | profile             | false        | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
+| dry_run             | false        | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
 
 [^1]: Required one of `token` input option or `GITHUB_TOKEN` environment variable.
 
