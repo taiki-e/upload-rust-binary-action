@@ -62,11 +62,11 @@ jobs:
       - run: cargo new --bin test-crate
       - uses: ./
         with:
-          dry_run: true
+          dry-run: true
           bin: test-crate
           target: ${{ matrix.target }}
-          build_tool: ${{ matrix.build_tool }}
+          build-tool: ${{ matrix.build_tool }}
           checksum: sha256,sha512,sha1,md5
           tar: all
           zip: all
-          manifest_path: test-crate/Cargo.toml
+          manifest-path: test-crate/Cargo.toml

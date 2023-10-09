@@ -43,7 +43,7 @@ dry_run="${INPUT_DRY_RUN:-}"
 case "${dry_run}" in
     true) dry_run="1" ;;
     false) dry_run="" ;;
-    *) bail "'dry_run' input option must be 'true' or 'false': '${dry_run}'" ;;
+    *) bail "'dry-run' input option must be 'true' or 'false': '${dry_run}'" ;;
 esac
 
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
@@ -84,14 +84,14 @@ leading_dir="${INPUT_LEADING_DIR:-}"
 case "${leading_dir}" in
     true) leading_dir="1" ;;
     false) leading_dir="" ;;
-    *) bail "'leading_dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
+    *) bail "'leading-dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
 esac
 
 no_default_features="${INPUT_NO_DEFAULT_FEATURES:-}"
 case "${no_default_features}" in
     true) no_default_features="1" ;;
     false) no_default_features="" ;;
-    *) bail "'no_default_features' input option must be 'true' or 'false': '${no_default_features}'" ;;
+    *) bail "'no-default-features' input option must be 'true' or 'false': '${no_default_features}'" ;;
 esac
 
 bin_name="${INPUT_BIN:?}"
