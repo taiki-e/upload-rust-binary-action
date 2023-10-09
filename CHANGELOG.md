@@ -10,6 +10,12 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `dry-run` input option. ([#55](https://github.com/taiki-e/upload-rust-binary-action/pull/55))
+
+- Allow "kebab-case" input option names. ([#56](https://github.com/taiki-e/upload-rust-binary-action/pull/56))
+
+  Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available.
+
 ## [1.16.1] - 2023-09-09
 
 - Improve robustness for temporary network failures.
