@@ -35,24 +35,26 @@ Currently, this action is basically intended to be used in combination with an a
 | Name                | Required     | Description                                                                                  | Type    | Default        |
 |---------------------|:------------:|----------------------------------------------------------------------------------------------|---------|----------------|
 | bin                 | **true**     | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
-| token               | **true** [^1]| GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more)            | String  |                |
+| token               | **true** \[1]| GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more)            | String  |                |
 | archive             | false        | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
 | target              | false        | Target triple, default is host triple                                                        | String  | (host triple)  |
 | features            | false        | Comma-separated list of cargo build features to enable                                       | String  |                |
-| no_default_features | false        | Whether to disable cargo build default features                                              | Boolean | `false`        |
+| no-default-features | false        | Whether to disable cargo build default features                                              | Boolean | `false`        |
 | tar                 | false        | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
 | zip                 | false        | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
 | checksum            | false        | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
 | include             | false        | Comma-separated list of additional files to be included to the archive                       | String  |                |
 | asset               | false        | Comma-separated list of additional files to be uploaded separately                           | String  |                |
-| leading_dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
-| build_tool          | false        | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
+| leading-dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
+| build-tool          | false        | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 | ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
-| manifest_path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
+| manifest-path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
 | profile             | false        | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
-| dry_run             | false        | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
+| dry-run             | false        | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
 
-[^1]: Required one of `token` input option or `GITHUB_TOKEN` environment variable.
+\[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.
+
+(Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available.)
 
 ### Example workflow: Basic usage
 
@@ -404,7 +406,7 @@ jobs:
 
 #### cargo-zigbuild
 
-if you want to use [cargo-zigbuild], if the heuristic to detect host cross-compilation setups does not work well, or if you want to force the use of cargo or cross, you can use the `build_tool` input option.
+if you want to use [cargo-zigbuild], if the heuristic to detect host cross-compilation setups does not work well, or if you want to force the use of cargo or cross, you can use the `build-tool` input option.
 
 If cargo-zigbuild is not installed, this action calls `pip3 install cargo-zigbuild` to install cargo-zigbuild.
 
@@ -434,14 +436,14 @@ jobs:
         include:
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-latest
-            build_tool: cargo-zigbuild
+            build-tool: cargo-zigbuild
           # cargo-zigbuild's glibc version suffix is also supported.
           - target: aarch64-unknown-linux-gnu.2.17
             os: ubuntu-latest
-            build_tool: cargo-zigbuild
+            build-tool: cargo-zigbuild
           - target: aarch64-apple-darwin
             os: macos-latest
-            build_tool: cargo
+            build-tool: cargo
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -452,7 +454,7 @@ jobs:
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
           # (optional) Tool to build binaries (cargo, cross, or cargo-zigbuild)
-          build_tool: ${{ matrix.build_tool }}
+          build-tool: ${{ matrix.build-tool }}
           # (required) GitHub token for uploading assets to GitHub Releases.
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
@@ -508,7 +510,7 @@ By default, the expanded archive does not include the leading directory. In the 
 /README.md
 ```
 
-You can use the `leading_dir` option to create the leading directory.
+You can use the `leading-dir` option to create the leading directory.
 
 ```yaml
 - uses: taiki-e/upload-rust-binary-action@v1
@@ -520,7 +522,7 @@ You can use the `leading_dir` option to create the leading directory.
     # Note that glob pattern is not supported yet.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
-    leading_dir: true
+    leading-dir: true
     # (required) GitHub token for uploading assets to GitHub Releases.
     token: ${{ secrets.GITHUB_TOKEN }}
 ```
