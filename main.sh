@@ -28,6 +28,9 @@ bail() {
 warn() {
     echo "::warning::$*"
 }
+info() {
+    echo "info: $*"
+}
 
 export CARGO_NET_RETRY=10
 export RUSTUP_MAX_RETRIES=10
@@ -36,15 +39,35 @@ if [[ $# -gt 0 ]]; then
     bail "invalid argument '$1'"
 fi
 
+dry_run="${INPUT_DRY_RUN:-}"
+case "${dry_run}" in
+    true) dry_run="1" ;;
+    false) dry_run="" ;;
+    *) bail "'dry_run' input option must be 'true' or 'false': '${dry_run}'" ;;
+esac
+
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
 ref="${INPUT_REF:-"${GITHUB_REF:-}"}"
 
 if [[ -z "${token}" ]]; then
-    bail "neither GITHUB_TOKEN environment variable nor 'token' input option is set"
+    if [[ -n "${dry_run}" ]]; then
+        # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
+        # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
+        warn "neither GITHUB_TOKEN environment variable nor 'token' input option is set (downgraded error to info because action is running in dry-run mode)"
+    else
+        bail "neither GITHUB_TOKEN environment variable nor 'token' input option is set"
+    fi
 fi
 
 if [[ "${ref}" != "refs/tags/"* ]]; then
-    bail "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more"
+    if [[ -n "${dry_run}" ]]; then
+        # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
+        # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
+        warn "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more (downgraded error to info because action is running in dry-run mode)"
+        ref='refs/tags/dry-run'
+    else
+        bail "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more"
+    fi
 fi
 tag="${ref#refs/tags/}"
 
@@ -395,5 +418,13 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
     final_assets+=("${archive}.${checksum}")
 done
 
-# https://cli.github.com/manual/gh_release_upload
-GITHUB_TOKEN="${token}" retry gh release upload "${tag}" "${final_assets[@]}" --clobber
+if [[ -n "${dry_run}" ]]; then
+    info "skipped upload because action is running in dry-run mode"
+    echo "tag: ${tag} ('dry-run' if tag ref is not start with 'refs/tags/')"
+    IFS=','
+    echo "assets: ${final_assets[*]}"
+    IFS=$'\n\t'
+else
+    # https://cli.github.com/manual/gh_release_upload
+    GITHUB_TOKEN="${token}" retry gh release upload "${tag}" "${final_assets[@]}" --clobber
+fi
