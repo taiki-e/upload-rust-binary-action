@@ -169,10 +169,6 @@ if [[ -z "${build_tool}" ]]; then
     build_tool="cargo"
     if [[ "${host}" != "${target}" ]]; then
         case "${target}" in
-            universal-apple-darwin) x rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
-            *) x rustup target add "${target}" ;;
-        esac
-        case "${target}" in
             # https://github.com/cross-rs/cross#supported-targets
             *-windows-msvc* | *-windows-gnu* | *-darwin* | *-fuchsia* | *-redox*) ;;
             *)
@@ -184,6 +180,14 @@ if [[ -z "${build_tool}" ]]; then
         esac
     fi
 fi
+
+if [[ "${build_tool}" == "cargo" ]]; then
+    case "${target}" in
+        universal-apple-darwin) x rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
+        *) x rustup target add "${target}" ;;
+    esac
+fi
+
 archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
