@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix error when `build-tool` is explicitly set to cargo and installation for targets is needed. ([#57](https://github.com/taiki-e/upload-rust-binary-action/pull/57), thanks @sunshowers)
+
 ## [1.17.0] - 2023-10-09
 
 - Add `dry-run` input option. ([#55](https://github.com/taiki-e/upload-rust-binary-action/pull/55))
