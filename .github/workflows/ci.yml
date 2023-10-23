@@ -53,6 +53,9 @@ jobs:
             target: aarch64-apple-darwin
           - os: macos-latest
             target: universal-apple-darwin
+          - os: macos-latest
+            target: universal-apple-darwin
+            build_tool: cargo
           - os: windows-latest
           - os: windows-latest
             target: aarch64-pc-windows-msvc
