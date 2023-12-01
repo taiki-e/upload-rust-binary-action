@@ -170,7 +170,7 @@ if [[ -z "${build_tool}" ]]; then
     if [[ "${host}" != "${target}" ]]; then
         case "${target}" in
             # https://github.com/cross-rs/cross#supported-targets
-            *-windows-msvc* | *-windows-gnu* | *-darwin* | *-fuchsia* | *-redox*) ;;
+            *-windows* | *-darwin* | *-fuchsia* | *-redox*) ;;
             *)
                 # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
                 if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
