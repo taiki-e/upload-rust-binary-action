@@ -307,6 +307,7 @@ do_codesign() {
     target_dir="$1"
     if [[ -n "${INPUT_CODESIGN:-}" ]]; then
         for bin_exe in "${bins[@]}"; do
+            info "signing ${target_dir}/${bin_exe}"
             x codesign --sign "${INPUT_CODESIGN}" "${target_dir}/${bin_exe}"
         done
     fi
