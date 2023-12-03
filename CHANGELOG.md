@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.18.0] - 2023-12-03
+
 - Support signing with `codesign` on macOS. ([#61](https://github.com/taiki-e/upload-rust-binary-action/pull/61), thanks @doinkythederp)
 
 ## [1.17.1] - 2023-10-23
@@ -144,7 +146,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.1...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.18.0...HEAD
+[1.18.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.1...v1.17.0
 [1.16.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.0...v1.16.1
