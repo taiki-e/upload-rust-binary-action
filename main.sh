@@ -303,6 +303,14 @@ do_strip() {
         done
     fi
 }
+do_codesign() {
+    target_dir="$1"
+    if [[ -n "${INPUT_CODESIGN:-}" ]]; then
+        for bin_exe in "${bins[@]}"; do
+            x codesign --sign "${INPUT_CODESIGN}" "${target_dir}/${bin_exe}"
+        done
+    fi
+}
 
 case "${INPUT_TARGET:-}" in
     '')
@@ -335,6 +343,10 @@ case "${INPUT_TARGET:-}" in
         do_strip "${target_dir}"
         ;;
 esac
+
+if command -v codesign &> /dev/null; then
+    do_codesign "${target_dir}"
+fi
 
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
     cwd=$(pwd)

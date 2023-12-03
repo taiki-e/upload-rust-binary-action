@@ -90,6 +90,9 @@ inputs:
     description: Alias for 'dry-run'
     required: false
     default: 'false'
+  codesign:
+    description: Sign build products using `codesign` on macOS
+    required: false
 
 # Note:
 # - inputs.* should be manually mapped to INPUT_* due to https://github.com/actions/runner/issues/665
@@ -117,3 +120,4 @@ runs:
         INPUT_REF: ${{ inputs.ref }}
         INPUT_PROFILE: ${{ inputs.profile }}
         INPUT_DRY_RUN: ${{ inputs.dry-run || inputs.dry_run }}
+        INPUT_CODESIGN: ${{ inputs.codesign }}
