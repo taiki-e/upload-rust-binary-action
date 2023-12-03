@@ -51,6 +51,7 @@ Currently, this action is basically intended to be used in combination with an a
 | manifest-path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
 | profile             | false        | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
 | dry-run             | false        | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
+| codesign            | false        | Sign build products using `codesign` on macOS                                                | String  |                |
 
 \[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.
 
