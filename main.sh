@@ -344,7 +344,7 @@ case "${INPUT_TARGET:-}" in
         ;;
 esac
 
-if command -v codesign &>/dev/null; then
+if type -P codesign &>/dev/null; then
     do_codesign "${target_dir}"
 fi
 
