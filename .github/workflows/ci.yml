@@ -82,3 +82,4 @@ jobs:
           tar: all
           zip: all
           manifest-path: test-crate/Cargo.toml
+          codesign: '-'

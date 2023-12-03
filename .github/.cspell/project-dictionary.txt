@@ -3,3 +3,4 @@ gtar
 lipo
 mktemp
 zigbuild
+codesign
