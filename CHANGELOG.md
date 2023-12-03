@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Support signing with `codesign` on macOS. ([#61](https://github.com/taiki-e/upload-rust-binary-action/pull/61), thanks @doinkythederp)
+
 ## [1.17.1] - 2023-10-23
 
 - Fix error when `build-tool` is explicitly set to cargo and installation for targets is needed. ([#57](https://github.com/taiki-e/upload-rust-binary-action/pull/57), thanks @sunshowers)
