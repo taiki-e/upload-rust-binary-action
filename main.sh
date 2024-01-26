@@ -344,9 +344,13 @@ case "${INPUT_TARGET:-}" in
         ;;
 esac
 
-if type -P codesign &>/dev/null; then
-    do_codesign "${target_dir}"
-fi
+case "${OSTYPE}" in
+    darwin*)
+        if type -P codesign &>/dev/null; then
+            do_codesign "${target_dir}"
+        fi
+        ;;
+esac
 
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
     cwd=$(pwd)
