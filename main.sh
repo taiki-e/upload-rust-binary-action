@@ -193,11 +193,11 @@ archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 
 tar="tar"
-case "${OSTYPE}" in
-    linux*)
+case "$(uname -s)" in
+    Linux)
         platform="unix"
         ;;
-    darwin*)
+    Darwin)
         platform="unix"
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
@@ -206,11 +206,11 @@ case "${OSTYPE}" in
             brew install gnu-tar &>/dev/null
         fi
         ;;
-    cygwin* | msys*)
+    MINGW* | MSYS* | CYGWIN* | Windows_NT)
         platform="windows"
         exe=".exe"
         ;;
-    *) bail "unrecognized OSTYPE '${OSTYPE}'" ;;
+    *) bail "unrecognized OS type '$(uname -s)'" ;;
 esac
 
 input_profile=${INPUT_PROFILE:-release}
@@ -344,8 +344,8 @@ case "${INPUT_TARGET:-}" in
         ;;
 esac
 
-case "${OSTYPE}" in
-    darwin*)
+case "$(uname -s)" in
+    Darwin)
         if type -P codesign &>/dev/null; then
             do_codesign "${target_dir}"
         fi
