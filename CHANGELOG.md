@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.19.0] - 2024-03-05
+
 - Align default strip behavior to [Cargo 1.77+'s default (strip=debuginfo)](https://github.com/rust-lang/cargo/pull/13257). See [#66](https://github.com/taiki-e/upload-rust-binary-action/pull/66) for details.
 
 ## [1.18.0] - 2023-12-03
@@ -148,7 +150,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.18.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.0...HEAD
+[1.19.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.0...v1.17.1
 [1.17.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.16.1...v1.17.0
