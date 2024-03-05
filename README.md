@@ -625,6 +625,8 @@ The followings are examples to specify profile options:
   strip = true
   ```
 
+  [Default is `strip = debuginfo`.](https://github.com/rust-lang/cargo/pull/13257)
+
 **Note:** Some of these options may increase the build time.
 
 ## Supported events
