@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Align default strip behavior to [Cargo 1.77+'s default (strip=debuginfo)](https://github.com/rust-lang/cargo/pull/13257). See [#66](https://github.com/taiki-e/upload-rust-binary-action/pull/66) for details.
+
 ## [1.18.0] - 2023-12-03
 
 - Support signing with `codesign` on macOS. ([#61](https://github.com/taiki-e/upload-rust-binary-action/pull/61), thanks @doinkythederp)

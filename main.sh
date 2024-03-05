@@ -250,25 +250,13 @@ else
     target_dir=$(jq <<<"${metadata}" -r '.target_directory')
 fi
 
-strip=""
 workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 # TODO: This is a somewhat rough check as it does not look at the type of profile.
-if ! grep -Eq '^strip\s*=' "${workspace_root}/Cargo.toml"; then
-    case "${target}" in
-        *-pc-windows-msvc) ;;
-        x86_64* | i?86-*) strip="strip" ;;
-        arm*-linux-*eabi) strip="arm-linux-gnueabi-strip" ;;
-        arm*-linux-*eabihf | thumb*-linux-*eabihf) strip="arm-linux-gnueabihf-strip" ;;
-        arm*-none-eabi* | thumb*-none-eabi*) strip="arm-none-eabi-strip" ;;
-        aarch64*-linux-*) strip="aarch64-linux-gnu-strip" ;;
-        powerpc64le-*-linux-*) strip="powerpc64le-linux-gnu-strip" ;;
-        s390x-*-linux-*) strip="s390x-linux-gnu-strip" ;;
-    esac
-    if [[ -n "${strip:-}" ]]; then
-        if ! type -P "${strip}" &>/dev/null; then
-            warn "${strip} not found, skip stripping"
-            strip=""
-        fi
+if ! grep -Eq '^strip\s*=' "${workspace_root}/Cargo.toml" && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]]; then
+    # On pre-1.77, align to Cargo 1.77+'s default: https://github.com/rust-lang/cargo/pull/13257
+    # strip option builds requires Cargo 1.59
+    if [[ "${rustc_minor_version}" -lt 77 ]] && [[ "${rustc_minor_version}" -ge 59 ]]; then
+        export CARGO_PROFILE_RELEASE_STRIP=debuginfo
     fi
 fi
 
@@ -295,14 +283,6 @@ build() {
         *) bail "unrecognized build tool '${build_tool}'" ;;
     esac
 }
-do_strip() {
-    target_dir="$1"
-    if [[ -n "${strip:-}" ]]; then
-        for bin_exe in "${bins[@]}"; do
-            x "${strip}" "${target_dir}/${bin_exe}"
-        done
-    fi
-}
 do_codesign() {
     target_dir="$1"
     if [[ -n "${INPUT_CODESIGN:-}" ]]; then
@@ -316,7 +296,6 @@ case "${INPUT_TARGET:-}" in
     '')
         build
         target_dir="${target_dir}/${profile_directory}"
-        do_strip "${target_dir}"
         ;;
     universal-apple-darwin)
         # Refs: https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary
@@ -331,8 +310,6 @@ case "${INPUT_TARGET:-}" in
         x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${profile_directory}"
         target_dir="${target_dir}/${target}/${profile_directory}"
         mkdir -p "${target_dir}"
-        do_strip "${aarch64_target_dir}"
-        do_strip "${x86_64_target_dir}"
         for bin_exe in "${bins[@]}"; do
             x lipo -create -output "${target_dir}/${bin_exe}" "${aarch64_target_dir}/${bin_exe}" "${x86_64_target_dir}/${bin_exe}"
         done
@@ -340,7 +317,6 @@ case "${INPUT_TARGET:-}" in
     *)
         build --target "${zigbuild_target:-"${target}"}"
         target_dir="${target_dir}/${target}/${profile_directory}"
-        do_strip "${target_dir}"
         ;;
 esac
 
