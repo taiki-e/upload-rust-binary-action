@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Work around strip bugs in rustc and cargo. See [#69](https://github.com/taiki-e/upload-rust-binary-action/pull/69) for details.
+
 ## [1.19.0] - 2024-03-05
 
 - Align default strip behavior to [Cargo 1.77+'s default (strip=debuginfo)](https://github.com/rust-lang/cargo/pull/13257). See [#66](https://github.com/taiki-e/upload-rust-binary-action/pull/66) for details.
