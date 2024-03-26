@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.19.1] - 2024-03-26
+
 - Work around strip bugs in rustc and cargo. See [#69](https://github.com/taiki-e/upload-rust-binary-action/pull/69) for details.
 
 ## [1.19.0] - 2024-03-05
@@ -152,7 +154,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.1...HEAD
+[1.19.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.1...v1.18.0
 [1.17.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.17.0...v1.17.1
