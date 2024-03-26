@@ -252,11 +252,18 @@ fi
 
 workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 # TODO: This is a somewhat rough check as it does not look at the type of profile.
-if ! grep -Eq '^strip\s*=' "${workspace_root}/Cargo.toml" && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]]; then
+if ! grep -Eq '^\s*strip\s*=' "${workspace_root}/Cargo.toml" && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]]; then
     # On pre-1.77, align to Cargo 1.77+'s default: https://github.com/rust-lang/cargo/pull/13257
+    # However, set env on pre-1.79 because it is 1.79+ that actually works correctly due to https://github.com/rust-lang/cargo/issues/13617.
     # strip option builds requires Cargo 1.59
-    if [[ "${rustc_minor_version}" -lt 77 ]] && [[ "${rustc_minor_version}" -ge 59 ]]; then
-        export CARGO_PROFILE_RELEASE_STRIP=debuginfo
+    case "${target}" in
+        # Do not strip debuginfo on MSVC https://github.com/rust-lang/cargo/pull/13630
+        # This is the same behavior as pre-1.19.0 upload-rust-binary-action.
+        *-pc-windows-msvc) strip_default=none ;;
+        *) strip_default=debuginfo ;;
+    esac
+    if [[ "${rustc_minor_version}" -lt 79 ]] && [[ "${rustc_minor_version}" -ge 59 ]]; then
+        export CARGO_PROFILE_RELEASE_STRIP="${strip_default}"
     fi
 fi
 
