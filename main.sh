@@ -205,6 +205,9 @@ case "$(uname -s)" in
         if ! type -P gtar &>/dev/null; then
             brew install gnu-tar &>/dev/null
         fi
+        if [[ -z "${INPUT_TARGET:-}" ]]; then
+            warn "GitHub Actions changed default architecture of macos-latest since macos-14; consider passing 'target' input option to clarify which target you are building for"
+        fi
         ;;
     MINGW* | MSYS* | CYGWIN* | Windows_NT)
         platform="windows"
