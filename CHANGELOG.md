@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add a warning for `macos-latest` runner architecture change. ([#70](https://github.com/taiki-e/upload-rust-binary-action/pull/70))
+
+  > warning: GitHub Actions changed default architecture of macos-latest since macos-14; consider passing 'target' input option to clarify which target you are building for.
+
 ## [1.19.1] - 2024-03-26
 
 - Work around strip bugs in rustc and cargo. See [#69](https://github.com/taiki-e/upload-rust-binary-action/pull/69) for details.

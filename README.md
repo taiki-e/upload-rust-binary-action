@@ -37,7 +37,7 @@ Currently, this action is basically intended to be used in combination with an a
 | bin                 | **true**     | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
 | token               | **true** \[1]| GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more)            | String  |                |
 | archive             | false        | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
-| target              | false        | Target triple, default is host triple                                                        | String  | (host triple)  |
+| target              | false \[2]   | Target triple, default is host triple                                                        | String  | (host triple)  |
 | features            | false        | Comma-separated list of cargo build features to enable                                       | String  |                |
 | no-default-features | false        | Whether to disable cargo build default features                                              | Boolean | `false`        |
 | tar                 | false        | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
@@ -53,7 +53,8 @@ Currently, this action is basically intended to be used in combination with an a
 | dry-run             | false        | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
 | codesign            | false        | Sign build products using `codesign` on macOS                                                | String  |                |
 
-\[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.
+\[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.<br>
+\[2] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
 
 (Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available.)
 
@@ -158,10 +159,13 @@ jobs:
     needs: create-release
     strategy:
       matrix:
-        os:
-          - ubuntu-latest
-          - macos-latest
-          - windows-latest
+        include:
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -170,6 +174,12 @@ jobs:
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
           # Note that glob pattern is not supported yet.
           bin: ...
+          # (optional) Target triple, default is host triple.
+          # This is optional but it is recommended that this always be set to
+          # clarify which target you are building for if macOS is included in
+          # the matrix because GitHub Actions changed the default architecture
+          # of macos-latest since macos-14.
+          target: ${{ matrix.target }}
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
           # [possible values: all, unix, windows, none]
@@ -264,10 +274,14 @@ jobs:
     needs: create-release
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
         include:
-          - os: ubuntu-latest
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-latest
             features: systemd,io_uring
+          - target: x86_64-apple-darwin
+            os: macos-latest
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -276,6 +290,8 @@ jobs:
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
           # Note that glob pattern is not supported yet.
           bin: ...
+          # (optional) Target triple, default is host triple.
+          target: ${{ matrix.target }}
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
           # [possible values: all, unix, windows, none]
@@ -622,7 +638,7 @@ The followings are examples to specify profile options:
 
   ```toml
   [profile.release]
-  strip = true
+  strip = "symbols"
   ```
 
   [Default is `strip = debuginfo`.](https://github.com/rust-lang/cargo/pull/13257)
