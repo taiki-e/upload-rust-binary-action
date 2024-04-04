@@ -49,6 +49,10 @@ jobs:
             target: x86_64-unknown-linux-gnu.2.17
             build_tool: cargo-zigbuild
           - os: macos-latest
+          - os: macos-13 # x86_64
+          - os: macos-14 # aarch64
+          - os: macos-latest
+            target: x86_64-apple-darwin
           - os: macos-latest
             target: aarch64-apple-darwin
           - os: macos-latest
