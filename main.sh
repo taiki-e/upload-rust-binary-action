@@ -88,6 +88,13 @@ case "${leading_dir}" in
     *) bail "'leading-dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
 esac
 
+bin_leading_dir="${INPUT_BIN_LEADING_DIR:-}"
+case "${bin_leading_dir}" in
+    true) bin_leading_dir="1" ;;
+    false) bin_leading_dir="" ;;
+    *) bail "'bin-leading-dir' input option must be 'true' or 'false': '${bin_leading_dir}'" ;;
+esac
+
 no_default_features="${INPUT_NO_DEFAULT_FEATURES:-}"
 case "${no_default_features}" in
     true) no_default_features="1" ;;
