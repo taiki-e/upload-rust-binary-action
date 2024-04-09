@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0 OR MIT
+set -x
 set -eEuo pipefail
 IFS=$'\n\t'
 
