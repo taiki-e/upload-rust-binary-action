@@ -86,7 +86,7 @@ jobs:
           manifest-path: test-crate/Cargo.toml
           codesign: '-'
 
-  leading_dir_test:
+  optional_test:
     strategy:
       fail-fast: false
       matrix:
