@@ -46,6 +46,7 @@ Currently, this action is basically intended to be used in combination with an a
 | include             | false        | Comma-separated list of additional files to be included to the archive                       | String  |                |
 | asset               | false        | Comma-separated list of additional files to be uploaded separately                           | String  |                |
 | leading-dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
+| bin-leading-dir     | false        | Create extra leading directory(s) for `bin` (e.g. the binary file) in the archive            | String  |                |
 | build-tool          | false        | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
 | ref                 | false        | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
 | manifest-path       | false        | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
@@ -557,6 +558,34 @@ In the above example, the directory structure of the archive would be as follows
 ```text
 /<archive>/
 /<archive>/<bin>
+/<archive>/LICENSE
+/<archive>/README.md
+```
+
+You can use the `bin-leading-dir` option to create extra leading directory(s) for `bin` (e.g. the binary file).
+
+```yaml
+- uses: taiki-e/upload-rust-binary-action@v1
+  with:
+    # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+    # Note that glob pattern is not supported yet.
+    bin: ...
+    # (optional) Comma-separated list of additional files to be included to archive.
+    # Note that glob pattern is not supported yet.
+    include: LICENSE,README.md
+    # (optional) Whether to create the leading directory in the archive or not. default to false.
+    leading-dir: true
+    # (optional) Create extra leading directory(s) for `bin`. default to empty.
+    bin-leading-dir: opt/leading
+    # (required) GitHub token for uploading assets to GitHub Releases.
+    token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+In the above example, the directory structure of the archive would be as follows:
+
+```text
+/<archive>/
+/<archive>/opt/leading/<bin>
 /<archive>/LICENSE
 /<archive>/README.md
 ```
