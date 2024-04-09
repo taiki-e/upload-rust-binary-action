@@ -350,8 +350,10 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         if [[ -n "${bin_leading_dir}" ]]; then
             x mkdir -p "${tmpdir}/${bin_leading_dir}/${archive}"/
             x cp "${target_dir}/${bin_exe}" "${tmpdir}/${bin_leading_dir}/${archive}"/
+            filenames+=("${bin_exe%%/*}")
         else
             x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
+            filenames+=("${bin_exe}")
         fi
     done
     for include in ${includes[@]+"${includes[@]}"}; do
