@@ -89,11 +89,6 @@ case "${leading_dir}" in
 esac
 
 bin_leading_dir="${INPUT_BIN_LEADING_DIR:-}"
-case "${bin_leading_dir}" in
-    true) bin_leading_dir="1" ;;
-    false) bin_leading_dir="" ;;
-    *) bail "'bin-leading-dir' input option must be 'true' or 'false': '${bin_leading_dir}'" ;;
-esac
 
 no_default_features="${INPUT_NO_DEFAULT_FEATURES:-}"
 case "${no_default_features}" in
@@ -352,7 +347,11 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     mkdir "${tmpdir:?}/${archive}"
     filenames=("${bins[@]}")
     for bin_exe in "${bins[@]}"; do
-        cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
+        if [[ -z "${bin_leading_dir}" ]]; then
+            x cp "${target_dir}/${bin_exe}" "${tmpdir}/${bin_leading_dir}/${archive}"/
+        else
+            x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
+        fi
     done
     for include in ${includes[@]+"${includes[@]}"}; do
         cp -r "${include}" "${tmpdir}/${archive}"/
