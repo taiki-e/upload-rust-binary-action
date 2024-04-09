@@ -1,4 +1,4 @@
-name: Build and upload Rust binary to GitHub Releases
+name: Build and upload Rust binary to GitHub Releases - linrongbin16 testing
 description: GitHub Action for building and uploading Rust binary to GitHub Releases
 
 inputs:
