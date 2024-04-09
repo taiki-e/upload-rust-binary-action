@@ -345,7 +345,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     cwd=$(pwd)
     tmpdir=$(mktemp -d)
     mkdir "${tmpdir:?}/${archive}"
-    filenames=("${bins[@]}")
+    filenames=()
     for bin_exe in "${bins[@]}"; do
         if [[ -n "${bin_leading_dir}" ]]; then
             x mkdir -p "${tmpdir}/${bin_leading_dir}/${archive}"/
