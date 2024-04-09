@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0 OR MIT
-set -x
 set -eEuo pipefail
 IFS=$'\n\t'
 
@@ -348,6 +347,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     filenames=("${bins[@]}")
     for bin_exe in "${bins[@]}"; do
         if [[ -z "${bin_leading_dir}" ]]; then
+            x mkdir -p "${tmpdir}/${bin_leading_dir}"/
             x cp "${target_dir}/${bin_exe}" "${tmpdir}/${bin_leading_dir}/${archive}"/
         else
             x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/

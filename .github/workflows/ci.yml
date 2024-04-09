@@ -85,3 +85,59 @@ jobs:
           zip: all
           manifest-path: test-crate/Cargo.toml
           codesign: '-'
+
+  leading_test:
+    strategy:
+      fail-fast: false
+      matrix:
+        leading_dir: [true, false]
+        bin_leading_dir: ['', 'leading-bin', 'opt/bin/leading']
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
+            build_tool: cargo
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu.2.17
+            build_tool: cargo-zigbuild
+          - os: macos-latest
+          - os: macos-13 # x86_64
+          - os: macos-14 # aarch64
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          - os: macos-latest
+            target: universal-apple-darwin
+          - os: macos-latest
+            target: universal-apple-darwin
+            build_tool: cargo
+          - os: windows-latest
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+    runs-on: ${{ matrix.os || 'ubuntu-latest' }}
+    timeout-minutes: 60
+    steps:
+      - uses: taiki-e/checkout-action@v1
+      - name: Install Rust
+        run: rustup update stable --no-self-update
+      - uses: taiki-e/setup-cross-toolchain-action@v1
+        with:
+          target: ${{ matrix.target }}
+        if: matrix.target != '' && matrix.build_tool == 'cargo'
+      - run: cargo new --bin test-crate
+      - uses: ./
+        with:
+          dry-run: true
+          bin: test-crate
+          target: ${{ matrix.target }}
+          build-tool: ${{ matrix.build_tool }}
+          checksum: sha256,sha512,sha1,md5
+          tar: all
+          zip: all
+          manifest-path: test-crate/Cargo.toml
+          codesign: '-'
+          leading-dir: ${{ matrix.leading_dir }}
+          bin-leading-dir: ${{ matrix.bin_leading_dir }}
