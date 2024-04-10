@@ -364,6 +364,9 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     done
     pushd "${tmpdir}" >/dev/null
     if [[ -n "${leading_dir}" ]]; then
+        echo "with leading_dir:$leading_dir"
+        echo "tree ${archive}"
+        tree "${archive}"
         # with leading directory
         #
         # /${archive}
@@ -382,6 +385,11 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
             fi
         fi
     else
+        echo "without leading_dir:$leading_dir"
+        echo "tree"
+        tree
+        echo "echo filenames[@]"
+        echo "${filenames[@]}"
         # without leading directory
         #
         # /${bins}
