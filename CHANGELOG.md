@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `bin-leading-dir` input option. ([#73](https://github.com/taiki-e/upload-rust-binary-action/pull/73), thanks @linrongbin16)
+
 ## [1.19.2] - 2024-04-03
 
 - Add a warning for `macos-latest` runner architecture change. ([#70](https://github.com/taiki-e/upload-rust-binary-action/pull/70))
