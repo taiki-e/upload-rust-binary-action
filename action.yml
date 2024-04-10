@@ -55,6 +55,9 @@ inputs:
     description: Alias for 'leading-dir'
     required: false
     default: 'false'
+  bin-leading-dir:
+    description: Create extra leading directory(s) for `bin` (e.g. the binary file) in the archive
+    required: false
   build-tool:
     description: Tool to build binaries (cargo, cross, or cargo-zigbuild)
     required: false
@@ -114,6 +117,7 @@ runs:
         INPUT_INCLUDE: ${{ inputs.include }}
         INPUT_ASSET: ${{ inputs.asset }}
         INPUT_LEADING_DIR: ${{ inputs.leading-dir || inputs.leading_dir }}
+        INPUT_BIN_LEADING_DIR: ${{ inputs.bin-leading-dir }}
         INPUT_BUILD_TOOL: ${{ inputs.build-tool || inputs.build_tool }}
         INPUT_CHECKSUM: ${{ inputs.checksum }}
         INPUT_TOKEN: ${{ inputs.token }}

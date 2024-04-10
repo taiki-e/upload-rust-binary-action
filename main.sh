@@ -87,6 +87,8 @@ case "${leading_dir}" in
     *) bail "'leading-dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
 esac
 
+bin_leading_dir="${INPUT_BIN_LEADING_DIR:-}"
+
 no_default_features="${INPUT_NO_DEFAULT_FEATURES:-}"
 case "${no_default_features}" in
     true) no_default_features="1" ;;
@@ -342,9 +344,18 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     cwd=$(pwd)
     tmpdir=$(mktemp -d)
     mkdir "${tmpdir:?}/${archive}"
-    filenames=("${bins[@]}")
+    if [[ -n "${bin_leading_dir}" ]]; then
+        x mkdir -p "${tmpdir}/${archive}/${bin_leading_dir}"/
+        filenames=("${bin_leading_dir%%/*}")
+    else
+        filenames=("${bins[@]}")
+    fi
     for bin_exe in "${bins[@]}"; do
-        cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
+        if [[ -n "${bin_leading_dir}" ]]; then
+            x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}/${bin_leading_dir}"/
+        else
+            x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
+        fi
     done
     for include in ${includes[@]+"${includes[@]}"}; do
         cp -r "${include}" "${tmpdir}/${archive}"/
