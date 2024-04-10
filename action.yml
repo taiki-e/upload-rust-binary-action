@@ -56,7 +56,7 @@ inputs:
     required: false
     default: 'false'
   bin-leading-dir:
-    description: Create extra leading directory(s) for `bin` (e.g. the binary file) in the archive
+    description: Create extra leading directory(s) for binary file(s) specified by 'bin' option
     required: false
   build-tool:
     description: Tool to build binaries (cargo, cross, or cargo-zigbuild)

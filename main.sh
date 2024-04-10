@@ -345,7 +345,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     tmpdir=$(mktemp -d)
     mkdir "${tmpdir:?}/${archive}"
     if [[ -n "${bin_leading_dir}" ]]; then
-        x mkdir -p "${tmpdir}/${archive}/${bin_leading_dir}"/
+        mkdir -p "${tmpdir}/${archive}/${bin_leading_dir}"/
         filenames=("${bin_leading_dir%%/*}")
     else
         filenames=("${bins[@]}")
@@ -358,7 +358,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         fi
     done
     for include in ${includes[@]+"${includes[@]}"}; do
-        cp -r "${include}" "${tmpdir}/${archive}"/
+        x cp -r "${include}" "${tmpdir}/${archive}"/
         filenames+=("$(basename "${include}")")
     done
     pushd "${tmpdir}" >/dev/null
