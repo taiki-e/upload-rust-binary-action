@@ -562,7 +562,7 @@ In the above example, the directory structure of the archive would be as follows
 /<archive>/README.md
 ```
 
-You can use the `bin-leading-dir` option to create extra leading directory(s) for `bin` (e.g. the binary file).
+You can use the `bin-leading-dir` option to create extra leading directory(s) for binary file(s) specified by `bin` option.
 
 ```yaml
 - uses: taiki-e/upload-rust-binary-action@v1
