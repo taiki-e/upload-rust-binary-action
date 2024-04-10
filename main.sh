@@ -346,12 +346,12 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
     mkdir "${tmpdir:?}/${archive}"
     if [[ -n "${bin_leading_dir}" ]]; then
         filenames=("${bin_leading_dir%%/*}")
+        x mkdir -p "${tmpdir}/${archive}/${bin_leading_dir}"/
     else
         filenames=("${bins[@]}")
     fi
     for bin_exe in "${bins[@]}"; do
         if [[ -n "${bin_leading_dir}" ]]; then
-            x mkdir -p "${tmpdir}/${archive}/${bin_leading_dir}"/
             x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}/${bin_leading_dir}"/
         else
             x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
