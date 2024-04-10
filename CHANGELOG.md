@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.20.0] - 2024-04-10
+
 - Add `bin-leading-dir` input option. ([#73](https://github.com/taiki-e/upload-rust-binary-action/pull/73), thanks @linrongbin16)
 
 ## [1.19.2] - 2024-04-03
@@ -162,7 +164,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.2...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.2...v1.20.0
 [1.19.2]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.18.0...v1.19.0
