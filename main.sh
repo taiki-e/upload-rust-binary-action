@@ -167,19 +167,57 @@ fi
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
 target_upper=$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")
+
+tar="tar"
+case "$(uname -s)" in
+    Linux)
+        platform=unix
+        host_os=linux
+        ;;
+    Darwin)
+        platform=unix
+        host_os=macos
+        # Work around https://github.com/actions/cache/issues/403 by using GNU tar
+        # instead of BSD tar.
+        tar="gtar"
+        if ! type -P gtar &>/dev/null; then
+            brew install gnu-tar &>/dev/null
+        fi
+        if [[ -z "${INPUT_TARGET:-}" ]]; then
+            warn "GitHub Actions changed default architecture of macos-latest since macos-14; consider passing 'target' input option to clarify which target you are building for"
+        fi
+        ;;
+    MINGW* | MSYS* | CYGWIN* | Windows_NT)
+        platform=windows
+        host_os=windows
+        exe=".exe"
+        ;;
+    *) bail "unrecognized OS type '$(uname -s)'" ;;
+esac
+
 if [[ -z "${build_tool}" ]]; then
     build_tool="cargo"
     if [[ "${host}" != "${target}" ]]; then
-        case "${target}" in
-            # https://github.com/cross-rs/cross#supported-targets
-            *-windows* | *-darwin* | *-fuchsia* | *-redox*) ;;
-            *)
-                # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
-                if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
-                    build_tool="cross"
-                fi
-                ;;
-        esac
+        # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
+        if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
+            case "${target}" in
+                # https://github.com/cross-rs/cross#supported-targets
+                *-windows*)
+                    case "${host_os}" in
+                        windows) ;;
+                        *) build_tool="cross" ;;
+                    esac
+                    ;;
+                *-apple-*)
+                    case "${host_os}" in
+                        macos) ;;
+                        *) build_tool="cross" ;;
+                    esac
+                    ;;
+                *-fuchsia* | *-redox*) ;;
+                *) build_tool="cross" ;;
+            esac
+        fi
     fi
 fi
 
@@ -193,30 +231,6 @@ fi
 archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
-
-tar="tar"
-case "$(uname -s)" in
-    Linux)
-        platform="unix"
-        ;;
-    Darwin)
-        platform="unix"
-        # Work around https://github.com/actions/cache/issues/403 by using GNU tar
-        # instead of BSD tar.
-        tar="gtar"
-        if ! type -P gtar &>/dev/null; then
-            brew install gnu-tar &>/dev/null
-        fi
-        if [[ -z "${INPUT_TARGET:-}" ]]; then
-            warn "GitHub Actions changed default architecture of macos-latest since macos-14; consider passing 'target' input option to clarify which target you are building for"
-        fi
-        ;;
-    MINGW* | MSYS* | CYGWIN* | Windows_NT)
-        platform="windows"
-        exe=".exe"
-        ;;
-    *) bail "unrecognized OS type '$(uname -s)'" ;;
-esac
 
 input_profile=${INPUT_PROFILE:-release}
 case "${input_profile}" in
@@ -264,7 +278,7 @@ if ! grep -Eq '^\s*strip\s*=' "${workspace_root}/Cargo.toml" && [[ -z "${CARGO_P
     case "${target}" in
         # Do not strip debuginfo on MSVC https://github.com/rust-lang/cargo/pull/13630
         # This is the same behavior as pre-1.19.0 upload-rust-binary-action.
-        *-pc-windows-msvc) strip_default=none ;;
+        *-windows-msvc) strip_default=none ;;
         *) strip_default=debuginfo ;;
     esac
     if [[ "${rustc_minor_version}" -lt 79 ]] && [[ "${rustc_minor_version}" -ge 59 ]]; then
@@ -332,8 +346,8 @@ case "${INPUT_TARGET:-}" in
         ;;
 esac
 
-case "$(uname -s)" in
-    Darwin)
+case "${host_os}" in
+    macos)
         if type -P codesign &>/dev/null; then
             do_codesign "${target_dir}"
         fi
