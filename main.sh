@@ -153,8 +153,8 @@ if [[ -n "${checksum}" ]]; then
     done <<<"${checksum},"
 fi
 
-host=$(rustc -Vv | grep 'host: ' | cut -c 7-)
-rustc_version=$(rustc -Vv | grep 'release: ' | cut -c 10-)
+host=$(rustc -vV | grep '^host:' | cut -d' ' -f2)
+rustc_version=$(rustc -vV | grep '^release:' | cut -d' ' -f2)
 rustc_minor_version="${rustc_version#*.}"
 rustc_minor_version="${rustc_minor_version%%.*}"
 target="${INPUT_TARGET:-"${host}"}"

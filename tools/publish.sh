@@ -15,6 +15,16 @@ trap 's=$?; echo >&2 "$0: error on line "${LINENO}": ${BASH_COMMAND}"; exit ${s}
 # Note: This script requires the following tools:
 # - parse-changelog <https://github.com/taiki-e/parse-changelog>
 
+retry() {
+    for i in {1..10}; do
+        if "$@"; then
+            return 0
+        else
+            sleep "${i}"
+        fi
+    done
+    "$@"
+}
 bail() {
     echo >&2 "error: $*"
     exit 1
@@ -41,6 +51,7 @@ if gh release view "${tag}" &>/dev/null; then
     bail "tag '${tag}' has already been created and pushed"
 fi
 
+# Make sure that the release was created from an allowed branch.
 if ! git branch | grep -q '\* main$'; then
     bail "current branch is not 'main'"
 fi
@@ -89,25 +100,27 @@ echo "======================================="
 
 if [[ -n "${tags}" ]]; then
     # Create a release commit.
-    git add "${changelog}"
-    git commit -m "Release ${version}"
+    (
+        set -x
+        git add "${changelog}"
+        git commit -m "Release ${version}"
+    )
 fi
 
 set -x
 
 git tag "${tag}"
-git push origin main
-git push origin --tags
+retry git push origin main
+retry git push origin --tags
 
 major_version_tag="v${version%%.*}"
 git checkout -b "${major_version_tag}"
-git push origin refs/heads/"${major_version_tag}"
+retry git push origin refs/heads/"${major_version_tag}"
 if git --no-pager tag | grep -Eq "^${major_version_tag}$"; then
     git tag -d "${major_version_tag}"
-    git push --delete origin refs/tags/"${major_version_tag}"
+    retry git push --delete origin refs/tags/"${major_version_tag}"
 fi
 git tag "${major_version_tag}"
+retry git push origin --tags
 git checkout main
 git branch -d "${major_version_tag}"
-
-git push origin --tags
