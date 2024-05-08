@@ -107,15 +107,15 @@ outputs:
   tar:
     description: 'Tar archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.tar }}
-  sha256sum:
+  sha256:
     description: 'SHA256 checksum file name'
-    value: ${{ steps.upload-rust-binary-action.outputs.sha256sum }}
-  sha512sum:
+    value: ${{ steps.upload-rust-binary-action.outputs.sha256 }}
+  sha512:
     description: 'SHA512 checksum file name'
-    value: ${{ steps.upload-rust-binary-action.outputs.sha512sum }}
+    value: ${{ steps.upload-rust-binary-action.outputs.sha512 }}
   sha1:
     description: 'SHA1 checksum file name'
-    value: ${{ steps.upload-rust-binary-action.outputs.sha1sum }}
+    value: ${{ steps.upload-rust-binary-action.outputs.sha1 }}
   md5:
     description: 'MD5 checksum file name'
     value: ${{ steps.upload-rust-binary-action.outputs.md5 }}

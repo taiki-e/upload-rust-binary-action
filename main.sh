@@ -391,7 +391,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
-            echo "tar=${archive}.zip" >> "${GITHUB_OUTPUT}"
+            echo "zip=${archive}.zip" >> "${GITHUB_OUTPUT}"
             if [[ "${platform}" == "unix" ]]; then
                 x zip -r "${cwd}/${archive}.zip" "${archive}"
             else
@@ -411,7 +411,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
-            echo "tar=${archive}.zip" >> "${GITHUB_OUTPUT}"
+            echo "zip=${archive}.zip" >> "${GITHUB_OUTPUT}"
 
             if [[ "${platform}" == "unix" ]]; then
                 x zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
@@ -453,7 +453,7 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
         esac
     fi
     x cat "${archive}.${checksum}"
-    echo "${checksum}sum=${archive}.${checksum}" >> "${GITHUB_OUTPUT}"
+    echo "${checksum}=${archive}.${checksum}" >> "${GITHUB_OUTPUT}"
     final_assets+=("${archive}.${checksum}")
 done
 
