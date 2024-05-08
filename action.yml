@@ -98,6 +98,9 @@ inputs:
     required: false
 
 outputs:
+  archive:
+    description: 'Archive base name'
+    value: ${{ steps.upload-rust-binary-action.outputs.archive }}
   zip:
     description: 'ZIP archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.zip }}

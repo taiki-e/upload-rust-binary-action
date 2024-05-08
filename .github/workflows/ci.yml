@@ -88,6 +88,7 @@ jobs:
           codesign: '-'
       - name: Check outputs
         run: |
+          test -n "${{ steps.upload-rust-binary-action.outputs.archive }}"
           test -n "${{ steps.upload-rust-binary-action.outputs.zip }}"
           test -n "${{ steps.upload-rust-binary-action.outputs.tar }}"
           test -n "${{ steps.upload-rust-binary-action.outputs.sha256sum }}"

@@ -232,6 +232,8 @@ archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 
+echo "archive=${archive}" >> "${GITHUB_OUTPUT}"
+
 input_profile=${INPUT_PROFILE:-release}
 case "${input_profile}" in
     release) build_options=("--release") ;;
