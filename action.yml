@@ -97,13 +97,34 @@ inputs:
     description: Sign build products using `codesign` on macOS
     required: false
 
+outputs:
+  zip:
+    description: 'ZIP archive file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.zip }}
+  tar:
+    description: 'Tar archive file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.tar }}
+  sha256sum:
+    description: 'SHA256 checksum file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.sha256sum }}
+  sha512sum:
+    description: 'SHA512 checksum file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.sha512sum }}
+  sha1:
+    description: 'SHA1 checksum file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.sha1sum }}
+  md5:
+    description: 'MD5 checksum file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.md5 }}
+
 # Note:
 # - inputs.* should be manually mapped to INPUT_* due to https://github.com/actions/runner/issues/665
 # - Use GITHUB_*/RUNNER_* instead of github.*/runner.* due to https://github.com/actions/runner/issues/2185
 runs:
   using: composite
   steps:
-    - run: bash --noprofile --norc "${GITHUB_ACTION_PATH:?}/main.sh"
+    - id: upload-rust-binary-action
+      run: bash --noprofile --norc "${GITHUB_ACTION_PATH:?}/main.sh"
       shell: bash
       env:
         INPUT_BIN: ${{ inputs.bin }}
