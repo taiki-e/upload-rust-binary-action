@@ -75,6 +75,7 @@ jobs:
         if: matrix.target != '' && matrix.build_tool == 'cargo'
       - run: cargo new --bin test-crate
       - uses: ./
+        id: upload-rust-binary-action
         with:
           dry-run: true
           bin: test-crate
@@ -85,3 +86,25 @@ jobs:
           zip: all
           manifest-path: test-crate/Cargo.toml
           codesign: '-'
+      - name: Check action outputs
+        run: |
+          echo "outputs.archive should not be empty"
+          test -n "${{ steps.upload-rust-binary-action.outputs.archive }}"
+
+          echo "outputs.zip should be a file"
+          test -f "${{ steps.upload-rust-binary-action.outputs.zip }}"
+
+          echo "outputs.tar should be a file"
+          test -f "${{ steps.upload-rust-binary-action.outputs.tar }}"
+
+          echo "outputs.sha256 should be a file"
+          test -f "${{ steps.upload-rust-binary-action.outputs.sha256 }}"
+
+          echo "outputs.sha512 should be a file"
+          test -f "${{ steps.upload-rust-binary-action.outputs.sha512 }}"
+
+          echo "outputs.sha1 should be a file"
+          test -f "${{ steps.upload-rust-binary-action.outputs.sha1 }}"
+
+          echo "outputs.md5 should be a file"
+          test -f "${{ steps.upload-rust-binary-action.outputs.md5 }}"
