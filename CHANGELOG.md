@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.21.0] - 2024-06-02
+
 - Add outputs for the archive and checksum files. ([#77](https://github.com/taiki-e/upload-rust-binary-action/pull/77), thanks @matiaskorhonen)
 
 ## [1.20.0] - 2024-04-10
@@ -166,7 +168,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.20.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.0...HEAD
+[1.21.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.2...v1.20.0
 [1.19.2]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.0...v1.19.1
