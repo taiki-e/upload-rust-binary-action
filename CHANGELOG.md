@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add outputs for the archive and checksum files. ([#77](https://github.com/taiki-e/upload-rust-binary-action/pull/77), thanks @matiaskorhonen)
+
 ## [1.20.0] - 2024-04-10
 
 - Add `bin-leading-dir` input option. ([#73](https://github.com/taiki-e/upload-rust-binary-action/pull/73), thanks @linrongbin16)
