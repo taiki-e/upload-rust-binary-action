@@ -232,7 +232,12 @@ archive="${archive/\$bin/${bin_names[0]}}"
 archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 
-echo "archive=${archive}" >>"${GITHUB_OUTPUT}"
+if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+    echo "archive=${archive}" >>"${GITHUB_OUTPUT}"
+else
+    warn "GITHUB_OUTPUT is not set; skip setting the 'archive' output"
+    echo "archive: ${archive}"
+fi
 
 input_profile=${INPUT_PROFILE:-release}
 case "${input_profile}" in
@@ -386,12 +391,26 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         # /${archive}/${includes}
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            echo "tar=${archive}.tar.gz" >>"${GITHUB_OUTPUT}"
+
+            if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+                echo "tar=${archive}.tar.gz" >>"${GITHUB_OUTPUT}"
+            else
+                warn "GITHUB_OUTPUT is not set; skip setting the 'tar' output"
+                echo "tar: ${checksum}"
+            fi
+
             x "${tar}" acf "${cwd}/${archive}.tar.gz" "${archive}"
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
-            echo "zip=${archive}.zip" >>"${GITHUB_OUTPUT}"
+
+            if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+                echo "zip=${archive}.zip" >>"${GITHUB_OUTPUT}"
+            else
+                warn "GITHUB_OUTPUT is not set; skip setting the 'zip' output"
+                echo "zip: ${checksum}"
+            fi
+
             if [[ "${platform}" == "unix" ]]; then
                 x zip -r "${cwd}/${archive}.zip" "${archive}"
             else
@@ -406,12 +425,25 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         pushd "${archive}" >/dev/null
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
-            echo "tar=${archive}.tar.gz" >>"${GITHUB_OUTPUT}"
+
+            if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+                echo "tar=${archive}.tar.gz" >>"${GITHUB_OUTPUT}"
+            else
+                warn "GITHUB_OUTPUT is not set; skip setting the 'tar' output"
+                echo "tar: ${checksum}"
+            fi
+
             x "${tar}" acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
-            echo "zip=${archive}.zip" >>"${GITHUB_OUTPUT}"
+
+            if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+                echo "zip=${archive}.zip" >>"${GITHUB_OUTPUT}"
+            else
+                warn "GITHUB_OUTPUT is not set; skip setting the 'zip' output"
+                echo "zip: ${checksum}"
+            fi
 
             if [[ "${platform}" == "unix" ]]; then
                 x zip -r "${cwd}/${archive}.zip" "${filenames[@]}"
@@ -453,7 +485,14 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
         esac
     fi
     x cat "${archive}.${checksum}"
-    echo "${checksum}=${archive}.${checksum}" >>"${GITHUB_OUTPUT}"
+
+    if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+        echo "${checksum}=${archive}.${checksum}" >>"${GITHUB_OUTPUT}"
+    else
+        warn "GITHUB_OUTPUT is not set; skip setting the 'checksum' output"
+        echo "checksum: ${checksum}"
+    fi
+
     final_assets+=("${archive}.${checksum}")
 done
 
