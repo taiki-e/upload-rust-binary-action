@@ -102,10 +102,10 @@ outputs:
     description: 'Archive base name'
     value: ${{ steps.upload-rust-binary-action.outputs.archive }}
   zip:
-    description: 'ZIP archive file name'
+    description: '.zip archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.zip }}
   tar:
-    description: 'Tar archive file name'
+    description: '.tar.gz archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.tar }}
   sha256:
     description: 'SHA256 checksum file name'

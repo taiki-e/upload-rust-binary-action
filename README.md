@@ -7,6 +7,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
 
 - [Usage](#usage)
   - [Inputs](#inputs)
+  - [Outputs](#outputs)
   - [Example workflow: Basic usage](#example-workflow-basic-usage)
   - [Example workflow: Basic usage (multiple platforms)](#example-workflow-basic-usage-multiple-platforms)
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
@@ -58,6 +59,18 @@ Currently, this action is basically intended to be used in combination with an a
 \[2] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
 
 (Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available.)
+
+### Outputs
+
+| Name    | Description                  |
+|---------|------------------------------|
+| archive | Archive base name.           |
+| zip     | `.zip` archive file name.    |
+| tar     | `.tar.gz` archive file name. |
+| sha256  | SHA256 checksum file name.   |
+| sha512  | SHA512 checksum file name.   |
+| sha1    | SHA1 checksum file name.     |
+| md5     | MD5 checksum file name.      |
 
 ### Example workflow: Basic usage
 
