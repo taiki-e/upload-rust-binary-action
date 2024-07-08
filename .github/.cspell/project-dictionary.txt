@@ -1,5 +1,4 @@
 coreutils
-gtar
 lipo
 mktemp
 zigbuild
