@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.21.1] - 2024-07-12
+
 - Work around rustc's strip bug that mostly affects illumos build. See [#80](https://github.com/taiki-e/upload-rust-binary-action/pull/80) for details.
 
 ## [1.21.0] - 2024-06-02
@@ -170,7 +172,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.1...HEAD
+[1.21.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.20.0...v1.21.0
 [1.20.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.2...v1.20.0
 [1.19.2]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.19.1...v1.19.2
