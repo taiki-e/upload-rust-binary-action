@@ -277,20 +277,35 @@ else
 fi
 
 workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
-# TODO: This is a somewhat rough check as it does not look at the type of profile.
-if ! grep -Eq '^\s*strip\s*=' "${workspace_root}/Cargo.toml" && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]]; then
-    # On pre-1.77, align to Cargo 1.77+'s default: https://github.com/rust-lang/cargo/pull/13257
-    # However, set env on pre-1.79 because it is 1.79+ that actually works correctly due to https://github.com/rust-lang/cargo/issues/13617.
-    # strip option builds requires Cargo 1.59
-    case "${target}" in
-        # Do not strip debuginfo on MSVC https://github.com/rust-lang/cargo/pull/13630
-        # This is the same behavior as pre-1.19.0 upload-rust-binary-action.
-        *-windows-msvc) strip_default=none ;;
-        *) strip_default=debuginfo ;;
-    esac
-    if [[ "${rustc_minor_version}" -lt 79 ]] && [[ "${rustc_minor_version}" -ge 59 ]]; then
+# Skip setting the strip option (requires Cargo 1.59) if it is unavailable or already set.
+# TODO: This check is somewhat rough as it does not look at the type of profile.
+if [[ "${rustc_minor_version}" -ge 59 ]] && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]] && ! grep -Eq '^\s*strip\s*=' "${workspace_root}/Cargo.toml"; then
+    if [[ "${rustc_minor_version}" -lt 79 ]]; then
+        # On pre-1.77, align to Cargo 1.77+'s default: https://github.com/rust-lang/cargo/pull/13257
+        # However, set environment variable on pre-1.79 because it is 1.79+ that actually works correctly due to https://github.com/rust-lang/cargo/issues/13617.
+        case "${target}" in
+            # Do not strip debuginfo on MSVC https://github.com/rust-lang/cargo/pull/13630
+            # This is the same behavior as pre-1.19.0 upload-rust-binary-action.
+            *-windows-msvc) strip_default=none ;;
+            *) strip_default=debuginfo ;;
+        esac
         export CARGO_PROFILE_RELEASE_STRIP="${strip_default}"
     fi
+    # Do not strip debuginfo on these targets in cross-compilation (including docker via cross).
+    # https://github.com/nextest-rs/nextest/commit/d4f982b3184f07ff5c40cc90c52d3fc6567be0b9#commitcomment-140325483
+    # https://github.com/rust-lang/rust/issues/123151#issuecomment-2024743520
+    # https://github.com/rust-lang/rust/blob/c25473ff62a99541426423e8ef41c63d71e0a4a0/compiler/rustc_codegen_ssa/src/back/link.rs#L1032-L1077
+    # TODO: Add `if [[ "${rustc_minor_version}" -lt patched_version ]]; ..` once upstream bug fixed.
+    case "${target}" in
+        *-apple-*)
+            case "${host_os}" in
+                macos) ;; # apple to apple cross-compilation is okay
+                *) export CARGO_PROFILE_RELEASE_STRIP=none ;;
+            esac
+            ;;
+        # illumos/AIX host is not supported on GitHub Actions.
+        *-illumos* | *-aix*) export CARGO_PROFILE_RELEASE_STRIP=none ;;
+    esac
 fi
 
 build() {
