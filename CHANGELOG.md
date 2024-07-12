@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Work around rustc's strip bug that mostly affects illumos build. See [#80](https://github.com/taiki-e/upload-rust-binary-action/pull/80) for details.
+
 ## [1.21.0] - 2024-06-02
 
 - Add outputs for the archive and checksum files. ([#77](https://github.com/taiki-e/upload-rust-binary-action/pull/77), thanks @matiaskorhonen)
