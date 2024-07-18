@@ -727,7 +727,8 @@ This action has been tested for GitHub-hosted runners (Ubuntu, macOS, Windows).
 To use this action in self-hosted runners or in containers, at least the following tools are required:
 
 - rustup, cargo, rustc
-- bash, GNU Coreutils, GNU grep, GNU tar
+- bash
+- GNU tar
 - [gh (GitHub CLI)](https://github.com/cli/cli#installation)
 - zip (only Unix-like)
 - 7z (only Windows)
@@ -738,9 +739,11 @@ To use this action in self-hosted runners or in containers, at least the followi
 - [setup-cross-toolchain-action]: GitHub Action for setup toolchains for cross compilation and cross testing for Rust.
 - [install-action]: GitHub Action for installing development tools.
 - [cache-cargo-install-action]: GitHub Action for `cargo install` with cache.
+- [checkout-action]: GitHub Action for checking out a repository. (Simplified actions/checkout alternative that does not depend on Node.js.)
 
 [cache-cargo-install-action]: https://github.com/taiki-e/cache-cargo-install-action
 [cargo-zigbuild]: https://github.com/rust-cross/cargo-zigbuild
+[checkout-action]: https://github.com/taiki-e/checkout-action
 [create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action
 [cross]: https://github.com/cross-rs/cross
 [install-action]: https://github.com/taiki-e/install-action
