@@ -96,6 +96,12 @@ inputs:
   codesign:
     description: Sign build products using `codesign` on macOS
     required: false
+  codesign-prefix:
+    description: Prefix for the `codesign` identifier on macOS
+    required: false
+  codesign_prefix:
+    description: Alias for 'codesign-prefix'
+    required: false
 
 outputs:
   archive:
@@ -149,3 +155,4 @@ runs:
         INPUT_PROFILE: ${{ inputs.profile }}
         INPUT_DRY_RUN: ${{ inputs.dry-run || inputs.dry_run }}
         INPUT_CODESIGN: ${{ inputs.codesign }}
+        INPUT_CODESIGN_PREFIX: ${{ inputs.codesign-prefix || inputs.codesign_prefix }}
