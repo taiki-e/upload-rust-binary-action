@@ -338,6 +338,9 @@ do_codesign() {
         if [[ -n "${INPUT_CODESIGN_PREFIX:-}" ]]; then
             codesign_options+=(--prefix "${INPUT_CODESIGN_PREFIX}")
         fi
+        if [[ -n "${INPUT_CODESIGN_OPTIONS:-}" ]]; then
+            codesign_options+=(--options "${INPUT_CODESIGN_OPTIONS}")
+        fi
 
         for bin_exe in "${bins[@]}"; do
             x codesign "${codesign_options[@]}" "${target_dir}/${bin_exe}"

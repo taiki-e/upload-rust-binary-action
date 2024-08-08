@@ -87,6 +87,7 @@ jobs:
           manifest-path: test-crate/Cargo.toml
           codesign: '-'
           codesign-prefix: 'com.example.'
+          codesign-options: 'runtime'
       - name: Check action outputs
         run: |
           echo "outputs.archive should not be empty"

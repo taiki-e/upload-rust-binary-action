@@ -102,6 +102,12 @@ inputs:
   codesign_prefix:
     description: Alias for 'codesign-prefix'
     required: false
+  codesign-options:
+    description: Specifies a set of option flags to be embedded in the code signature (macOS). See the codesign manpage for details.
+    required: false
+  codesign_options:
+    description: Alias for 'codesign-options'
+    required: false
 
 outputs:
   archive:
@@ -156,3 +162,4 @@ runs:
         INPUT_DRY_RUN: ${{ inputs.dry-run || inputs.dry_run }}
         INPUT_CODESIGN: ${{ inputs.codesign }}
         INPUT_CODESIGN_PREFIX: ${{ inputs.codesign-prefix || inputs.codesign_prefix }}
+        INPUT_CODESIGN_OPTIONS: ${{ inputs.codesign-options || inputs.codesign_options }}
