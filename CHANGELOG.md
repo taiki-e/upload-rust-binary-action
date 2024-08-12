@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `codesign-prefix` and `codesign-options` input options. ([#81](https://github.com/taiki-e/upload-rust-binary-action/pull/81), thanks @matiaskorhonen)
+
 ## [1.21.1] - 2024-07-12
 
 - Work around rustc's strip bug that mostly affects illumos build. See [#80](https://github.com/taiki-e/upload-rust-binary-action/pull/80) for details.
