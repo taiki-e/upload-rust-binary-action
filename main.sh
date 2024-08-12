@@ -334,8 +334,16 @@ build() {
 do_codesign() {
     target_dir="$1"
     if [[ -n "${INPUT_CODESIGN:-}" ]]; then
+        codesign_options=(--sign "${INPUT_CODESIGN}")
+        if [[ -n "${INPUT_CODESIGN_PREFIX:-}" ]]; then
+            codesign_options+=(--prefix "${INPUT_CODESIGN_PREFIX}")
+        fi
+        if [[ -n "${INPUT_CODESIGN_OPTIONS:-}" ]]; then
+            codesign_options+=(--options "${INPUT_CODESIGN_OPTIONS}")
+        fi
+
         for bin_exe in "${bins[@]}"; do
-            x codesign --sign "${INPUT_CODESIGN}" "${target_dir}/${bin_exe}"
+            x codesign "${codesign_options[@]}" "${target_dir}/${bin_exe}"
         done
     fi
 }
