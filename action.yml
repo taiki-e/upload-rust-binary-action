@@ -103,7 +103,7 @@ inputs:
     description: Alias for 'codesign-prefix'
     required: false
   codesign-options:
-    description: Specifies a set of option flags to be embedded in the code signature (macOS). See the codesign manpage for details.
+    description: Specifies a set of option flags to be embedded in the code signature on macOS. See the codesign manpage for details.
     required: false
   codesign_options:
     description: Alias for 'codesign-options'
