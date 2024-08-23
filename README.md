@@ -34,7 +34,7 @@ Currently, this action is basically intended to be used in combination with an a
 ### Inputs
 
 | Name                | Required     | Description                                                                                  | Type    | Default        |
-|---------------------|:------------:|----------------------------------------------------------------------------------------------|---------|----------------|
+| ------------------- |:------------:| -------------------------------------------------------------------------------------------- | ------- | -------------- |
 | bin                 | **true**     | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
 | token               | **true** \[1]| GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more)            | String  |                |
 | archive             | false        | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
@@ -65,7 +65,7 @@ Currently, this action is basically intended to be used in combination with an a
 ### Outputs
 
 | Name    | Description                  |
-|---------|------------------------------|
+| ------- | ---------------------------- |
 | archive | Archive base name.           |
 | zip     | `.zip` archive file name.    |
 | tar     | `.tar.gz` archive file name. |
