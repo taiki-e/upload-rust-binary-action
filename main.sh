@@ -294,7 +294,7 @@ if [[ "${rustc_minor_version}" -ge 59 ]] && [[ -z "${CARGO_PROFILE_RELEASE_STRIP
     # Do not strip debuginfo on these targets in cross-compilation (including docker via cross).
     # https://github.com/nextest-rs/nextest/commit/d4f982b3184f07ff5c40cc90c52d3fc6567be0b9#commitcomment-140325483
     # https://github.com/rust-lang/rust/issues/123151#issuecomment-2024743520
-    # https://github.com/rust-lang/rust/blob/c25473ff62a99541426423e8ef41c63d71e0a4a0/compiler/rustc_codegen_ssa/src/back/link.rs#L1032-L1077
+    # https://github.com/rust-lang/rust/blob/1.80.0/compiler/rustc_codegen_ssa/src/back/link.rs#L1055-L1100
     # TODO: Add `if [[ "${rustc_minor_version}" -lt patched_version ]]; ..` once upstream bug fixed.
     case "${target}" in
         *-apple-*)
