@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: Apache-2.0 OR MIT
-set -eEuo pipefail
+set -CeEuo pipefail
 IFS=$'\n\t'
 
 x() {
-    local cmd="$1"
-    shift
     (
         set -x
-        "${cmd}" "$@"
+        "$@"
     )
 }
 retry() {
@@ -22,14 +20,14 @@ retry() {
     "$@"
 }
 bail() {
-    echo "::error::$*"
+    printf '::error::%s\n' "$*"
     exit 1
 }
 warn() {
-    echo "::warning::$*"
+    printf '::warning::%s\n' "$*"
 }
 info() {
-    echo "info: $*"
+    printf >&2 'info: %s\n' "$*"
 }
 
 export CARGO_NET_RETRY=10
@@ -41,8 +39,8 @@ fi
 
 dry_run="${INPUT_DRY_RUN:-}"
 case "${dry_run}" in
-    true) dry_run="1" ;;
-    false) dry_run="" ;;
+    true) dry_run=1 ;;
+    false) dry_run='' ;;
     *) bail "'dry-run' input option must be 'true' or 'false': '${dry_run}'" ;;
 esac
 
@@ -82,8 +80,8 @@ fi
 
 leading_dir="${INPUT_LEADING_DIR:-}"
 case "${leading_dir}" in
-    true) leading_dir="1" ;;
-    false) leading_dir="" ;;
+    true) leading_dir=1 ;;
+    false) leading_dir='' ;;
     *) bail "'leading-dir' input option must be 'true' or 'false': '${leading_dir}'" ;;
 esac
 
@@ -91,8 +89,8 @@ bin_leading_dir="${INPUT_BIN_LEADING_DIR:-}"
 
 no_default_features="${INPUT_NO_DEFAULT_FEATURES:-}"
 case "${no_default_features}" in
-    true) no_default_features="1" ;;
-    false) no_default_features="" ;;
+    true) no_default_features=1 ;;
+    false) no_default_features='' ;;
     *) bail "'no-default-features' input option must be 'true' or 'false': '${no_default_features}'" ;;
 esac
 
@@ -153,11 +151,12 @@ if [[ -n "${checksum}" ]]; then
     done <<<"${checksum},"
 fi
 
-host=$(rustc -vV | grep '^host:' | cut -d' ' -f2)
-rustc_version=$(rustc -vV | grep '^release:' | cut -d' ' -f2)
+host=$(rustc -vV | grep -E '^host:' | cut -d' ' -f2)
+rustc_version=$(rustc -vV | grep -E '^release:' | cut -d' ' -f2)
 rustc_minor_version="${rustc_version#*.}"
 rustc_minor_version="${rustc_minor_version%%.*}"
 target="${INPUT_TARGET:-"${host}"}"
+zigbuild_target=''
 build_tool="${INPUT_BUILD_TOOL:-}"
 if [[ "${build_tool}" == "cargo-zigbuild" ]]; then
     # cargo-zigbuild supports .<glibc_version> suffix
@@ -168,7 +167,7 @@ target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
 target_upper=$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")
 
-tar="tar"
+exe=''
 case "$(uname -s)" in
     Linux)
         platform=unix
@@ -179,10 +178,10 @@ case "$(uname -s)" in
         host_os=macos
         # Work around https://github.com/actions/cache/issues/403 by using GNU tar
         # instead of BSD tar.
-        tar="gtar"
-        if ! type -P gtar &>/dev/null; then
+        if ! type -P gtar >/dev/null; then
             brew install gnu-tar &>/dev/null
         fi
+        tar() { gtar "$@"; }
         if [[ -z "${INPUT_TARGET:-}" ]]; then
             warn "GitHub Actions changed default architecture of macos-latest since macos-14; consider passing 'target' input option to clarify which target you are building for"
         fi
@@ -190,32 +189,32 @@ case "$(uname -s)" in
     MINGW* | MSYS* | CYGWIN* | Windows_NT)
         platform=windows
         host_os=windows
-        exe=".exe"
+        exe=.exe
         ;;
     *) bail "unrecognized OS type '$(uname -s)'" ;;
 esac
 
 if [[ -z "${build_tool}" ]]; then
-    build_tool="cargo"
+    build_tool=cargo
     if [[ "${host}" != "${target}" ]]; then
         # If any of these are set, it is obvious that the user has set up a cross-compilation environment on the host.
-        if [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "echo \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
+        if [[ -z "$(eval "printf '%s\n' \${CARGO_TARGET_${target_upper}_LINKER:-}")" ]] && [[ -z "$(eval "printf '%s\n' \${CARGO_TARGET_${target_upper}_RUNNER:-}")" ]]; then
             case "${target}" in
                 # https://github.com/cross-rs/cross#supported-targets
                 *-windows*)
                     case "${host_os}" in
                         windows) ;;
-                        *) build_tool="cross" ;;
+                        *) build_tool=cross ;;
                     esac
                     ;;
                 *-apple-*)
                     case "${host_os}" in
                         macos) ;;
-                        *) build_tool="cross" ;;
+                        *) build_tool=cross ;;
                     esac
                     ;;
                 *-fuchsia* | *-redox*) ;;
-                *) build_tool="cross" ;;
+                *) build_tool=cross ;;
             esac
         fi
     fi
@@ -233,16 +232,16 @@ archive="${archive/\$target/${target}}"
 archive="${archive/\$tag/${tag}}"
 
 if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-    echo "archive=${archive}" >>"${GITHUB_OUTPUT}"
+    printf 'archive=%s\n' "${archive}" >>"${GITHUB_OUTPUT}"
 else
     warn "GITHUB_OUTPUT is not set; skip setting the 'archive' output"
-    echo "archive: ${archive}"
+    printf 'archive: %s\n' "${archive}"
 fi
 
 input_profile=${INPUT_PROFILE:-release}
 case "${input_profile}" in
-    release) build_options=("--release") ;;
-    *) build_options=("--profile" "${input_profile}") ;;
+    release) build_options=(--release) ;;
+    *) build_options=(--profile "${input_profile}") ;;
 esac
 
 # There are some special profiles that correspond to different target directory
@@ -250,36 +249,33 @@ esac
 # name.
 # See: https://doc.rust-lang.org/nightly/cargo/reference/profiles.html#custom-profiles
 case "${input_profile}" in
-    bench) profile_directory="release" ;;
-    dev | test) profile_directory="debug" ;;
+    bench) profile_directory=release ;;
+    dev | test) profile_directory=debug ;;
     *) profile_directory=${input_profile} ;;
 esac
 
 bins=()
 for bin_name in "${bin_names[@]}"; do
-    bins+=("${bin_name}${exe:-}")
-    build_options+=("--bin" "${bin_name}")
+    bins+=("${bin_name}${exe}")
+    build_options+=(--bin "${bin_name}")
 done
 if [[ -n "${features}" ]]; then
-    build_options+=("--features" "${features}")
+    build_options+=(--features "${features}")
 fi
 if [[ -n "${no_default_features}" ]]; then
-    build_options+=("--no-default-features")
+    build_options+=(--no-default-features)
 fi
+metadata_options=(--format-version=1 --no-deps)
 manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
-    build_options+=("--manifest-path" "${manifest_path}")
-    metadata=$(cargo metadata --format-version=1 --no-deps --manifest-path "${manifest_path}")
-    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
-else
-    metadata=$(cargo metadata --format-version=1 --no-deps)
-    target_dir=$(jq <<<"${metadata}" -r '.target_directory')
+    build_options+=(--manifest-path "${manifest_path}")
+    metadata_options+=(--manifest-path "${manifest_path}")
 fi
+eval "$(cargo metadata "${metadata_options[@]}" | jq -r '@sh "target_dir=\(.target_directory) WORKSPACE_ROOT=\(.workspace_root)"')"
 
-workspace_root=$(jq <<<"${metadata}" -r '.workspace_root')
 # Skip setting the strip option (requires Cargo 1.59) if it is unavailable or already set.
 # TODO: This check is somewhat rough as it does not look at the type of profile.
-if [[ "${rustc_minor_version}" -ge 59 ]] && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]] && ! grep -Eq '^\s*strip\s*=' "${workspace_root}/Cargo.toml"; then
+if [[ "${rustc_minor_version}" -ge 59 ]] && [[ -z "${CARGO_PROFILE_RELEASE_STRIP:-}" ]] && ! grep -Eq '^\s*strip\s*=' "${WORKSPACE_ROOT}/Cargo.toml"; then
     if [[ "${rustc_minor_version}" -lt 79 ]]; then
         # On pre-1.77, align to Cargo 1.77+'s default: https://github.com/rust-lang/cargo/pull/13257
         # However, set environment variable on pre-1.79 because it is 1.79+ that actually works correctly due to https://github.com/rust-lang/cargo/issues/13617.
@@ -312,13 +308,13 @@ build() {
     case "${build_tool}" in
         cargo) x cargo build "${build_options[@]}" "$@" ;;
         cross)
-            if ! type -P cross &>/dev/null; then
+            if ! type -P cross >/dev/null; then
                 x cargo install cross --locked
             fi
             x cross build "${build_options[@]}" "$@"
             ;;
         cargo-zigbuild)
-            if ! type -P cargo-zigbuild &>/dev/null; then
+            if ! type -P cargo-zigbuild >/dev/null; then
                 x pip3 install cargo-zigbuild
             fi
             case "${INPUT_TARGET:-}" in
@@ -332,9 +328,8 @@ build() {
     esac
 }
 do_codesign() {
-    target_dir="$1"
     if [[ -n "${INPUT_CODESIGN:-}" ]]; then
-        codesign_options=(--sign "${INPUT_CODESIGN}")
+        local codesign_options=(--sign "${INPUT_CODESIGN}")
         if [[ -n "${INPUT_CODESIGN_PREFIX:-}" ]]; then
             codesign_options+=(--prefix "${INPUT_CODESIGN_PREFIX}")
         fi
@@ -365,7 +360,7 @@ case "${INPUT_TARGET:-}" in
         aarch64_target_dir="${target_dir}/aarch64-apple-darwin/${profile_directory}"
         x86_64_target_dir="${target_dir}/x86_64-apple-darwin/${profile_directory}"
         target_dir="${target_dir}/${target}/${profile_directory}"
-        mkdir -p "${target_dir}"
+        mkdir -p -- "${target_dir}"
         for bin_exe in "${bins[@]}"; do
             x lipo -create -output "${target_dir}/${bin_exe}" "${aarch64_target_dir}/${bin_exe}" "${x86_64_target_dir}/${bin_exe}"
         done
@@ -378,8 +373,8 @@ esac
 
 case "${host_os}" in
     macos)
-        if type -P codesign &>/dev/null; then
-            do_codesign "${target_dir}"
+        if type -P codesign >/dev/null; then
+            do_codesign
         fi
         ;;
 esac
@@ -387,25 +382,26 @@ esac
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
     cwd=$(pwd)
     tmpdir=$(mktemp -d)
-    mkdir "${tmpdir:?}/${archive}"
+    mkdir -- "${tmpdir:?}/${archive}"
     if [[ -n "${bin_leading_dir}" ]]; then
-        mkdir -p "${tmpdir}/${archive}/${bin_leading_dir}"/
+        mkdir -p -- "${tmpdir}/${archive}/${bin_leading_dir}"/
+        # TODO: %%/* is wrong if bin_leading_dir starts with /
         filenames=("${bin_leading_dir%%/*}")
     else
         filenames=("${bins[@]}")
     fi
     for bin_exe in "${bins[@]}"; do
         if [[ -n "${bin_leading_dir}" ]]; then
-            x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}/${bin_leading_dir}"/
+            x cp -- "${target_dir}/${bin_exe}" "${tmpdir}/${archive}/${bin_leading_dir}"/
         else
-            x cp "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
+            x cp -- "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
         fi
     done
     for include in ${includes[@]+"${includes[@]}"}; do
-        x cp -r "${include}" "${tmpdir}/${archive}"/
-        filenames+=("$(basename "${include}")")
+        x cp -r -- "${include}" "${tmpdir}/${archive}"/
+        filenames+=("$(basename -- "${include}")")
     done
-    pushd "${tmpdir}" >/dev/null
+    pushd -- "${tmpdir}" >/dev/null
     if [[ -n "${leading_dir}" ]]; then
         # with leading directory
         #
@@ -416,22 +412,22 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
             assets+=("${archive}.tar.gz")
 
             if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-                echo "tar=${archive}.tar.gz" >>"${GITHUB_OUTPUT}"
+                printf 'tar=%s.tar.gz\n' "${archive}" >>"${GITHUB_OUTPUT}"
             else
                 warn "GITHUB_OUTPUT is not set; skip setting the 'tar' output"
-                echo "tar: ${checksum}"
+                printf 'tar: %s.tar.gz\n' "${archive}"
             fi
 
-            x "${tar}" acf "${cwd}/${archive}.tar.gz" "${archive}"
+            x tar acf "${cwd}/${archive}.tar.gz" "${archive}"
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
 
             if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-                echo "zip=${archive}.zip" >>"${GITHUB_OUTPUT}"
+                printf 'zip=%s.zip\n' "${archive}" >>"${GITHUB_OUTPUT}"
             else
                 warn "GITHUB_OUTPUT is not set; skip setting the 'zip' output"
-                echo "zip: ${checksum}"
+                printf 'zip: %s.zip\n' "${archive}"
             fi
 
             if [[ "${platform}" == "unix" ]]; then
@@ -445,27 +441,27 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         #
         # /${bins}
         # /${includes}
-        pushd "${archive}" >/dev/null
+        pushd -- "${archive}" >/dev/null
         if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.tar.gz")
 
             if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-                echo "tar=${archive}.tar.gz" >>"${GITHUB_OUTPUT}"
+                printf 'tar=%s.tar.gz\n' "${archive}" >>"${GITHUB_OUTPUT}"
             else
                 warn "GITHUB_OUTPUT is not set; skip setting the 'tar' output"
-                echo "tar: ${checksum}"
+                printf 'tar: %s.tar.gz\n' "${archive}"
             fi
 
-            x "${tar}" acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
+            x tar acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
         fi
         if [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
             assets+=("${archive}.zip")
 
             if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-                echo "zip=${archive}.zip" >>"${GITHUB_OUTPUT}"
+                printf 'zip=%s.zip\n' "${archive}" >>"${GITHUB_OUTPUT}"
             else
                 warn "GITHUB_OUTPUT is not set; skip setting the 'zip' output"
-                echo "zip: ${checksum}"
+                printf 'zip: %s.zip\n' "${archive}"
             fi
 
             if [[ "${platform}" == "unix" ]]; then
@@ -477,28 +473,28 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         popd >/dev/null
     fi
     popd >/dev/null
-    rm -rf "${tmpdir:?}/${archive}"
+    rm -rf -- "${tmpdir:?}/${archive}"
 fi
 
 # Checksum of all assets except for .<checksum> files.
 final_assets=("${assets[@]}")
 for checksum in ${checksums[@]+"${checksums[@]}"}; do
     # TODO: Should we allow customizing the name of checksum files?
-    if type -P "${checksum}sum" &>/dev/null; then
+    if type -P "${checksum}sum" >/dev/null; then
         "${checksum}sum" "${assets[@]}" >"${archive}.${checksum}"
     else
         # GitHub-hosted macOS runner does not install GNU Coreutils by default.
         # https://github.com/actions/runner-images/issues/90
         case "${checksum}" in
             sha*)
-                if type -P shasum &>/dev/null; then
+                if type -P shasum >/dev/null; then
                     shasum -a "${checksum#sha}" "${assets[@]}" >"${archive}.${checksum}"
                 else
                     bail "checksum for '${checksum}' requires '${checksum}sum' or 'shasum' command; consider installing one of them"
                 fi
                 ;;
             md5)
-                if type -P md5 &>/dev/null; then
+                if type -P md5 >/dev/null; then
                     md5 "${assets[@]}" >"${archive}.${checksum}"
                 else
                     bail "checksum for '${checksum}' requires '${checksum}sum' or 'md5' command; consider installing one of them"
@@ -507,13 +503,13 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
             *) bail "unrecognized 'checksum' input option '${checksum}'" ;;
         esac
     fi
-    x cat "${archive}.${checksum}"
+    x cat -- "${archive}.${checksum}"
 
     if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-        echo "${checksum}=${archive}.${checksum}" >>"${GITHUB_OUTPUT}"
+        printf '%s=%s.%s\n' "${checksum}" "${archive}" "${checksum}" >>"${GITHUB_OUTPUT}"
     else
-        warn "GITHUB_OUTPUT is not set; skip setting the 'checksum' output"
-        echo "checksum: ${checksum}"
+        warn "GITHUB_OUTPUT is not set; skip setting the '${checksum}' output"
+        printf '%s: %s.%s\n' "${checksum}" "${archive}" "${checksum}"
     fi
 
     final_assets+=("${archive}.${checksum}")
@@ -521,9 +517,9 @@ done
 
 if [[ -n "${dry_run}" ]]; then
     info "skipped upload because action is running in dry-run mode"
-    echo "tag: ${tag} ('dry-run' if tag ref is not start with 'refs/tags/')"
+    printf "tag: %s ('dry-run' if tag ref is not start with 'refs/tags/')\n" "${tag}"
     IFS=','
-    echo "assets: ${final_assets[*]}"
+    printf 'assets: %s\n' "${final_assets[*]}"
     IFS=$'\n\t'
 else
     # https://cli.github.com/manual/gh_release_upload

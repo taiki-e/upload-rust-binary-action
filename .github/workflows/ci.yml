@@ -24,7 +24,7 @@ env:
 
 defaults:
   run:
-    shell: bash
+    shell: bash --noprofile --norc -CeEuxo pipefail {0}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
@@ -50,7 +50,7 @@ jobs:
             build_tool: cargo-zigbuild
           - os: macos-latest
           - os: macos-13 # x86_64
-          - os: macos-14 # aarch64
+          - os: macos-14 # AArch64
           - os: macos-latest
             target: x86_64-apple-darwin
           - os: macos-latest
@@ -90,23 +90,23 @@ jobs:
           codesign-options: 'runtime'
       - name: Check action outputs
         run: |
-          echo "outputs.archive should not be empty"
+          printf 'outputs.archive should not be empty\n'
           test -n "${{ steps.upload-rust-binary-action.outputs.archive }}"
 
-          echo "outputs.zip should be a file"
+          printf 'outputs.zip should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.zip }}"
 
-          echo "outputs.tar should be a file"
+          printf 'outputs.tar should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.tar }}"
 
-          echo "outputs.sha256 should be a file"
+          printf 'outputs.sha256 should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.sha256 }}"
 
-          echo "outputs.sha512 should be a file"
+          printf 'outputs.sha512 should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.sha512 }}"
 
-          echo "outputs.sha1 should be a file"
+          printf 'outputs.sha1 should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.sha1 }}"
 
-          echo "outputs.md5 should be a file"
+          printf 'outputs.md5 should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.md5 }}"
