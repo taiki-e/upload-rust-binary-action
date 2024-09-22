@@ -222,8 +222,8 @@ fi
 
 if [[ "${build_tool}" == "cargo" ]]; then
     case "${target}" in
-        universal-apple-darwin) x rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
-        *) x rustup target add "${target}" ;;
+        universal-apple-darwin) retry rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
+        *) retry rustup target add "${target}" ;;
     esac
 fi
 
@@ -319,8 +319,8 @@ build() {
             fi
             case "${INPUT_TARGET:-}" in
                 '') ;;
-                universal2-apple-darwin) x rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
-                *) x rustup target add "${target}" ;;
+                universal2-apple-darwin) retry rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
+                *) retry rustup target add "${target}" ;;
             esac
             x cargo zigbuild "${build_options[@]}" "$@"
             ;;
