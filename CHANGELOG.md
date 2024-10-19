@@ -12,6 +12,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.22.1] - 2024-10-19
+
 - Fix failure when cross-compiling to Windows on non-Windows. ([#86](https://github.com/taiki-e/upload-rust-binary-action/issues/86))
 
 ## [1.22.0] - 2024-08-12
@@ -180,7 +182,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.1...HEAD
+[1.22.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.0...v1.22.1
 [1.22.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.1...v1.22.0
 [1.21.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.0...v1.21.1
 [1.21.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.20.0...v1.21.0
