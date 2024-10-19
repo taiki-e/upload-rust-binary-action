@@ -48,9 +48,10 @@ jobs:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu.2.17
             build_tool: cargo-zigbuild
-          - os: macos-latest
+          - os: ubuntu-latest
+            target: x86_64-pc-windows-gnu
+          - os: macos-latest # AArch64
           - os: macos-13 # x86_64
-          - os: macos-14 # AArch64
           - os: macos-latest
             target: x86_64-apple-darwin
           - os: macos-latest
