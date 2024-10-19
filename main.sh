@@ -163,11 +163,15 @@ if [[ "${build_tool}" == "cargo-zigbuild" ]]; then
     zigbuild_target="${target}"
     target="${target%%.*}"
 fi
+case "${target}" in
+    wasm*) exe=.wasm ;;
+    *-windows*) exe=.exe ;;
+    *) exe='' ;;
+esac
 target_lower="${target//-/_}"
 target_lower="${target_lower//./_}"
 target_upper=$(tr '[:lower:]' '[:upper:]' <<<"${target_lower}")
 
-exe=''
 case "$(uname -s)" in
     Linux)
         platform=unix
@@ -189,7 +193,6 @@ case "$(uname -s)" in
     MINGW* | MSYS* | CYGWIN* | Windows_NT)
         platform=windows
         host_os=windows
-        exe=.exe
         ;;
     *) bail "unrecognized OS type '$(uname -s)'" ;;
 esac
