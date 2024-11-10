@@ -86,7 +86,7 @@ jobs:
           bin: test-crate
           target: ${{ matrix.target }}
           build-tool: ${{ matrix.build_tool }}
-          checksum: sha256,sha512,sha1,md5
+          checksum: b2,sha256,sha512,sha1,md5
           tar: all
           zip: all
           manifest-path: test-crate/Cargo.toml
@@ -103,6 +103,9 @@ jobs:
 
           printf 'outputs.tar should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.tar }}"
+
+          printf 'outputs.b2 should be a file\n'
+          test -f "${{ steps.upload-rust-binary-action.outputs.b2 }}"
 
           printf 'outputs.sha256 should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.sha256 }}"

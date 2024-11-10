@@ -65,7 +65,7 @@ inputs:
     description: Alias for 'build-tool'
     required: false
   checksum:
-    description: Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)
+    description: Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5)
     required: false
   token:
     description: >
@@ -119,6 +119,9 @@ outputs:
   tar:
     description: '.tar.gz archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.tar }}
+  b2:
+    description: 'BLAKE2 checksum file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.b2 }}
   sha256:
     description: 'SHA256 checksum file name'
     value: ${{ steps.upload-rust-binary-action.outputs.sha256 }}

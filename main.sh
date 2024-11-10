@@ -145,8 +145,8 @@ if [[ -n "${checksum}" ]]; then
     while read -rd,; do
         checksums+=("${REPLY}")
         case "${REPLY}" in
-            sha256 | sha512 | sha1 | md5) ;;
-            *) bail "'checksum' input option must be 'sha256', 'sha512', 'sha1', or 'md5': '${REPLY}'" ;;
+            b2 | sha256 | sha512 | sha1 | md5) ;;
+            *) bail "'checksum' input option must be 'b2', 'sha256', 'sha512', 'sha1', or 'md5': '${REPLY}'" ;;
         esac
     done <<<"${checksum},"
 fi
@@ -489,6 +489,9 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
         # GitHub-hosted macOS runner does not install GNU Coreutils by default.
         # https://github.com/actions/runner-images/issues/90
         case "${checksum}" in
+            b2)
+                bail "checksum for '${checksum}' requires '${checksum}sum' command; consider installing it"
+                ;;
             sha*)
                 if type -P shasum >/dev/null; then
                     shasum -a "${checksum#sha}" "${assets[@]}" >"${archive}.${checksum}"

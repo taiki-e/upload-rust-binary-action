@@ -43,7 +43,7 @@ Currently, this action is basically intended to be used in combination with an a
 | no-default-features | false        | Whether to disable cargo build default features                                              | Boolean | `false`        |
 | tar                 | false        | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
 | zip                 | false        | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
-| checksum            | false        | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
+| checksum            | false        | Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5) | String  |                |
 | include             | false        | Comma-separated list of additional files to be included to the archive                       | String  |                |
 | asset               | false        | Comma-separated list of additional files to be uploaded separately                           | String  |                |
 | leading-dir         | false        | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
@@ -69,6 +69,7 @@ Currently, this action is basically intended to be used in combination with an a
 | archive | Archive base name.           |
 | zip     | `.zip` archive file name.    |
 | tar     | `.tar.gz` archive file name. |
+| b2      | BLAKE2 checksum file name.   |
 | sha256  | SHA256 checksum file name.   |
 | sha512  | SHA512 checksum file name.   |
 | sha1    | SHA1 checksum file name.     |
