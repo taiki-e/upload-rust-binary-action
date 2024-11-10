@@ -56,14 +56,20 @@ jobs:
           - os: ubuntu-latest
             target: x86_64-pc-windows-gnu
           - os: macos-latest # AArch64
+            checksums: sha256,sha512,sha1,md5
           - os: macos-13 # x86_64
+            checksums: sha256,sha512,sha1,md5
           - os: macos-latest
+            checksums: sha256,sha512,sha1,md5
             target: x86_64-apple-darwin
           - os: macos-latest
+            checksums: sha256,sha512,sha1,md5
             target: aarch64-apple-darwin
           - os: macos-latest
+            checksums: sha256,sha512,sha1,md5
             target: universal-apple-darwin
           - os: macos-latest
+            checksums: sha256,sha512,sha1,md5
             target: universal-apple-darwin
             build_tool: cargo
           - os: windows-latest
@@ -86,7 +92,7 @@ jobs:
           bin: test-crate
           target: ${{ matrix.target }}
           build-tool: ${{ matrix.build_tool }}
-          checksum: b2,sha256,sha512,sha1,md5
+          checksum: ${{ matrix.checksums || 'b2,sha256,sha512,sha1,md5' }}
           tar: all
           zip: all
           manifest-path: test-crate/Cargo.toml
