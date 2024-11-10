@@ -110,17 +110,7 @@ jobs:
           printf 'outputs.tar should be a file\n'
           test -f "${{ steps.upload-rust-binary-action.outputs.tar }}"
 
-          printf 'outputs.b2 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.b2 }}"
-
-          printf 'outputs.sha256 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.sha256 }}"
-
-          printf 'outputs.sha512 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.sha512 }}"
-
-          printf 'outputs.sha1 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.sha1 }}"
-
-          printf 'outputs.md5 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.md5 }}"
+          for hash_type in ${ ${{ matrix.checksums }}//,/ }; do
+              printf "outputs.%s should be a file\n" "$hash_type"
+              test -f "${{ steps.upload-rust-binary-action.outputs.$hash_type }}"
+          done
