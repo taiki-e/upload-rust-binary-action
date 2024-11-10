@@ -111,7 +111,7 @@ jobs:
           test -f "${{ steps.upload-rust-binary-action.outputs.tar }}"
 
           matrix_checksums=${{ matrix.checksums || 'b2,sha256,sha512,sha1,md5' }}
-          hash_types=${matrix_checksums//,/}
+          hash_types=${matrix_checksums//,/ }
 
           for hash_type in $hash_types; do
               printf "outputs.%s should be a file\n" "$hash_type"
