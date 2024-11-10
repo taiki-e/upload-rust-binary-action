@@ -115,5 +115,5 @@ jobs:
 
           for hash_type in $hash_types; do
               printf "outputs.%s should be a file\n" "$hash_type"
-              test -f "${{ steps.upload-rust-binary-action.outputs.$hash_type }}"
+              test -f "${{ steps.upload-rust-binary-action.outputs }}.$hash_type"
           done
