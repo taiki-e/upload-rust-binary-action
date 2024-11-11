@@ -56,6 +56,7 @@ Currently, this action is basically intended to be used in combination with an a
 | codesign            | false        | Sign build products using `codesign` on macOS                                                | String  |                |
 | codesign-prefix     | false        | Prefix for the `codesign` identifier on macOS                                                | String  |                |
 | codesign-options    | false        | Specifies a set of option flags to be embedded in the code signature on macOS. See the `codesign` manpage for details. | String | |
+| upx                 | false        | Compress binaries using [UPX](https://upx.github.io) on some platforms                                            | Boolean | `false`        |
 
 \[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.<br>
 \[2] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
