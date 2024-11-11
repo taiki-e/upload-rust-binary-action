@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add support for BLAKE2 checksums. ([#89](https://github.com/taiki-e/upload-rust-binary-action/issues/89), thanks @aartoni)
+
 ## [1.22.1] - 2024-10-19
 
 - Fix failure when cross-compiling to Windows on non-Windows. ([#86](https://github.com/taiki-e/upload-rust-binary-action/issues/86))
