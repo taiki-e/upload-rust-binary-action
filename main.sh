@@ -94,6 +94,13 @@ case "${no_default_features}" in
     *) bail "'no-default-features' input option must be 'true' or 'false': '${no_default_features}'" ;;
 esac
 
+build_locked="${INPUT_LOCKED:-}"
+case "${build_locked}" in
+    true) build_locked=1 ;;
+    false) build_locked='' ;;
+    *) bail "'locked' input option must be 'true' or 'false': '${build_locked}'" ;;
+esac
+
 bin_name="${INPUT_BIN:?}"
 bin_names=()
 if [[ -n "${bin_name}" ]]; then
@@ -267,6 +274,9 @@ if [[ -n "${features}" ]]; then
 fi
 if [[ -n "${no_default_features}" ]]; then
     build_options+=(--no-default-features)
+fi
+if [[ -n "${build_locked}" ]]; then
+    build_options+=(--locked)
 fi
 metadata_options=(--format-version=1 --no-deps)
 manifest_path="${INPUT_MANIFEST_PATH:-}"
