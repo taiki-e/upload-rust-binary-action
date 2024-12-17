@@ -395,7 +395,9 @@ if [[ "${INPUT_UPX:-}" = "true" ]]; then
 
     case "${host_os}" in
         windows)
-            choco install upx -y
+            if ! type -P upx >/dev/null; then
+                choco install upx -y
+            fi
             compress_binaries
             ;;
         linux)
