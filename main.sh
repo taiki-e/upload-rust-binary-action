@@ -393,7 +393,7 @@ case "${INPUT_TARGET:-}" in
 esac
 
 # Compress binaries with UPX
-if [[ -n "$upx" ]]; then
+if [[ -n "${upx}" ]]; then
     compress_binaries() {
         for bin_exe in "${bins[@]}"; do
             x upx --best "${target_dir}/${bin_exe}"
