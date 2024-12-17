@@ -101,6 +101,13 @@ case "${build_locked}" in
     *) bail "'locked' input option must be 'true' or 'false': '${build_locked}'" ;;
 esac
 
+upx="${INPUT_UPX:-}"
+case "${upx}" in
+    true) upx=1 ;;
+    false) upx='' ;;
+    *) bail "'upx' input option must be 'true' or 'false': '${upx}'" ;;
+esac
+
 bin_name="${INPUT_BIN:?}"
 bin_names=()
 if [[ -n "${bin_name}" ]]; then
@@ -386,7 +393,7 @@ case "${INPUT_TARGET:-}" in
 esac
 
 # Compress binaries with UPX
-if [[ "${INPUT_UPX:-}" = "true" ]]; then
+if [[ -n "$upx" ]]; then
     compress_binaries() {
         for bin_exe in "${bins[@]}"; do
             x upx --best "${target_dir}/${bin_exe}"
@@ -435,7 +442,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         filenames=("${bins[@]}")
     fi
     for bin_exe in "${bins[@]}"; do
-        if [[ -n "${bin_leading_dir}" ]]; then
+        if [[ -n "${bin__dir}" ]]; then
             x cp -- "${target_dir}/${bin_exe}" "${tmpdir}/${archive}/${bin_leading_dir}"/
         else
             x cp -- "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
