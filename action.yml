@@ -112,6 +112,10 @@ inputs:
   codesign_options:
     description: Alias for 'codesign-options'
     required: false
+  upx:
+    description: Compress binaries using UPX on some platforms
+    required: false
+    default: 'false'
 
 outputs:
   archive:
@@ -171,3 +175,4 @@ runs:
         INPUT_CODESIGN: ${{ inputs.codesign }}
         INPUT_CODESIGN_PREFIX: ${{ inputs.codesign-prefix || inputs.codesign_prefix }}
         INPUT_CODESIGN_OPTIONS: ${{ inputs.codesign-options || inputs.codesign_options }}
+        INPUT_UPX: ${{ inputs.upx }}
