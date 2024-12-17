@@ -442,7 +442,7 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] || [[ "${INPUT_ZIP/all/
         filenames=("${bins[@]}")
     fi
     for bin_exe in "${bins[@]}"; do
-        if [[ -n "${bin__dir}" ]]; then
+        if [[ -n "${bin_dir}" ]]; then
             x cp -- "${target_dir}/${bin_exe}" "${tmpdir}/${archive}/${bin_leading_dir}"/
         else
             x cp -- "${target_dir}/${bin_exe}" "${tmpdir}/${archive}"/
