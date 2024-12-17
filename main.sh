@@ -405,7 +405,7 @@ if [[ "${INPUT_UPX:-}" = "true" ]]; then
             compress_binaries
             ;;
         macos)
-            # MacOS is not currently supported by UPX
+            # macOS is not currently supported by UPX
             ;;
         *)
             warn "UPX is not available on ${host_os}"
