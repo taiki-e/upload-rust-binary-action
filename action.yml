@@ -18,7 +18,7 @@ inputs:
     description: Comma-separated list of cargo build features to enable
     required: false
   locked:
-    description: Whether to build with `cargo --locked`
+    description: Whether to build with `--locked` flag
     required: false
     default: 'false'
   no-default-features:

@@ -41,6 +41,7 @@ Currently, this action is basically intended to be used in combination with an a
 | target              | false \[2]   | Target triple, default is host triple                                                        | String  | (host triple)  |
 | features            | false        | Comma-separated list of cargo build features to enable                                       | String  |                |
 | no-default-features | false        | Whether to disable cargo build default features                                              | Boolean | `false`        |
+| locked              | false        | Whether to build with `--locked` flag                                                        | Boolean | `false`        |
 | tar                 | false        | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
 | zip                 | false        | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
 | checksum            | false        | Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String  |                |
@@ -56,7 +57,6 @@ Currently, this action is basically intended to be used in combination with an a
 | codesign            | false        | Sign build products using `codesign` on macOS                                                | String  |                |
 | codesign-prefix     | false        | Prefix for the `codesign` identifier on macOS                                                | String  |                |
 | codesign-options    | false        | Specifies a set of option flags to be embedded in the code signature on macOS. See the `codesign` manpage for details. | String | |
-| locked              | false        | Build with `cargo --locked`                                                                  | Boolean | `false`        |
 | upx                 | false        | Compress binaries using [UPX](https://upx.github.io) on some platforms                       | Boolean | `false`        |
 
 \[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.<br>

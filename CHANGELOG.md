@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.24.0] - 2024-12-17
+
+- Add `locked` input option. ([#91](https://github.com/taiki-e/upload-rust-binary-action/pull/91), thanks @crazyscot)
+
 ## [1.23.0] - 2024-11-11
 
 - Add support for BLAKE2 checksums. ([#89](https://github.com/taiki-e/upload-rust-binary-action/issues/89), thanks @aartoni)
@@ -184,7 +188,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.23.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.24.0...HEAD
+[1.24.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.1...v1.23.0
 [1.22.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.0...v1.22.1
 [1.22.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.21.1...v1.22.0
