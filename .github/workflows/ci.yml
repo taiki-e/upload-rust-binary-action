@@ -49,10 +49,10 @@ jobs:
             target: aarch64-unknown-linux-gnu
           - os: ubuntu-latest
             target: aarch64-unknown-linux-gnu
-            build_tool: cargo
+            build-tool: cargo
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu.2.17
-            build_tool: cargo-zigbuild
+            build-tool: cargo-zigbuild
           - os: ubuntu-latest
             target: x86_64-pc-windows-gnu
           - os: macos-latest # AArch64
@@ -71,7 +71,7 @@ jobs:
           - os: macos-latest
             checksums: sha256,sha512,sha1,md5
             target: universal-apple-darwin
-            build_tool: cargo
+            build-tool: cargo
           - os: windows-latest
           - os: windows-latest
             target: aarch64-pc-windows-msvc
@@ -83,7 +83,7 @@ jobs:
       - uses: taiki-e/setup-cross-toolchain-action@v1
         with:
           target: ${{ matrix.target }}
-        if: matrix.target != '' && matrix.build_tool == 'cargo'
+        if: matrix.target != '' && matrix.build-tool == 'cargo'
       - run: cargo new --bin test-crate
       - uses: ./
         id: upload-rust-binary-action
@@ -91,7 +91,7 @@ jobs:
           dry-run: true
           bin: test-crate
           target: ${{ matrix.target }}
-          build-tool: ${{ matrix.build_tool }}
+          build-tool: ${{ matrix.build-tool }}
           checksum: ${{ matrix.checksums || 'b2,sha256,sha512,sha1,md5' }}
           tar: all
           zip: all
