@@ -99,7 +99,7 @@ jobs:
           codesign: '-'
           codesign-prefix: 'com.example.'
           codesign-options: 'runtime'
-          upx: ${{ startsWith(matrix.os, 'ubuntu-') && matrix.target != 'x86_64-pc-windows-gnu' && (matrix.target != 'aarch64-unknown-linux-gnu' || matrix.build_tool == 'cargo') }}
+          upx: ${{ startsWith(matrix.os, 'ubuntu-') && (matrix.target != 'aarch64-unknown-linux-gnu' || matrix.build_tool == 'cargo') }}
       - name: Check action outputs
         run: |
           printf 'outputs.archive should not be empty\n'
@@ -125,13 +125,14 @@ jobs:
       - name: Check UPX
         if: |
           startsWith(matrix.os, 'ubuntu-') &&
-          matrix.target != 'x86_64-pc-windows-gnu' &&
           (matrix.target != 'aarch64-unknown-linux-gnu' || matrix.build_tool == 'cargo')
         run: |
           printf 'binary should be compressed with UPX\n'
           target_dir="./test-crate/target/release"
           tar -C "$target_dir" -xf "${{ steps.upload-rust-binary-action.outputs.tar }}"
-          test -n "$(file "$target_dir/test-crate" | grep 'no section header')"
+          target_file="$target_dir/test-crate"
+          [ "${{ matrix.target }}" == "x86_64-pc-windows-gnu" ] && target_file="$target_file.exe"
+          test -n "$(file "$target_file" | grep 'no section header')"
       - name: Check b2 output
         if: ${{ contains(matrix.checksums || 'b2,sha256,sha512,sha1,md5', 'b2') }}
         run: |
