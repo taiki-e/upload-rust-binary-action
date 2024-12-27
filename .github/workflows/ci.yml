@@ -132,6 +132,7 @@ jobs:
           tar -C "$target_dir" -xf "${{ steps.upload-rust-binary-action.outputs.tar }}"
           target_file="$target_dir/test-crate"
           [ "${{ matrix.target }}" == "x86_64-pc-windows-gnu" ] && target_file="$target_file.exe"
+          file "$target_file"
           test -n "$(file "$target_file" | grep 'no section header')"
       - name: Check b2 output
         if: ${{ contains(matrix.checksums || 'b2,sha256,sha512,sha1,md5', 'b2') }}
