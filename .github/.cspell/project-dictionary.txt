@@ -1,5 +1,4 @@
 coreutils
 lipo
-mktemp
 zigbuild
 codesign
