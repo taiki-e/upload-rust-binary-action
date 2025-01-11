@@ -101,6 +101,13 @@ case "${build_locked}" in
     *) bail "'locked' input option must be 'true' or 'false': '${build_locked}'" ;;
 esac
 
+upx="${INPUT_UPX:-}"
+case "${upx}" in
+    true) upx=1 ;;
+    false) upx='' ;;
+    *) bail "'upx' input option must be 'true' or 'false': '${upx}'" ;;
+esac
+
 bin_name="${INPUT_BIN:?}"
 bin_names=()
 if [[ -n "${bin_name}" ]]; then
@@ -340,6 +347,7 @@ build() {
         *) bail "unrecognized build tool '${build_tool}'" ;;
     esac
 }
+
 do_codesign() {
     if [[ -n "${INPUT_CODESIGN:-}" ]]; then
         local codesign_options=(--sign "${INPUT_CODESIGN}")
@@ -383,6 +391,36 @@ case "${INPUT_TARGET:-}" in
         target_dir="${target_dir}/${target}/${profile_directory}"
         ;;
 esac
+
+# Compress binaries with UPX
+if [[ -n "${upx}" ]]; then
+    compress_binaries() {
+        for bin_exe in "${bins[@]}"; do
+            x upx --best "${target_dir}/${bin_exe}"
+        done
+    }
+
+    case "${host_os}" in
+        windows)
+            if ! type -P upx >/dev/null; then
+                choco install upx -y
+            fi
+            compress_binaries
+            ;;
+        linux)
+            if ! type -P upx >/dev/null; then
+                sudo apt-get install -y upx-ucl
+            fi
+            compress_binaries
+            ;;
+        macos)
+            # macOS is not currently supported by UPX
+            ;;
+        *)
+            warn "UPX is not available on ${host_os}"
+            ;;
+    esac
+fi
 
 case "${host_os}" in
     macos)
