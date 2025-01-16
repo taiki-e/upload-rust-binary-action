@@ -1,4 +1,3 @@
 coreutils
 lipo
-zigbuild
 codesign
