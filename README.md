@@ -728,6 +728,7 @@ with:
 ## Compatibility
 
 This action has been tested for GitHub-hosted runners (Ubuntu, macOS, Windows).
+
 To use this action in self-hosted runners or in containers, at least the following tools are required:
 
 - rustup, cargo, rustc
