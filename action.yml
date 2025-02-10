@@ -27,7 +27,7 @@ inputs:
     default: 'windows'
   include:
     description: >
-      Comma-separated list of additional files to be included to archive.
+      Comma-separated list of additional files/directories to be included to archive.
       Note that glob pattern is not supported yet.
     required: false
   asset:

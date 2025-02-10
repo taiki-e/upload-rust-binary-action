@@ -142,7 +142,7 @@ esac
 strip=""
 case "${target}" in
     *-pc-windows-msvc) ;;
-    x86_64-* | i686-*)
+    x86_64* | i?86*)
         strip="strip"
         ;;
     arm*-linux-*eabi)

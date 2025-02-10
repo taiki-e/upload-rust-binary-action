@@ -11,7 +11,7 @@ GitHub Action for building and uploading Rust binary to GitHub Releases.
   - [Example workflow: Customize archive name](#example-workflow-customize-archive-name)
   - [Example workflow: Build with different features on different platforms](#example-workflow-build-with-different-features-on-different-platforms)
   - [Example workflow: Cross-compilation](#example-workflow-cross-compilation)
-  - [Example workflow: Include additional files](#example-workflow-include-additional-files)
+  - [Example workflow: Include additional files/directories](#example-workflow-include-additional-filesdirectories)
   - [Other examples](#other-examples)
   - [Optimize Rust binary](#optimize-rust-binary)
 - [Compatibility](#compatibility)
@@ -36,7 +36,7 @@ Currently, this action is basically intended to be used in combination with an a
 | tar         | false    | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
 | zip         | false    | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
 | checksum    | false    | Comma-separated list of algorithms to be used for checksum (sha256, sha512, sha1, or md5)    | String  |                |
-| include     | false    | Comma-separated list of additional files to be included to the archive                       | String  |                |
+| include     | false    | Comma-separated list of additional files/directories to be included to the archive           | String  |                |
 | asset       | false    | Comma-separated list of additional files to be uploaded separately                           | String  |                |
 | leading_dir | false    | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
 | build_tool  | false    | Tool to build binaries (cargo or cross, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
@@ -441,9 +441,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Example workflow: Include additional files
+### Example workflow: Include additional files/directories
 
-If you want include additional file *to the archive*, you can use the `include` option.
+If you want include additional files or directories *to the archive*, you can use the `include` option.
 
 ```yaml
 name: Release
@@ -478,7 +478,7 @@ jobs:
           # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
           # Note that glob pattern is not supported yet.
           bin: ...
-          # (optional) Comma-separated list of additional files to be included to archive.
+          # (optional) Comma-separated list of additional files/directories to be included to archive.
           # Note that glob pattern is not supported yet.
           include: LICENSE,README.md
         env:
@@ -502,7 +502,7 @@ You can use the `leading_dir` option to create the leading directory.
     # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
     # Note that glob pattern is not supported yet.
     bin: ...
-    # (optional) Comma-separated list of additional files to be included to archive.
+    # (optional) Comma-separated list of additional files/directories to be included to archive.
     # Note that glob pattern is not supported yet.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
@@ -521,7 +521,7 @@ In the above example, the directory structure of the archive would be as follows
 /<archive>/README.md
 ```
 
-If you want upload additional file *separately*, you can use the `asset` option.
+If you want upload additional files *separately*, you can use the `asset` option.
 
 ```yaml
 upload-assets:
