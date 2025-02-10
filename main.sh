@@ -122,6 +122,12 @@ elif [[ -n "${INPUT_PGP_PRIVATE_KEY:-}" ]]; then
 elif [[ -n "${INPUT_PGP_PASSPHRASE:-}" ]]; then
     bail "'pgp_passphrase' input option may only be together with 'pgp_public_key' input option"
 fi
+pgp_armored_sig="${INPUT_PGP_ARMORED_SIG:-}"
+case "${pgp_armored_sig}" in
+    true) pgp_armored_sig="1" ;;
+    false) pgp_armored_sig="" ;;
+    *) bail "'pgp_armored_sig' input option must be 'true' or 'false': '${no_default_features}'" ;;
+esac
 
 host=$(rustc -Vv | grep 'host: ' | cut -c 7-)
 target="${INPUT_TARGET:-"${host}"}"
@@ -373,9 +379,15 @@ if [[ -n "${pgp_public_key}" ]]; then
         run_gpg <<<"${INPUT_PGP_PRIVATE_KEY}" --batch --import -
     fi
     for asset in "${assets[@]}"; do
-        final_assets+=("${asset}.sig")
-        run_gpg <<<"${INPUT_PGP_PASSPHRASE:-}" --batch --passphrase-fd 0 --pinentry-mode loopback --detach-sig "${asset}"
-        run_gpg --no-default-keyring --keyring ./.public-key.gpg --verify "${asset}.sig" "${asset}"
+        if [[ -n "${pgp_armored_sig}" ]]; then
+            final_assets+=("${asset}.asc")
+            run_gpg <<<"${INPUT_PGP_PASSPHRASE:-}" --batch --passphrase-fd 0 --pinentry-mode loopback --detach-sig "${asset}" --armor
+            run_gpg --no-default-keyring --keyring ./.public-key.gpg --verify "${asset}.asc" "${asset}"
+        else
+            final_assets+=("${asset}.sig")
+            run_gpg <<<"${INPUT_PGP_PASSPHRASE:-}" --batch --passphrase-fd 0 --pinentry-mode loopback --detach-sig "${asset}"
+            run_gpg --no-default-keyring --keyring ./.public-key.gpg --verify "${asset}.sig" "${asset}"
+        fi
     done
     rm -f ./.public-key.gpg
 fi

@@ -96,6 +96,13 @@ inputs:
       Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
     required: false
     default: ''
+  pgp_armored_sig:
+    description: >
+      Whether or not to use ASCII-armored format (.asc) for uploaded signatures. Default to false (.sig).
+
+      Note: support for signing with PGP is experimental; see <https://github.com/taiki-e/upload-rust-binary-action/issues/40> for details
+    required: false
+    default: 'false'
 
 runs:
   using: node16
