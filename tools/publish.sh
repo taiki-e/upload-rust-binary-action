@@ -117,17 +117,13 @@ fi
 set -x
 
 git tag "${tag}"
-retry git push origin main
-retry git push origin --tags
+retry git push origin refs/heads/main
+retry git push origin refs/tags/"${tag}"
 
 major_version_tag="v${version%%.*}"
 git checkout -b "${major_version_tag}"
 retry git push origin refs/heads/"${major_version_tag}"
-if git --no-pager tag | grep -Eq "^${major_version_tag}$"; then
-  git tag -d "${major_version_tag}"
-  retry git push --delete origin refs/tags/"${major_version_tag}"
-fi
-git tag "${major_version_tag}"
-retry git push origin --tags
+git tag -f "${major_version_tag}"
+retry git push origin -f refs/tags/"${major_version_tag}"
 git checkout main
 git branch -d "${major_version_tag}"
