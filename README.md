@@ -43,6 +43,7 @@ Currently, this action is basically intended to be used in combination with an a
 | no-default-features |           | Whether to disable cargo build default features                                              | Boolean | `false`        |
 | locked              |           | Whether to build with `--locked` flag                                                        | Boolean | `false`        |
 | tar                 |           | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
+| tar-xz              |           | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none)             | String  | `unix`         |
 | zip                 |           | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
 | checksum            |           | Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String  |                |
 | include             |           | Comma-separated list of additional files to be included to the archive                       | String  |                |
@@ -70,6 +71,7 @@ Currently, this action is basically intended to be used in combination with an a
 | archive | Archive base name.           |
 | zip     | `.zip` archive file name.    |
 | tar     | `.tar.gz` archive file name. |
+| tar-xz  | `.tar.xz` archive file name. |
 | b2      | BLAKE2 checksum file name.   |
 | sha256  | SHA256 checksum file name.   |
 | sha512  | SHA512 checksum file name.   |
