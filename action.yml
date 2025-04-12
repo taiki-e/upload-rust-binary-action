@@ -41,7 +41,7 @@ inputs:
   tar-xz:
     description: On which platform to distribute the `.tar.xz` file (all, unix, windows, or none)
     required: false
-    default: 'unix'
+    default: 'none'
   zip:
     description: On which platform to distribute the `.zip` file (all, unix, windows, or none)
     required: false
