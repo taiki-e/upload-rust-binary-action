@@ -38,6 +38,10 @@ inputs:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
     default: 'unix'
+  tar-xz:
+    description: On which platform to distribute the `.tar.xz` file (all, unix, windows, or none)
+    required: false
+    default: 'none'
   zip:
     description: On which platform to distribute the `.zip` file (all, unix, windows, or none)
     required: false
@@ -123,6 +127,9 @@ outputs:
   tar:
     description: '.tar.gz archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.tar }}
+  tar-xz:
+    description: '.tar.xz archive file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.tar-xz }}
   b2:
     description: 'BLAKE2 checksum file name'
     value: ${{ steps.upload-rust-binary-action.outputs.b2 }}
@@ -157,6 +164,7 @@ runs:
         INPUT_NO_DEFAULT_FEATURES: ${{ inputs.no-default-features || inputs.no_default_features }}
         INPUT_MANIFEST_PATH: ${{ inputs.manifest-path || inputs.manifest_path }}
         INPUT_TAR: ${{ inputs.tar }}
+        INPUT_TAR_XZ: ${{ inputs.tar-xz }}
         INPUT_ZIP: ${{ inputs.zip }}
         INPUT_INCLUDE: ${{ inputs.include }}
         INPUT_ASSET: ${{ inputs.asset }}
