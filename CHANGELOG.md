@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `tar-xz` input option to upload `.tar.xz` archive. ([#98](https://github.com/taiki-e/upload-rust-binary-action/pull/98), thanks @A4-Tacks)
+
 ## [1.24.0] - 2024-12-17
 
 - Add `locked` input option. ([#91](https://github.com/taiki-e/upload-rust-binary-action/pull/91), thanks @crazyscot)
