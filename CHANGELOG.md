@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.25.0] - 2025-04-26
+
 - Add `tar-xz` input option to upload `.tar.xz` archive. ([#98](https://github.com/taiki-e/upload-rust-binary-action/pull/98), thanks @A4-Tacks)
 
 ## [1.24.0] - 2024-12-17
@@ -190,7 +192,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.24.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.25.0...HEAD
+[1.25.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.23.0...v1.24.0
 [1.23.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.1...v1.23.0
 [1.22.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.22.0...v1.22.1
