@@ -49,7 +49,7 @@ case "${dry_run_intended}" in
   true) dry_run_intended=1 ;;
   false) dry_run_intended='' ;;
   '') dry_run_intended='' ;;
-  *) bail "'dry_run_intended' input option must be 'true' or 'false': '${dry_run_intended}'" ;;
+  *) bail "'dry-run-intended' input option must be 'true' or 'false': '${dry_run_intended}'" ;;
 esac
 
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
