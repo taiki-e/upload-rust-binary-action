@@ -44,14 +44,24 @@ case "${dry_run}" in
   *) bail "'dry-run' input option must be 'true' or 'false': '${dry_run}'" ;;
 esac
 
+dry_run_intended="${INPUT_DRY_RUN_INTENDED:-}"
+case "${dry_run_intended}" in
+  true) dry_run_intended=1 ;;
+  false) dry_run_intended='' ;;
+  '') dry_run_intended='' ;;
+  *) bail "'dry_run_intended' input option must be 'true' or 'false': '${dry_run_intended}'" ;;
+esac
+
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
 ref="${INPUT_REF:-"${GITHUB_REF:-}"}"
 
 if [[ -z "${token}" ]]; then
   if [[ -n "${dry_run}" ]]; then
-    # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
-    # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
-    warn "neither GITHUB_TOKEN environment variable nor 'token' input option is set (downgraded error to info because action is running in dry-run mode)"
+    if [[ -z "${dry_run_intended}" ]]; then
+      # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
+      # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
+      warn "neither GITHUB_TOKEN environment variable nor 'token' input option is set (downgraded error to info because action is running in dry-run mode)"
+    fi
   else
     bail "neither GITHUB_TOKEN environment variable nor 'token' input option is set"
   fi
@@ -59,9 +69,11 @@ fi
 
 if [[ "${ref}" != "refs/tags/"* ]]; then
   if [[ -n "${dry_run}" ]]; then
-    # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
-    # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
-    warn "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more (downgraded error to info because action is running in dry-run mode)"
+    if [[ -z "${dry_run_intended}" ]]; then
+      # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
+      # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
+      warn "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more (downgraded error to info because action is running in dry-run mode)"
+    fi
     ref='refs/tags/dry-run'
   else
     bail "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more"
@@ -562,8 +574,10 @@ for checksum in ${checksums[@]+"${checksums[@]}"}; do
 done
 
 if [[ -n "${dry_run}" ]]; then
-  info "skipped upload because action is running in dry-run mode"
-  printf "tag: %s ('dry-run' if tag ref is not start with 'refs/tags/')\n" "${tag}"
+  if [[ -z "${dry_run_intended}" ]]; then
+    info "skipped upload because action is running in dry-run mode"
+    printf "tag: %s ('dry-run' if tag ref is not start with 'refs/tags/')\n" "${tag}"
+  fi
   IFS=','
   printf 'assets: %s\n' "${final_assets[*]}"
   IFS=$'\n\t'
