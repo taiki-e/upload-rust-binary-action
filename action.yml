@@ -97,6 +97,11 @@ inputs:
 
       Note that some errors are downgraded to warnings in this mode.
     required: false
+  dry-run-intended:
+    description: >
+      Suppress informational warnings for `dru-run` keeping the rest
+    required: false
+    default: 'false'
   dry_run:
     description: Alias for 'dry-run'
     required: false
@@ -176,6 +181,7 @@ runs:
         INPUT_REF: ${{ inputs.ref }}
         INPUT_PROFILE: ${{ inputs.profile }}
         INPUT_DRY_RUN: ${{ inputs.dry-run || inputs.dry_run }}
+        INPUT_DRY_RUN_INTENDED: ${{ inputs.dry-run-intended }}
         INPUT_CODESIGN: ${{ inputs.codesign }}
         INPUT_CODESIGN_PREFIX: ${{ inputs.codesign-prefix || inputs.codesign_prefix }}
         INPUT_CODESIGN_OPTIONS: ${{ inputs.codesign-options || inputs.codesign_options }}

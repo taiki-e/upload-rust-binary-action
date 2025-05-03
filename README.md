@@ -55,6 +55,7 @@ Currently, this action is basically intended to be used in combination with an a
 | manifest-path       |           | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
 | profile             |           | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
 | dry-run             |           | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
+| dry-run-intended    |           | Suppress informational `dry-run` warnings, keeping the rest                                  | Boolean | `false`        |
 | codesign            |           | Sign build products using `codesign` on macOS                                                | String  |                |
 | codesign-prefix     |           | Prefix for the `codesign` identifier on macOS                                                | String  |                |
 | codesign-options    |           | Specifies a set of option flags to be embedded in the code signature on macOS. See the `codesign` manpage for details. | String | |
