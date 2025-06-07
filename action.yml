@@ -17,6 +17,10 @@ inputs:
   features:
     description: Comma-separated list of cargo build features to enable
     required: false
+  package:
+    description: Whether to build with `--package` option
+    required: false
+    default: 'none'
   locked:
     description: Whether to build with `--locked` flag
     required: false
@@ -165,6 +169,7 @@ runs:
         INPUT_ARCHIVE: ${{ inputs.archive }}
         INPUT_TARGET: ${{ inputs.target }}
         INPUT_FEATURES: ${{ inputs.features }}
+        INPUT_PACKAGE: ${{ inputs.package }}
         INPUT_LOCKED: ${{ inputs.locked }}
         INPUT_NO_DEFAULT_FEATURES: ${{ inputs.no-default-features || inputs.no_default_features }}
         INPUT_MANIFEST_PATH: ${{ inputs.manifest-path || inputs.manifest_path }}

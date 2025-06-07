@@ -115,6 +115,11 @@ case "${build_locked}" in
   *) bail "'locked' input option must be 'true' or 'false': '${build_locked}'" ;;
 esac
 
+build_package="${INPUT_PACKAGE:-}"
+case "${build_package}" in
+  none) build_package='' ;;
+esac
+
 bin_name="${INPUT_BIN:?}"
 bin_names=()
 if [[ -n "${bin_name}" ]]; then
@@ -291,6 +296,9 @@ if [[ -n "${no_default_features}" ]]; then
 fi
 if [[ -n "${build_locked}" ]]; then
   build_options+=(--locked)
+fi
+if [[ -n "${build_package}" ]]; then
+  build_options+=(--package "${build_package}")
 fi
 metadata_options=(--format-version=1 --no-deps)
 manifest_path="${INPUT_MANIFEST_PATH:-}"
