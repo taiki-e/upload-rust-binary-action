@@ -116,9 +116,6 @@ case "${build_locked}" in
 esac
 
 build_package="${INPUT_PACKAGE:-}"
-case "${build_package}" in
-  none) build_package='' ;;
-esac
 
 bin_name="${INPUT_BIN:?}"
 bin_names=()

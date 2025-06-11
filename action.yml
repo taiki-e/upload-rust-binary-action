@@ -20,7 +20,6 @@ inputs:
   package:
     description: Package name to build
     required: false
-    default: 'none'
   locked:
     description: Whether to build with `--locked` flag
     required: false
