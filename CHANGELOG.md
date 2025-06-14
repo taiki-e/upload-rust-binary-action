@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.27.0] - 2025-06-14
+
 - Add `package` input option. ([#103](https://github.com/taiki-e/upload-rust-binary-action/pull/103), thanks @A4-Tacks)
 
 ## [1.26.0] - 2025-05-03
@@ -198,7 +200,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.26.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.27.0...HEAD
+[1.27.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.24.0...v1.25.0
 [1.24.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.23.0...v1.24.0
