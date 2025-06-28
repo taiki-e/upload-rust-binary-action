@@ -76,6 +76,7 @@ jobs:
           - os: windows-latest
           - os: windows-latest
             target: aarch64-pc-windows-msvc
+          - os: windows-11-arm
     runs-on: ${{ matrix.os || 'ubuntu-latest' }}
     timeout-minutes: 60
     steps:
