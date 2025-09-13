@@ -83,6 +83,7 @@ jobs:
       - uses: taiki-e/setup-cross-toolchain-action@v1
         with:
           target: ${{ matrix.target }}
+          runner: none
         if: matrix.target != '' && matrix.build-tool == 'cargo'
       - run: cargo new --bin test-crate
       - uses: ./
