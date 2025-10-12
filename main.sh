@@ -72,11 +72,11 @@ if [[ "${ref}" != "refs/tags/"* ]]; then
     if [[ -z "${dry_run_intended}" ]]; then
       # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
       # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
-      warn "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more (downgraded error to info because action is running in dry-run mode)"
+      warn "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/upload-rust-binary-action#supported-events> for more (downgraded error to info because action is running in dry-run mode)"
     fi
     ref='refs/tags/dry-run'
   else
-    bail "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/create-gh-release-action#supported-events> for more"
+    bail "tag ref should start with 'refs/tags/': '${ref}'; this action only supports events from tag or release by default; see <https://github.com/taiki-e/upload-rust-binary-action#supported-events> for more"
   fi
 fi
 tag="${ref#refs/tags/}"
