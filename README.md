@@ -33,33 +33,33 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Inputs
 
-| Name                | Required  | Description                                                                                  | Type    | Default        |
-| ------------------- |:---------:| -------------------------------------------------------------------------------------------- | ------- | -------------- |
-| bin                 | **✓**     | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String  |                |
-| token               | **✓** \[1]| GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more)            | String  |                |
-| archive             |           | Archive name (non-extension portion of filename) to be uploaded                              | String  | `$bin-$target` |
-| target              | \[2]      | Target triple, default is host triple                                                        | String  | (host triple)  |
-| features            |           | Comma-separated list of cargo build features to enable                                       | String  |                |
-| package             |           | Package name to build                                                                        | String  |                |
-| no-default-features |           | Whether to disable cargo build default features                                              | Boolean | `false`        |
-| locked              |           | Whether to build with `--locked` flag                                                        | Boolean | `false`        |
-| tar                 |           | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)             | String  | `unix`         |
-| tar-xz              |           | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none)             | String  | `none`         |
-| zip                 |           | On which platform to distribute the `.zip` file (all, unix, windows, or none)                | String  | `windows`      |
-| checksum            |           | Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String  |                |
-| include             |           | Comma-separated list of additional files to be included to the archive                       | String  |                |
-| asset               |           | Comma-separated list of additional files to be uploaded separately                           | String  |                |
-| leading-dir         |           | Whether to create the leading directory in the archive or not                                | Boolean | `false`        |
-| bin-leading-dir     |           | Create extra leading directory(s) for binary file(s) specified by `bin` option               | String  |                |
-| build-tool          |           | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String |                |
-| ref                 |           | Fully-formed tag ref for this release (see [action.yml](action.yml) for more)                | String  |                |
-| manifest-path       |           | Path to Cargo.toml                                                                           | String  | `Cargo.toml`   |
-| profile             |           | The cargo profile to build. This defaults to the release profile.                            | String  | `release`      |
-| dry-run             |           | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more)  | Boolean | `false`        |
-| dry-run-intended    |           | Suppress informational `dry-run` warnings, keeping the rest                                  | Boolean | `false`        |
-| codesign            |           | Sign build products using `codesign` on macOS                                                | String  |                |
-| codesign-prefix     |           | Prefix for the `codesign` identifier on macOS                                                | String  |                |
-| codesign-options    |           | Specifies a set of option flags to be embedded in the code signature on macOS. See the `codesign` manpage for details. | String | |
+| Name | Required | Description | Type | Default |
+| ---- | :------: | ----------- | ---- | ------- |
+| bin | **✓** | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String | |
+| token | **✓** \[1] | GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more) | String | |
+| archive | | Archive name (non-extension portion of filename) to be uploaded | String | `$bin-$target` |
+| target | \[2] | Target triple, default is host triple | String | (host triple) |
+| features | | Comma-separated list of cargo build features to enable | String | |
+| package | | Package name to build | String | |
+| no-default-features | | Whether to disable cargo build default features | Boolean | `false` |
+| locked | | Whether to build with `--locked` flag | Boolean | `false` |
+| tar | | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix` |
+| tar-xz | | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none) | String | `none` |
+| zip | | On which platform to distribute the `.zip` file (all, unix, windows, or none) | String | `windows` |
+| checksum | | Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String | |
+| include | | Comma-separated list of additional files to be included to the archive | String | |
+| asset | | Comma-separated list of additional files to be uploaded separately | String | |
+| leading-dir | | Whether to create the leading directory in the archive or not | Boolean | `false` |
+| bin-leading-dir | | Create extra leading directory(s) for binary file(s) specified by `bin` option | String | |
+| build-tool | | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String | |
+| ref | | Fully-formed tag ref for this release (see [action.yml](action.yml) for more) | String | |
+| manifest-path | | Path to Cargo.toml | String | `Cargo.toml` |
+| profile | | The cargo profile to build. This defaults to the release profile. | String | `release` |
+| dry-run | | Build and compress binaries, but do not upload them (see [action.yml](action.yml) for more) | Boolean | `false` |
+| dry-run-intended | | Suppress informational `dry-run` warnings, keeping the rest | Boolean | `false` |
+| codesign | | Sign build products using `codesign` on macOS | String | |
+| codesign-prefix | | Prefix for the `codesign` identifier on macOS | String | |
+| codesign-options | | Specifies a set of option flags to be embedded in the code signature on macOS. See the `codesign` manpage for details. | String | |
 
 \[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.<br>
 \[2] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
@@ -68,17 +68,17 @@ Currently, this action is basically intended to be used in combination with an a
 
 ### Outputs
 
-| Name    | Description                  |
-| ------- | ---------------------------- |
-| archive | Archive base name.           |
-| zip     | `.zip` archive file name.    |
-| tar     | `.tar.gz` archive file name. |
-| tar-xz  | `.tar.xz` archive file name. |
-| b2      | BLAKE2 checksum file name.   |
-| sha256  | SHA256 checksum file name.   |
-| sha512  | SHA512 checksum file name.   |
-| sha1    | SHA1 checksum file name.     |
-| md5     | MD5 checksum file name.      |
+| Name | Description |
+| ---- | ----------- |
+| archive | Archive base name. |
+| zip | `.zip` archive file name. |
+| tar | `.tar.gz` archive file name. |
+| tar-xz | `.tar.xz` archive file name. |
+| b2 | BLAKE2 checksum file name. |
+| sha256 | SHA256 checksum file name. |
+| sha512 | SHA512 checksum file name. |
+| sha1 | SHA1 checksum file name. |
+| md5 | MD5 checksum file name. |
 
 ### Example workflow: Basic usage
 
