@@ -128,7 +128,9 @@ if [[ -n "${bin_name}" ]]; then
     # "cp: cannot stat 'app-*': No such file or directory".
     bail "glob pattern in 'bin' input option is not supported yet"
   fi
-  while read -rd,; do bin_names+=("${REPLY}"); done <<<"${bin_name},"
+  while read -rd,; do
+    bin_names+=("${REPLY}")
+  done <<<"${bin_name},"
 fi
 if [[ ${#bin_names[@]} -gt 1 ]] && [[ "${archive}" == *"\$bin"* ]]; then
   bail "when multiple binary names are specified, default archive name or '\$bin' variable cannot be used in 'archive' option"
@@ -145,7 +147,9 @@ if [[ -n "${include}" ]]; then
     # "cp: cannot stat 'LICENSE-*': No such file or directory".
     bail "glob pattern in 'include' input option is not supported yet"
   fi
-  while read -rd,; do includes+=("${REPLY}"); done <<<"${include},"
+  while read -rd,; do
+    includes+=("${REPLY}")
+  done <<<"${include},"
 fi
 
 asset="${INPUT_ASSET:-}"
@@ -159,7 +163,9 @@ if [[ -n "${asset}" ]]; then
     # "cp: cannot stat 'LICENSE-*': No such file or directory".
     bail "glob pattern in 'asset' input option is not supported yet"
   fi
-  while read -rd,; do assets+=("${REPLY}"); done <<<"${asset},"
+  while read -rd,; do
+    assets+=("${REPLY}")
+  done <<<"${asset},"
 fi
 
 checksum="${INPUT_CHECKSUM:-}"

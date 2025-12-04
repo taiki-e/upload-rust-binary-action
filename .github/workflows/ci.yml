@@ -104,30 +104,41 @@ jobs:
       - name: Check action outputs
         run: |
           printf 'outputs.archive should not be empty\n'
-          test -n "${{ steps.upload-rust-binary-action.outputs.archive }}"
+          test -n "${OUTPUT_ARCHIVE}"
 
           printf 'outputs.zip should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.zip }}"
+          test -f "${OUTPUT_ZIP}"
 
           printf 'outputs.tar should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.tar }}"
+          test -f "${OUTPUT_TAR}"
 
           printf 'outputs.tar-xz should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.tar-xz }}"
+          test -f "${OUTPUT_TAR_XZ}"
 
           printf 'outputs.sha256 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.sha256 }}"
+          test -f "${OUTPUT_SHA256}"
 
           printf 'outputs.sha512 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.sha512 }}"
+          test -f "${OUTPUT_SHA512}"
 
           printf 'outputs.sha1 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.sha1 }}"
+          test -f "${OUTPUT_SHA1}"
 
           printf 'outputs.md5 should be a file\n'
-          test -f "${{ steps.upload-rust-binary-action.outputs.md5 }}"
+          test -f "${OUTPUT_MD5}"
+        env:
+          OUTPUT_ARCHIVE: ${{ steps.upload-rust-binary-action.outputs.archive }}
+          OUTPUT_ZIP: ${{ steps.upload-rust-binary-action.outputs.zip }}
+          OUTPUT_TAR: ${{ steps.upload-rust-binary-action.outputs.tar }}
+          OUTPUT_TAR_XZ: ${{ steps.upload-rust-binary-action.outputs.tar-xz }}
+          OUTPUT_SHA256: ${{ steps.upload-rust-binary-action.outputs.sha256 }}
+          OUTPUT_SHA512: ${{ steps.upload-rust-binary-action.outputs.sha512 }}
+          OUTPUT_SHA1: ${{ steps.upload-rust-binary-action.outputs.sha1 }}
+          OUTPUT_MD5: ${{ steps.upload-rust-binary-action.outputs.md5 }}
       - name: Check b2 output
         if: ${{ contains(matrix.checksums || 'b2,sha256,sha512,sha1,md5', 'b2') }}
         run: |
           printf 'outputs.b2 should not be empty\n'
-          test -n "${{ steps.upload-rust-binary-action.outputs.b2 }}"
+          test -n "${OUTPUT_B2}"
+        env:
+          OUTPUT_B2: ${{ steps.upload-rust-binary-action.outputs.b2 }}
