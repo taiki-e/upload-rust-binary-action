@@ -121,9 +121,9 @@ retry git push origin refs/heads/main
 retry git push origin refs/tags/"${tag}"
 
 major_version_tag="v${version%%.*}"
-git checkout -b "${major_version_tag}"
-retry git push origin refs/heads/"${major_version_tag}"
+git branch "${major_version_tag}"
 git tag -f "${major_version_tag}"
-retry git push origin -f refs/tags/"${major_version_tag}"
-git checkout main
+refs=("refs/heads/${major_version_tag}" "+refs/tags/${major_version_tag}")
+
+retry git push origin --atomic "${refs[@]}"
 git branch -d "${major_version_tag}"
