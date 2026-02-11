@@ -12,6 +12,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 - `bin`, `checksum`, `include`, and `asset` input options now support whitespace (space, tab, and line) or comma separated list. Previously, only comma-separated list was supported. ([#111](https://github.com/taiki-e/upload-rust-binary-action/pull/111))
 
+- Enable [release immutability](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/immutable-releases).
+
 ## [1.27.0] - 2025-06-14
 
 - Add `package` input option. ([#103](https://github.com/taiki-e/upload-rust-binary-action/pull/103), thanks @A4-Tacks)
