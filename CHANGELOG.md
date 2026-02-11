@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.28.0] - 2026-02-11
+
 - `bin`, `checksum`, `include`, and `asset` input options now support whitespace (space, tab, and line) or comma separated list. Previously, only comma-separated list was supported. ([#111](https://github.com/taiki-e/upload-rust-binary-action/pull/111))
 
 - Enable [release immutability](https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/immutable-releases).
@@ -204,7 +206,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.27.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.0...HEAD
+[1.28.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.27.0...v1.28.0
 [1.27.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.25.0...v1.26.0
 [1.25.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.24.0...v1.25.0
