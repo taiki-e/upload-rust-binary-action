@@ -29,6 +29,19 @@ warn() {
 info() {
   printf >&2 'info: %s\n' "$*"
 }
+normalize_comma_or_space_separated() {
+  # Normalize whitespace characters into space because it's hard to handle single input contains lines with POSIX sed alone.
+  local list="${1//[$'\r\n\t']/ }"
+  if [[ "${list}" == *","* ]]; then
+    # If a comma is contained, consider it is a comma-separated list.
+    # Drop leading and trailing whitespaces in each element.
+    sed -E 's/ *, */,/g; s/^.//' <<<",${list},"
+  else
+    # Otherwise, consider it is a whitespace-separated list.
+    # Convert whitespace characters into comma.
+    sed -E 's/ +/,/g; s/^.//' <<<" ${list} "
+  fi
+}
 
 export CARGO_NET_RETRY=10
 export RUSTUP_MAX_RETRIES=10
@@ -130,7 +143,7 @@ if [[ -n "${bin_name}" ]]; then
   fi
   while read -rd,; do
     bin_names+=("${REPLY}")
-  done <<<"${bin_name},"
+  done < <(normalize_comma_or_space_separated "${bin_name}")
 fi
 if [[ ${#bin_names[@]} -gt 1 ]] && [[ "${archive}" == *"\$bin"* ]]; then
   bail "when multiple binary names are specified, default archive name or '\$bin' variable cannot be used in 'archive' option"
@@ -149,7 +162,7 @@ if [[ -n "${include}" ]]; then
   fi
   while read -rd,; do
     includes+=("${REPLY}")
-  done <<<"${include},"
+  done < <(normalize_comma_or_space_separated "${include}")
 fi
 
 asset="${INPUT_ASSET:-}"
@@ -165,7 +178,7 @@ if [[ -n "${asset}" ]]; then
   fi
   while read -rd,; do
     assets+=("${REPLY}")
-  done <<<"${asset},"
+  done < <(normalize_comma_or_space_separated "${asset}")
 fi
 
 checksum="${INPUT_CHECKSUM:-}"
@@ -177,7 +190,7 @@ if [[ -n "${checksum}" ]]; then
       b2 | sha256 | sha512 | sha1 | md5) ;;
       *) bail "'checksum' input option must be 'b2', 'sha256', 'sha512', 'sha1', or 'md5': '${REPLY}'" ;;
     esac
-  done <<<"${checksum},"
+  done < <(normalize_comma_or_space_separated "${checksum}")
 fi
 
 host=$(rustc -vV | grep -E '^host:' | cut -d' ' -f2)

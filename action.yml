@@ -4,7 +4,7 @@ description: GitHub Action for building and uploading Rust binary to GitHub Rele
 inputs:
   bin:
     description: >
-      Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+      Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: true
   archive:
@@ -15,7 +15,7 @@ inputs:
     description: Target name, default is host triple
     required: false
   features:
-    description: Comma-separated list of cargo build features to enable
+    description: Cargo build features to enable (space or comma separated list)
     required: false
   package:
     description: Package name to build
@@ -51,12 +51,12 @@ inputs:
     default: 'windows'
   include:
     description: >
-      Comma-separated list of additional files to be included to archive.
+      Additional files to be included to the archive (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: false
   asset:
     description: >
-      Comma-separated list of additional files to be uploaded separately.
+      Additional files to be uploaded separately (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: false
   leading-dir:
@@ -76,7 +76,7 @@ inputs:
     description: Alias for 'build-tool'
     required: false
   checksum:
-    description: Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5)
+    description: Algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5) (whitespace or comma separated list)
     required: false
   token:
     description: >
