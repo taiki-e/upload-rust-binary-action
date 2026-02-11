@@ -104,7 +104,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -116,7 +116,7 @@ jobs:
     needs: create-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
@@ -169,7 +169,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -190,7 +190,7 @@ jobs:
             os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
@@ -236,7 +236,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -248,7 +248,7 @@ jobs:
     needs: create-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           bin: ...
@@ -284,7 +284,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -306,7 +306,7 @@ jobs:
             os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
@@ -351,7 +351,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -377,7 +377,7 @@ jobs:
             os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
@@ -409,7 +409,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -432,7 +432,7 @@ jobs:
             os: macos-latest
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install cross-compilation tools
         uses: taiki-e/setup-cross-toolchain-action@v1
         with:
@@ -468,7 +468,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional)
@@ -493,7 +493,7 @@ jobs:
             build-tool: cargo
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required)
@@ -525,7 +525,7 @@ jobs:
   create-release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
         with:
           # (optional) Path to changelog.
@@ -537,7 +537,7 @@ jobs:
     needs: create-release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
           # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
@@ -618,7 +618,7 @@ If you want upload additional file *separately*, you can use the `asset` option.
 upload-assets:
   runs-on: ubuntu-latest
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: taiki-e/upload-rust-binary-action@v1
       with:
         # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
