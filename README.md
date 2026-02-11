@@ -35,20 +35,20 @@ Currently, this action is basically intended to be used in combination with an a
 
 | Name | Required | Description | Type | Default |
 | ---- | :------: | ----------- | ---- | ------- |
-| bin | **✓** | Comma-separated list of binary names (non-extension portion of filename) to build and upload | String | |
+| bin | **✓** | Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list) | String | |
 | token | **✓** \[1] | GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more) | String | |
 | archive | | Archive name (non-extension portion of filename) to be uploaded | String | `$bin-$target` |
 | target | \[2] | Target triple, default is host triple | String | (host triple) |
-| features | | Comma-separated list of cargo build features to enable | String | |
+| features | | Cargo build features to enable (space or comma separated list) | String | |
 | package | | Package name to build | String | |
 | no-default-features | | Whether to disable cargo build default features | Boolean | `false` |
 | locked | | Whether to build with `--locked` flag | Boolean | `false` |
 | tar | | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix` |
 | tar-xz | | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none) | String | `none` |
 | zip | | On which platform to distribute the `.zip` file (all, unix, windows, or none) | String | `windows` |
-| checksum | | Comma-separated list of algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String | |
-| include | | Comma-separated list of additional files to be included to the archive | String | |
-| asset | | Comma-separated list of additional files to be uploaded separately | String | |
+| checksum | | Algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5) (whitespace or comma separated list).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String | |
+| include | | Additional files to be included to the archive (whitespace or comma separated list) | String | |
+| asset | | Additional files to be uploaded separately (whitespace or comma separated list) | String | |
 | leading-dir | | Whether to create the leading directory in the archive or not | Boolean | `false` |
 | bin-leading-dir | | Create extra leading directory(s) for binary file(s) specified by `bin` option | String | |
 | build-tool | | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String | |
@@ -119,7 +119,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
           # (required) GitHub token for uploading assets to GitHub Releases.
@@ -131,7 +131,7 @@ You can specify multiple binaries when the root manifest is a virtual manifest o
 ```yaml
 - uses: taiki-e/upload-rust-binary-action@v1
   with:
-    # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+    # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
     # Note that glob pattern is not supported yet.
     bin: app1,app2
     # (optional) Archive name (non-extension portion of filename) to be uploaded.
@@ -193,7 +193,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Target triple, default is host triple.
@@ -309,7 +309,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Target triple, default is host triple.
@@ -380,7 +380,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Target triple, default is host triple.
@@ -441,7 +441,7 @@ jobs:
         if: startsWith(matrix.os, 'ubuntu')
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
           # (optional) Target triple, default is host triple.
@@ -540,10 +540,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: taiki-e/upload-rust-binary-action@v1
         with:
-          # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+          # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
-          # (optional) Comma-separated list of additional files to be included to archive.
+          # (optional) Additional files to be included to the archive (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           include: LICENSE,README.md
           # (required) GitHub token for uploading assets to GitHub Releases.
@@ -563,10 +563,10 @@ You can use the `leading-dir` option to create the leading directory.
 ```yaml
 - uses: taiki-e/upload-rust-binary-action@v1
   with:
-    # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+    # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
     # Note that glob pattern is not supported yet.
     bin: ...
-    # (optional) Comma-separated list of additional files to be included to archive.
+    # (optional) Additional files to be included to the archive (whitespace or comma separated list).
     # Note that glob pattern is not supported yet.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
@@ -589,10 +589,10 @@ You can use the `bin-leading-dir` option to create extra leading directory(s) fo
 ```yaml
 - uses: taiki-e/upload-rust-binary-action@v1
   with:
-    # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+    # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
     # Note that glob pattern is not supported yet.
     bin: ...
-    # (optional) Comma-separated list of additional files to be included to archive.
+    # (optional) Additional files to be included to the archive (whitespace or comma separated list).
     # Note that glob pattern is not supported yet.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
@@ -621,10 +621,10 @@ upload-assets:
     - uses: actions/checkout@v4
     - uses: taiki-e/upload-rust-binary-action@v1
       with:
-        # (required) Comma-separated list of binary names (non-extension portion of filename) to build and upload.
+        # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
         # Note that glob pattern is not supported yet.
         bin: ...
-        # (optional) Comma-separated list of additional files to be uploaded separately.
+        # (optional) Additional files to be uploaded separately (whitespace or comma separated list).
         # Note that glob pattern is not supported yet.
         asset: LICENSE,README.md
         # (required) GitHub token for uploading assets to GitHub Releases.
