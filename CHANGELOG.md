@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Avoid triggering [zizmor ref-confusion](https://docs.zizmor.sh/audits/#ref-confusion) when using this action in form of `uses: taiki-e/upload-rust-binary-action@v1`.
+
 ## [1.28.0] - 2026-02-11
 
 - `bin`, `checksum`, `include`, and `asset` input options now support whitespace (space, tab, and line) or comma separated list. Previously, only comma-separated list was supported. ([#111](https://github.com/taiki-e/upload-rust-binary-action/pull/111))
