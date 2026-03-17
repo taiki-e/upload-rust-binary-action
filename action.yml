@@ -17,18 +17,25 @@ inputs:
   features:
     description: Cargo build features to enable (space or comma separated list)
     required: false
-  package:
-    description: Package name to build
-    required: false
-  locked:
-    description: Whether to build with `--locked` flag
-    required: false
-    default: 'false'
   no-default-features:
     description: Whether to disable cargo build default features
     required: false
   no_default_features:
     description: Alias for 'no-default-features'
+    required: false
+    default: 'false'
+  all-features:
+    description: Whether to build with `--all-features` flag
+    required: false
+  package:
+    description: Package names to build (whitespace or comma separated list)
+    required: false
+  workspace:
+    description: Whether to build with `--workspace` flag
+    required: false
+    default: 'false'
+  locked:
+    description: Whether to build with `--locked` flag
     required: false
     default: 'false'
   manifest-path:
@@ -168,9 +175,11 @@ runs:
         INPUT_ARCHIVE: ${{ inputs.archive }}
         INPUT_TARGET: ${{ inputs.target }}
         INPUT_FEATURES: ${{ inputs.features }}
-        INPUT_PACKAGE: ${{ inputs.package }}
-        INPUT_LOCKED: ${{ inputs.locked }}
         INPUT_NO_DEFAULT_FEATURES: ${{ inputs.no-default-features || inputs.no_default_features }}
+        INPUT_ALL_FEATURES: ${{ inputs.all-features }}
+        INPUT_PACKAGE: ${{ inputs.package }}
+        INPUT_WORKSPACE: ${{ inputs.workspace }}
+        INPUT_LOCKED: ${{ inputs.locked }}
         INPUT_MANIFEST_PATH: ${{ inputs.manifest-path || inputs.manifest_path }}
         INPUT_TAR: ${{ inputs.tar }}
         INPUT_TAR_XZ: ${{ inputs.tar-xz }}

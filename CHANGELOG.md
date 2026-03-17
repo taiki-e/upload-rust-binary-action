@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `all-features` and `workspace` input options. ([#112](https://github.com/taiki-e/upload-rust-binary-action/pull/112))
+
+- Accept whitespace or comma separated list in `package` input option. ([#112](https://github.com/taiki-e/upload-rust-binary-action/pull/112))
+
 ## [1.28.1] - 2026-03-08
 
 - Avoid triggering [zizmor ref-confusion](https://docs.zizmor.sh/audits/#ref-confusion) when using this action in form of `uses: taiki-e/upload-rust-binary-action@v1`.

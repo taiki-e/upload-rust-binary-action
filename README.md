@@ -40,8 +40,10 @@ Currently, this action is basically intended to be used in combination with an a
 | archive | | Archive name (non-extension portion of filename) to be uploaded | String | `$bin-$target` |
 | target | \[2] | Target triple, default is host triple | String | (host triple) |
 | features | | Cargo build features to enable (space or comma separated list) | String | |
-| package | | Package name to build | String | |
 | no-default-features | | Whether to disable cargo build default features | Boolean | `false` |
+| all-features | | Whether to build with `--all-features` flag | Boolean | `false` |
+| package | | Package names to build (whitespace or comma separated list) | String | |
+| workspace | | Whether to build with `--workspace` flag | Boolean | `false` |
 | locked | | Whether to build with `--locked` flag | Boolean | `false` |
 | tar | | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix` |
 | tar-xz | | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none) | String | `none` |

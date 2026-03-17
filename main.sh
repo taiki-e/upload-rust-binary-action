@@ -121,6 +121,13 @@ case "${no_default_features}" in
   *) bail "'no-default-features' input option must be 'true' or 'false': '${no_default_features}'" ;;
 esac
 
+all_features="${INPUT_ALL_FEATURES:-}"
+case "${all_features}" in
+  true) all_features=1 ;;
+  false) all_features='' ;;
+  *) bail "'all-features' input option must be 'true' or 'false': '${all_features}'" ;;
+esac
+
 build_locked="${INPUT_LOCKED:-}"
 case "${build_locked}" in
   true) build_locked=1 ;;
@@ -128,7 +135,20 @@ case "${build_locked}" in
   *) bail "'locked' input option must be 'true' or 'false': '${build_locked}'" ;;
 esac
 
+build_workspace="${INPUT_WORKSPACE:-}"
+case "${build_workspace}" in
+  true) build_workspace=1 ;;
+  false) build_workspace='' ;;
+  *) bail "'workspace' input option must be 'true' or 'false': '${build_workspace}'" ;;
+esac
+
 build_package="${INPUT_PACKAGE:-}"
+build_packages=()
+if [[ -n "${build_package}" ]]; then
+  while read -rd,; do
+    build_packages+=("${REPLY}")
+  done < <(normalize_comma_or_space_separated "${build_package}")
+fi
 
 bin_name="${INPUT_BIN:?}"
 bin_names=()
@@ -310,12 +330,18 @@ fi
 if [[ -n "${no_default_features}" ]]; then
   build_options+=(--no-default-features)
 fi
+if [[ -n "${all_features}" ]]; then
+  build_options+=(--all-features)
+fi
 if [[ -n "${build_locked}" ]]; then
   build_options+=(--locked)
 fi
-if [[ -n "${build_package}" ]]; then
-  build_options+=(--package "${build_package}")
+if [[ -n "${build_workspace}" ]]; then
+  build_options+=(--workspace)
 fi
+for build_package in ${build_packages[@]+"${build_packages[@]}"}; do
+  build_options+=(--package "${build_package}")
+done
 metadata_options=(--format-version=1 --no-deps)
 manifest_path="${INPUT_MANIFEST_PATH:-}"
 if [[ -n "${manifest_path}" ]]; then
