@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.29.0] - 2026-03-17
+
 - Add `all-features` and `workspace` input options. ([#112](https://github.com/taiki-e/upload-rust-binary-action/pull/112))
 
 - Accept whitespace or comma separated list in `package` input option. ([#112](https://github.com/taiki-e/upload-rust-binary-action/pull/112))
@@ -214,7 +216,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.1...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.0...HEAD
+[1.29.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.0...v1.28.1
 [1.28.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.27.0...v1.28.0
 [1.27.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.26.0...v1.27.0
