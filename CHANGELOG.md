@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.29.1] - 2026-03-18
+
 - Fix missing default value for `all-features` causing build errors. ([#114](https://github.com/taiki-e/upload-rust-binary-action/pull/114), thanks @ftnfurina)
 
 ## [1.29.0] - 2026-03-17
@@ -218,7 +220,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.1...HEAD
+[1.29.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.0...v1.29.1
 [1.29.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.0...v1.28.1
 [1.28.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.27.0...v1.28.0
