@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Fix missing default value for `all-features` causing build errors. ([#114](https://github.com/taiki-e/upload-rust-binary-action/pull/114), thanks @ftnfurina)
+
 ## [1.29.0] - 2026-03-17
 
 - Add `all-features` and `workspace` input options. ([#112](https://github.com/taiki-e/upload-rust-binary-action/pull/112))
