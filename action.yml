@@ -27,6 +27,7 @@ inputs:
   all-features:
     description: Whether to build with `--all-features` flag
     required: false
+    default: 'false'
   package:
     description: Package names to build (whitespace or comma separated list)
     required: false
