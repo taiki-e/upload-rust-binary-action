@@ -106,6 +106,7 @@ jobs:
           workspace: ${{ matrix.workspace || 'false' }}
           checksum: ${{ matrix.checksums || 'b2,sha256,sha512,sha1,md5' }}
           tar: all
+          tar-bz2: all
           tar-xz: all
           zip: all
           manifest-path: test-crate/Cargo.toml
@@ -117,14 +118,26 @@ jobs:
           printf 'outputs.archive should not be empty\n'
           test -n "${OUTPUT_ARCHIVE}"
 
-          printf 'outputs.zip should be a file\n'
+          printf 'outputs.zip should be a zip file\n'
           test -f "${OUTPUT_ZIP}"
+          file "${OUTPUT_ZIP}" | grep -F 'Zip archive data'
 
-          printf 'outputs.tar should be a file\n'
+          printf 'outputs.tar should be a gz file\n'
           test -f "${OUTPUT_TAR}"
+          file "${OUTPUT_TAR}" | grep -F 'gzip compressed data'
 
-          printf 'outputs.tar-xz should be a file\n'
+          printf 'outputs.tar-gz should be a gz file\n'
+          test -f "${OUTPUT_TAR_GZ}"
+          file "${OUTPUT_TAR_GZ}" | grep -F 'gzip compressed data'
+          [[ "${OUTPUT_TAR}" == "${OUTPUT_TAR_GZ}" ]] || exit 1
+
+          printf 'outputs.tar-bz2 should be a bzip2 file\n'
+          test -f "${OUTPUT_TAR_BZ2}"
+          file "${OUTPUT_TAR_BZ2}" | grep -F 'bzip2 compressed data'
+
+          printf 'outputs.tar-xz should be a xz file\n'
           test -f "${OUTPUT_TAR_XZ}"
+          file "${OUTPUT_TAR_XZ}" | grep -F 'XZ compressed data'
 
           printf 'outputs.sha256 should be a file\n'
           test -f "${OUTPUT_SHA256}"
@@ -141,6 +154,8 @@ jobs:
           OUTPUT_ARCHIVE: ${{ steps.upload-rust-binary-action.outputs.archive }}
           OUTPUT_ZIP: ${{ steps.upload-rust-binary-action.outputs.zip }}
           OUTPUT_TAR: ${{ steps.upload-rust-binary-action.outputs.tar }}
+          OUTPUT_TAR_GZ: ${{ steps.upload-rust-binary-action.outputs.tar-gz }}
+          OUTPUT_TAR_BZ2: ${{ steps.upload-rust-binary-action.outputs.tar-bz2 }}
           OUTPUT_TAR_XZ: ${{ steps.upload-rust-binary-action.outputs.tar-xz }}
           OUTPUT_SHA256: ${{ steps.upload-rust-binary-action.outputs.sha256 }}
           OUTPUT_SHA512: ${{ steps.upload-rust-binary-action.outputs.sha512 }}

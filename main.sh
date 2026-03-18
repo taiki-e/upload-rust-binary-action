@@ -97,12 +97,17 @@ tag="${ref#refs/tags/}"
 features="${INPUT_FEATURES:-}"
 archive="${INPUT_ARCHIVE:?}"
 
-if [[ ! "${INPUT_TAR}" =~ ^(all|unix|windows|none)$ ]]; then
-  bail "invalid input 'tar': ${INPUT_TAR}"
-elif [[ ! "${INPUT_TAR_XZ}" =~ ^(all|unix|windows|none)$ ]]; then
-  bail "invalid input 'tar-xz': ${INPUT_TAR_XZ}"
-elif [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
-  bail "invalid input 'zip': ${INPUT_ZIP}"
+if [[ ! "${INPUT_TAR_GZ}" =~ ^(all|unix|windows|none)$ ]]; then
+  bail "invalid input for 'tar' / 'tar-gz' input option: ${INPUT_TAR_GZ}"
+fi
+if [[ ! "${INPUT_TAR_BZ2}" =~ ^(all|unix|windows|none)$ ]]; then
+  bail "invalid input for 'tar-bz2' input option: ${INPUT_TAR_BZ2}"
+fi
+if [[ ! "${INPUT_TAR_XZ}" =~ ^(all|unix|windows|none)$ ]]; then
+  bail "invalid input for 'tar-xz' input option: ${INPUT_TAR_XZ}"
+fi
+if [[ ! "${INPUT_ZIP}" =~ ^(all|unix|windows|none)$ ]]; then
+  bail "invalid input for 'zip' input option: ${INPUT_ZIP}"
 fi
 
 leading_dir="${INPUT_LEADING_DIR:-}"
@@ -458,7 +463,8 @@ case "${host_os}" in
     ;;
 esac
 
-if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] \
+if [[ "${INPUT_TAR_GZ/all/${platform}}" == "${platform}" ]] \
+  || [[ "${INPUT_TAR_BZ2/all/${platform}}" == "${platform}" ]] \
   || [[ "${INPUT_TAR_XZ/all/${platform}}" == "${platform}" ]] \
   || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
   cwd=$(pwd)
@@ -489,17 +495,29 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] \
     # /${archive}
     # /${archive}/${bins}
     # /${archive}/${includes}
-    if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
+    if [[ "${INPUT_TAR_GZ/all/${platform}}" == "${platform}" ]]; then
       assets+=("${archive}.tar.gz")
 
       if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-        printf 'tar=%s.tar.gz\n' "${archive}" >>"${GITHUB_OUTPUT}"
+        printf 'tar-gz=%s.tar.gz\n' "${archive}" >>"${GITHUB_OUTPUT}"
       else
-        warn "GITHUB_OUTPUT is not set; skip setting the 'tar' output"
-        printf 'tar: %s.tar.gz\n' "${archive}"
+        warn "GITHUB_OUTPUT is not set; skip setting the 'tar' / 'tar-gz' output"
+        printf 'tar-gz: %s.tar.gz\n' "${archive}"
       fi
 
       x tar acf "${cwd}/${archive}.tar.gz" "${archive}"
+    fi
+    if [[ "${INPUT_TAR_BZ2/all/${platform}}" == "${platform}" ]]; then
+      assets+=("${archive}.tar.bz2")
+
+      if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+        printf 'tar-bz2=%s.tar.bz2\n' "${archive}" >>"${GITHUB_OUTPUT}"
+      else
+        warn "GITHUB_OUTPUT is not set; skip setting the 'tar-bz2' output"
+        printf 'tar-bz2: %s.tar.bz2\n' "${archive}"
+      fi
+
+      x tar acf "${cwd}/${archive}.tar.bz2" "${archive}"
     fi
     if [[ "${INPUT_TAR_XZ/all/${platform}}" == "${platform}" ]]; then
       assets+=("${archive}.tar.xz")
@@ -535,17 +553,29 @@ if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] \
     # /${bins}
     # /${includes}
     pushd -- "${archive}" >/dev/null
-    if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]]; then
+    if [[ "${INPUT_TAR_GZ/all/${platform}}" == "${platform}" ]]; then
       assets+=("${archive}.tar.gz")
 
       if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
-        printf 'tar=%s.tar.gz\n' "${archive}" >>"${GITHUB_OUTPUT}"
+        printf 'tar-gz=%s.tar.gz\n' "${archive}" >>"${GITHUB_OUTPUT}"
       else
-        warn "GITHUB_OUTPUT is not set; skip setting the 'tar' output"
-        printf 'tar: %s.tar.gz\n' "${archive}"
+        warn "GITHUB_OUTPUT is not set; skip setting the 'tar' / 'tar-gz' output"
+        printf 'tar-gz: %s.tar.gz\n' "${archive}"
       fi
 
       x tar acf "${cwd}/${archive}.tar.gz" "${filenames[@]}"
+    fi
+    if [[ "${INPUT_TAR_BZ2/all/${platform}}" == "${platform}" ]]; then
+      assets+=("${archive}.tar.bz2")
+
+      if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+        printf 'tar-bz2=%s.tar.bz2\n' "${archive}" >>"${GITHUB_OUTPUT}"
+      else
+        warn "GITHUB_OUTPUT is not set; skip setting the 'tar-bz2' output"
+        printf 'tar-bz2: %s.tar.bz2\n' "${archive}"
+      fi
+
+      x tar acf "${cwd}/${archive}.tar.bz2" "${filenames[@]}"
     fi
     if [[ "${INPUT_TAR_XZ/all/${platform}}" == "${platform}" ]]; then
       assets+=("${archive}.tar.xz")

@@ -10,6 +10,10 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `tar-bz2` input option to upload `.tar.bz2` archive. ([#113](https://github.com/taiki-e/upload-rust-binary-action/pull/113))
+
+- Add `tar-gz` input option as an alias for `tar` input option for consistency with `tar-bz2` and `tar-xz` input options. ([#113](https://github.com/taiki-e/upload-rust-binary-action/pull/113))
+
 ## [1.29.1] - 2026-03-18
 
 - Fix missing default value for `all-features` causing build errors. ([#114](https://github.com/taiki-e/upload-rust-binary-action/pull/114), thanks @ftnfurina)
