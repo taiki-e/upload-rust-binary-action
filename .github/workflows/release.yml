@@ -19,12 +19,17 @@ defaults:
   run:
     shell: bash --noprofile --norc -CeEuxo pipefail {0}
 
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
 jobs:
   release:
     if: github.repository_owner == 'taiki-e'
     uses: taiki-e/github-actions/.github/workflows/action-release.yml@main
     permissions:
       contents: write # for taiki-e/create-gh-release-action
-    secrets: inherit
+    secrets:
+      PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
     with:
       version: ${{ inputs.version }}
