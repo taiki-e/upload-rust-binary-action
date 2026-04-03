@@ -3,9 +3,9 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: daily
+      interval: weekly
     cooldown:
-      default-days: 7
+      default-days: 14
     commit-message:
       prefix: ''
     labels: []
