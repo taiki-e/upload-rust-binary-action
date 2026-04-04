@@ -45,10 +45,18 @@ inputs:
   manifest_path:
     description: Alias for 'manifest-path'
     required: false
-  tar:
+  tar-gz:
     description: On which platform to distribute the `.tar.gz` file (all, unix, windows, or none)
     required: false
     default: 'unix'
+  tar:
+    description: Alias for 'tar-gz'
+    required: false
+    default: ''
+  tar-bz2:
+    description: On which platform to distribute the `.tar.bz2` file (all, unix, windows, or none)
+    required: false
+    default: 'none'
   tar-xz:
     description: On which platform to distribute the `.tar.xz` file (all, unix, windows, or none)
     required: false
@@ -108,13 +116,13 @@ inputs:
 
       Note that some errors are downgraded to warnings in this mode.
     required: false
+  dry_run:
+    description: Alias for 'dry-run'
+    required: false
+    default: 'false'
   dry-run-intended:
     description: >
       Suppress informational warnings for `dru-run` keeping the rest
-    required: false
-    default: 'false'
-  dry_run:
-    description: Alias for 'dry-run'
     required: false
     default: 'false'
   codesign:
@@ -135,31 +143,37 @@ inputs:
 
 outputs:
   archive:
-    description: 'Archive base name'
+    description: Archive base name
     value: ${{ steps.upload-rust-binary-action.outputs.archive }}
   zip:
-    description: '.zip archive file name'
+    description: .zip archive file name
     value: ${{ steps.upload-rust-binary-action.outputs.zip }}
   tar:
-    description: '.tar.gz archive file name'
-    value: ${{ steps.upload-rust-binary-action.outputs.tar }}
+    description: Alias for 'tar-gz'
+    value: ${{ steps.upload-rust-binary-action.outputs.tar-gz }}
+  tar-gz:
+    description: .tar.gz archive file name
+    value: ${{ steps.upload-rust-binary-action.outputs.tar-gz }}
+  tar-bz2:
+    description: .tar.bz2 archive file name
+    value: ${{ steps.upload-rust-binary-action.outputs.tar-bz2 }}
   tar-xz:
-    description: '.tar.xz archive file name'
+    description: .tar.xz archive file name
     value: ${{ steps.upload-rust-binary-action.outputs.tar-xz }}
   b2:
-    description: 'BLAKE2 checksum file name'
+    description: BLAKE2 checksum file name
     value: ${{ steps.upload-rust-binary-action.outputs.b2 }}
   sha256:
-    description: 'SHA256 checksum file name'
+    description: SHA256 checksum file name
     value: ${{ steps.upload-rust-binary-action.outputs.sha256 }}
   sha512:
-    description: 'SHA512 checksum file name'
+    description: SHA512 checksum file name
     value: ${{ steps.upload-rust-binary-action.outputs.sha512 }}
   sha1:
-    description: 'SHA1 checksum file name'
+    description: SHA1 checksum file name
     value: ${{ steps.upload-rust-binary-action.outputs.sha1 }}
   md5:
-    description: 'MD5 checksum file name'
+    description: MD5 checksum file name
     value: ${{ steps.upload-rust-binary-action.outputs.md5 }}
 
 # Note:
@@ -182,7 +196,8 @@ runs:
         INPUT_WORKSPACE: ${{ inputs.workspace }}
         INPUT_LOCKED: ${{ inputs.locked }}
         INPUT_MANIFEST_PATH: ${{ inputs.manifest-path || inputs.manifest_path }}
-        INPUT_TAR: ${{ inputs.tar }}
+        INPUT_TAR_GZ: ${{ inputs.tar || inputs.tar-gz }}
+        INPUT_TAR_BZ2: ${{ inputs.tar-bz2 }}
         INPUT_TAR_XZ: ${{ inputs.tar-xz }}
         INPUT_ZIP: ${{ inputs.zip }}
         INPUT_INCLUDE: ${{ inputs.include }}

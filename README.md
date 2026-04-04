@@ -45,7 +45,9 @@ Currently, this action is basically intended to be used in combination with an a
 | package | | Package names to build (whitespace or comma separated list) | String | |
 | workspace | | Whether to build with `--workspace` flag | Boolean | `false` |
 | locked | | Whether to build with `--locked` flag | Boolean | `false` |
-| tar | | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix` |
+| tar-gz | | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix` |
+| tar | | Alias for `tar-gz` input option | String | |
+| tar-bz2 | | On which platform to distribute the `.tar.bz2` file (all, unix, windows, or none) | String | `none` |
 | tar-xz | | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none) | String | `none` |
 | zip | | On which platform to distribute the `.zip` file (all, unix, windows, or none) | String | `windows` |
 | checksum | | Algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5) (whitespace or comma separated list).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String | |
@@ -74,7 +76,9 @@ Currently, this action is basically intended to be used in combination with an a
 | ---- | ----------- |
 | archive | Archive base name. |
 | zip | `.zip` archive file name. |
-| tar | `.tar.gz` archive file name. |
+| tar-gz | `.tar.gz` archive file name. |
+| tar | Alias for `tar-gz` output. |
+| tar-bz2 | `.tar.bz2` archive file name. |
 | tar-xz | `.tar.xz` archive file name. |
 | b2 | BLAKE2 checksum file name. |
 | sha256 | SHA256 checksum file name. |
@@ -207,7 +211,7 @@ jobs:
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
           # [possible values: all, unix, windows, none]
-          tar: unix
+          tar-gz: unix
           # (optional) On which platform to distribute the `.zip` file.
           # [default value: windows]
           # [possible values: all, unix, windows, none]
@@ -319,7 +323,7 @@ jobs:
           # (optional) On which platform to distribute the `.tar.gz` file.
           # [default value: unix]
           # [possible values: all, unix, windows, none]
-          tar: unix
+          tar-gz: unix
           # (optional) On which platform to distribute the `.zip` file.
           # [default value: windows]
           # [possible values: all, unix, windows, none]
