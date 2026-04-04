@@ -84,7 +84,11 @@ inputs:
     description: Alias for 'build-tool'
     required: false
   checksum:
-    description: Algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5) (whitespace or comma separated list)
+    description: >
+      Algorithms to be used for checksum (sha256, sha512, b2, sha1, or md5) (whitespace or comma separated list)
+
+      Note: b2 is not available by default on macOS, install `b2sum` to use it.
+      sha1 and md5 are insecure and strongly discouraged.
     required: false
   token:
     description: >

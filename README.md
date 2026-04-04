@@ -49,7 +49,7 @@ Currently, this action is basically intended to be used in combination with an a
 | tar | | On which platform to distribute the `.tar.gz` file (all, unix, windows, or none) | String | `unix` |
 | tar-xz | | On which platform to distribute the `.tar.xz` file (all, unix, windows, or none) | String | `none` |
 | zip | | On which platform to distribute the `.zip` file (all, unix, windows, or none) | String | `windows` |
-| checksum | | Algorithms to be used for checksum (b2, sha256, sha512, sha1, or md5) (whitespace or comma separated list).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. | String | |
+| checksum | | Algorithms to be used for checksum (sha256, sha512, b2, sha1, or md5) (whitespace or comma separated list).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. sha1 and md5 are insecure and strongly discouraged. | String | |
 | include | | Additional files to be included to the archive (whitespace or comma separated list) | String | |
 | asset | | Additional files to be uploaded separately (whitespace or comma separated list) | String | |
 | leading-dir | | Whether to create the leading directory in the archive or not | Boolean | `false` |
@@ -77,9 +77,9 @@ Currently, this action is basically intended to be used in combination with an a
 | zip | `.zip` archive file name. |
 | tar | `.tar.gz` archive file name. |
 | tar-xz | `.tar.xz` archive file name. |
-| b2 | BLAKE2 checksum file name. |
 | sha256 | SHA256 checksum file name. |
 | sha512 | SHA512 checksum file name. |
+| b2 | BLAKE2 checksum file name. |
 | sha1 | SHA1 checksum file name. |
 | md5 | MD5 checksum file name. |
 
