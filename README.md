@@ -96,7 +96,7 @@ GitHub Release.
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -106,6 +106,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -118,6 +120,8 @@ jobs:
   upload-assets:
     needs: create-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
@@ -161,7 +165,7 @@ See also [cross-compilation example](#example-workflow-cross-compilation).
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -171,6 +175,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -192,6 +198,8 @@ jobs:
           - target: x86_64-pc-windows-msvc
             os: windows-latest
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
@@ -228,7 +236,7 @@ You can customize archive name by `archive` option.
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -238,6 +246,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -250,6 +260,8 @@ jobs:
   upload-assets:
     needs: create-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
@@ -276,7 +288,7 @@ This action enables the `systemd` and `io_uring` features for Linux, and leave m
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -286,6 +298,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -308,6 +322,8 @@ jobs:
           - target: x86_64-pc-windows-msvc
             os: windows-latest
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
@@ -343,7 +359,7 @@ If cross is not installed, this action calls `cargo install cross --locked` to i
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -353,6 +369,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -379,6 +397,8 @@ jobs:
           - target: universal-apple-darwin
             os: macos-latest
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
@@ -401,7 +421,7 @@ The following is an example using [setup-cross-toolchain-action]. In this exampl
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -411,6 +431,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -434,6 +456,8 @@ jobs:
           - target: x86_64-apple-darwin
             os: macos-latest
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - name: Install cross-compilation tools
@@ -462,6 +486,9 @@ If cargo-zigbuild is not installed, this action calls `pip3 install cargo-zigbui
 ```yaml
 name: Release
 
+permissions:
+  contents: read
+
 on:
   push:
     tags:
@@ -470,6 +497,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -495,6 +524,8 @@ jobs:
             os: macos-latest
             build-tool: cargo
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
@@ -517,7 +548,7 @@ If you want include additional file *to the archive*, you can use the `include` 
 name: Release
 
 permissions:
-  contents: write
+  contents: read
 
 on:
   push:
@@ -527,6 +558,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/create-gh-release-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/create-gh-release-action@v1
@@ -539,6 +572,8 @@ jobs:
   upload-assets:
     needs: create-release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # for taiki-e/upload-rust-binary-action
     steps:
       - uses: actions/checkout@v6
       - uses: taiki-e/upload-rust-binary-action@v1
