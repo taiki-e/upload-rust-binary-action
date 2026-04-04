@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Support trailing comma in `bin`, `package`, `include`, `asset`, and `checksum` input options.
+
 ## [1.29.1] - 2026-03-18
 
 - Fix missing default value for `all-features` causing build errors. ([#114](https://github.com/taiki-e/upload-rust-binary-action/pull/114), thanks @ftnfurina)
