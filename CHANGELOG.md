@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.30.0] - 2026-04-04
+
 - upload-rust-binary-action no longer requires `token` input. This action now uses `${{ github.token }}` as the default token, like `actions/checkout` does.
 
 - Support trailing comma in `bin`, `package`, `include`, `asset`, and `checksum` input options.
@@ -226,7 +228,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.1...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.0...HEAD
+[1.30.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.1...v1.30.0
 [1.29.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.0...v1.29.1
 [1.29.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.1...v1.29.0
 [1.28.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.0...v1.28.1
