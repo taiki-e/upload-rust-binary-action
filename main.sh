@@ -65,17 +65,11 @@ case "${dry_run_intended}" in
   *) bail "'dry-run-intended' input option must be 'true' or 'false': '${dry_run_intended}'" ;;
 esac
 
-token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-}"}"
+token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-"${DEFAULT_GITHUB_TOKEN:-}"}"}"
 ref="${INPUT_REF:-"${GITHUB_REF:-}"}"
 
 if [[ -z "${token}" ]]; then
-  if [[ -n "${dry_run}" ]]; then
-    if [[ -z "${dry_run_intended}" ]]; then
-      # TODO: The warnings are somewhat noisy if we have a lot of build matrix:
-      # https://github.com/taiki-e/upload-rust-binary-action/pull/55#discussion_r1349880455
-      warn "neither GITHUB_TOKEN environment variable nor 'token' input option is set (downgraded error to info because action is running in dry-run mode)"
-    fi
-  else
+  if [[ -z "${dry_run}" ]]; then
     bail "neither GITHUB_TOKEN environment variable nor 'token' input option is set"
   fi
 fi

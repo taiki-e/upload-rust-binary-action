@@ -37,9 +37,9 @@ Currently, this action is basically intended to be used in combination with an a
 | Name | Required | Description | Type | Default |
 | ---- | :------: | ----------- | ---- | ------- |
 | bin | **✓** | Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list) | String | |
-| token | **✓** \[1] | GitHub token for creating GitHub Releases (see [action.yml](action.yml) for more) | String | |
+| token | | GitHub token for uploading assets to GitHub Releases (see [action.yml](action.yml) for more) | String | `${{ github.token }}` |
 | archive | | Archive name (non-extension portion of filename) to be uploaded | String | `$bin-$target` |
-| target | \[2] | Target triple, default is host triple | String | (host triple) |
+| target | \[1] | Target triple, default is host triple | String | (host triple) |
 | features | | Cargo build features to enable (space or comma separated list) | String | |
 | no-default-features | | Whether to disable cargo build default features | Boolean | `false` |
 | all-features | | Whether to build with `--all-features` flag | Boolean | `false` |
@@ -64,8 +64,7 @@ Currently, this action is basically intended to be used in combination with an a
 | codesign-prefix | | Prefix for the `codesign` identifier on macOS | String | |
 | codesign-options | | Specifies a set of option flags to be embedded in the code signature on macOS. See the `codesign` manpage for details. | String | |
 
-\[1] Required one of `token` input option or `GITHUB_TOKEN` environment variable. Not required when `dry-run` input option is set to `true`.<br>
-\[2] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
+\[1] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
 
 (Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available.)
 
@@ -114,8 +113,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -129,8 +126,6 @@ jobs:
           # (required) Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           bin: ...
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 You can specify multiple binaries when the root manifest is a virtual manifest or specified binaries are in the same crate.
@@ -150,8 +145,6 @@ You can specify multiple binaries when the root manifest is a virtual manifest o
     #     - $tag    - Tag of this release.
     # When multiple binary names are specified, default archive name or $bin variable cannot be used.
     archive: app-$target
-    # (required) GitHub token for uploading assets to GitHub Releases.
-    token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Basic usage (multiple platforms)
@@ -183,8 +176,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -221,8 +212,6 @@ jobs:
           # [default value: windows]
           # [possible values: all, unix, windows, none]
           zip: windows
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Customize archive name
@@ -254,8 +243,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -276,8 +263,6 @@ jobs:
           #     - $tag    - Tag of this release.
           # When multiple binary names are specified, default archive name or $bin variable cannot be used.
           archive: $bin-$tag-$target
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Build with different features on different platforms
@@ -306,8 +291,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -343,8 +326,6 @@ jobs:
           zip: windows
           # (optional) Build with the given set of features if any.
           features: ${{ matrix.features || '' }}
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Cross-compilation
@@ -377,8 +358,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -408,8 +387,6 @@ jobs:
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 #### setup-cross-toolchain-action
@@ -439,8 +416,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -473,8 +448,6 @@ jobs:
           bin: ...
           # (optional) Target triple, default is host triple.
           target: ${{ matrix.target }}
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 #### cargo-zigbuild
@@ -505,8 +478,6 @@ jobs:
         with:
           # (optional)
           changelog: CHANGELOG.md
-          # (required)
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -536,8 +507,6 @@ jobs:
           target: ${{ matrix.target }}
           # (optional) Tool to build binaries (cargo, cross, or cargo-zigbuild)
           build-tool: ${{ matrix.build-tool }}
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 ### Example workflow: Include additional files
@@ -566,8 +535,6 @@ jobs:
         with:
           # (optional) Path to changelog.
           changelog: CHANGELOG.md
-          # (required) GitHub token for creating GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   upload-assets:
     needs: create-release
@@ -584,8 +551,6 @@ jobs:
           # (optional) Additional files to be included to the archive (whitespace or comma separated list).
           # Note that glob pattern is not supported yet.
           include: LICENSE,README.md
-          # (required) GitHub token for uploading assets to GitHub Releases.
-          token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 By default, the expanded archive does not include the leading directory. In the above example, the directory structure of the archive would be as follows:
@@ -609,8 +574,6 @@ You can use the `leading-dir` option to create the leading directory.
     include: LICENSE,README.md
     # (optional) Whether to create the leading directory in the archive or not. default to false.
     leading-dir: true
-    # (required) GitHub token for uploading assets to GitHub Releases.
-    token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 In the above example, the directory structure of the archive would be as follows:
@@ -637,8 +600,6 @@ You can use the `bin-leading-dir` option to create extra leading directory(s) fo
     leading-dir: true
     # (optional) Create extra leading directory(s) for binary file(s) specified by `bin` option. default to empty.
     bin-leading-dir: opt/leading
-    # (required) GitHub token for uploading assets to GitHub Releases.
-    token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 In the above example, the directory structure of the archive would be as follows:
@@ -665,8 +626,6 @@ upload-assets:
         # (optional) Additional files to be uploaded separately (whitespace or comma separated list).
         # Note that glob pattern is not supported yet.
         asset: LICENSE,README.md
-        # (required) GitHub token for uploading assets to GitHub Releases.
-        token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 In the above example, the following 3 files will be uploaded:

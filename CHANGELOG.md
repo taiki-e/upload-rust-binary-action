@@ -10,7 +10,11 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- upload-rust-binary-action no longer requires `token` input. This action now uses `${{ github.token }}` as the default token, like `actions/checkout` does.
+
 - Support trailing comma in `bin`, `package`, `include`, `asset`, and `checksum` input options.
+
+- Documentation improvements.
 
 ## [1.29.1] - 2026-03-18
 

@@ -92,9 +92,10 @@ inputs:
     required: false
   token:
     description: >
-      GitHub token for creating GitHub Releases.
+      GitHub token for uploading assets to GitHub Releases.
 
       If not set this option, the GITHUB_TOKEN environment variable will be used.
+      If not set both this option and the GITHUB_TOKEN environment variable, github.token will be used.
     required: false
   ref:
     description: >
@@ -203,3 +204,4 @@ runs:
         INPUT_CODESIGN: ${{ inputs.codesign }}
         INPUT_CODESIGN_PREFIX: ${{ inputs.codesign-prefix || inputs.codesign_prefix }}
         INPUT_CODESIGN_OPTIONS: ${{ inputs.codesign-options || inputs.codesign_options }}
+        DEFAULT_GITHUB_TOKEN: ${{ github.token }}
