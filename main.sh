@@ -65,6 +65,11 @@ case "${dry_run_intended}" in
   *) bail "'dry-run-intended' input option must be 'true' or 'false': '${dry_run_intended}'" ;;
 esac
 
+if [[ -n "${INPUT_TOKEN}" ]] || [[ -n "${DEFAULT_GITHUB_TOKEN}" ]]; then
+  if [[ -n "${dry_run}" ]]; then
+    bail "internal error: INPUT_TOKEN and DEFAULT_GITHUB_TOKEN must be empty for dry-run"
+  fi
+fi
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-"${DEFAULT_GITHUB_TOKEN:-}"}"}"
 # This prevents tokens from being exposed to subprocesses via environment variables.
 unset INPUT_TOKEN GITHUB_TOKEN GH_TOKEN DEFAULT_GITHUB_TOKEN

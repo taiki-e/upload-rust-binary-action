@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Enhance security against supply chain attacks.
+
 ## [1.30.1] - 2026-04-17
 
 - Enhance security against supply chain attacks.

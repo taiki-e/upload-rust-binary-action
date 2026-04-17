@@ -196,7 +196,7 @@ runs:
         INPUT_BIN_LEADING_DIR: ${{ inputs.bin-leading-dir }}
         INPUT_BUILD_TOOL: ${{ inputs.build-tool || inputs.build_tool }}
         INPUT_CHECKSUM: ${{ inputs.checksum }}
-        INPUT_TOKEN: ${{ inputs.token }}
+        INPUT_TOKEN: ${{ (inputs.dry-run || inputs.dry_run) != 'true' && inputs.token || '' }}
         INPUT_REF: ${{ inputs.ref }}
         INPUT_PROFILE: ${{ inputs.profile }}
         INPUT_DRY_RUN: ${{ inputs.dry-run || inputs.dry_run }}
@@ -204,4 +204,4 @@ runs:
         INPUT_CODESIGN: ${{ inputs.codesign }}
         INPUT_CODESIGN_PREFIX: ${{ inputs.codesign-prefix || inputs.codesign_prefix }}
         INPUT_CODESIGN_OPTIONS: ${{ inputs.codesign-options || inputs.codesign_options }}
-        DEFAULT_GITHUB_TOKEN: ${{ github.token }}
+        DEFAULT_GITHUB_TOKEN: ${{ (inputs.dry-run || inputs.dry_run) != 'true' && github.token || '' }}
