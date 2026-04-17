@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Enhance security against supply chain attacks.
+
 ## [1.30.0] - 2026-04-04
 
 - upload-rust-binary-action no longer requires `token` input. This action now uses `${{ github.token }}` as the default token, like `actions/checkout` does.
