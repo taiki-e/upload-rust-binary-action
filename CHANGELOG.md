@@ -10,7 +10,7 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
-- Enhance security against supply chain attacks.
+- Enhance security when `dry-run` is true.
 
 ## [1.30.1] - 2026-04-17
 
