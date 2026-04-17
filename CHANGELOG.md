@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.30.2] - 2026-04-17
+
 - Enhance security when `dry-run` is true.
 
 ## [1.30.1] - 2026-04-17
@@ -234,7 +236,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.1...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.2...HEAD
+[1.30.2]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.1...v1.30.2
 [1.30.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.0...v1.30.1
 [1.30.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.1...v1.30.0
 [1.29.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.0...v1.29.1
