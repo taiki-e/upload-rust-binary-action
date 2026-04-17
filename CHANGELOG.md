@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+## [1.30.1] - 2026-04-17
+
 - Enhance security against supply chain attacks.
 
 ## [1.30.0] - 2026-04-04
@@ -230,7 +232,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 Initial release
 
-[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.0...HEAD
+[Unreleased]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.1...HEAD
+[1.30.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.30.0...v1.30.1
 [1.30.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.1...v1.30.0
 [1.29.1]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.29.0...v1.29.1
 [1.29.0]: https://github.com/taiki-e/upload-rust-binary-action/compare/v1.28.1...v1.29.0
