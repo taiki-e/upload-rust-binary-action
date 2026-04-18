@@ -26,7 +26,7 @@ concurrency:
 jobs:
   release:
     if: github.repository_owner == 'taiki-e'
-    uses: taiki-e/github-actions/.github/workflows/action-release.yml@d34e3b863da529f7c30e571fec0170fbf64fa40c # main
+    uses: taiki-e/github-actions/.github/workflows/action-release.yml@3c1cac16ef654d1febb66f21f328fa167f0d2fef # main
     permissions:
       contents: write # for taiki-e/create-gh-release-action
     secrets:
