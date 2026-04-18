@@ -72,6 +72,8 @@ if [[ -n "${INPUT_TOKEN}" ]] || [[ -n "${DEFAULT_GITHUB_TOKEN}" ]]; then
 fi
 token="${INPUT_TOKEN:-"${GITHUB_TOKEN:-"${DEFAULT_GITHUB_TOKEN:-}"}"}"
 # This prevents tokens from being exposed to subprocesses via environment variables.
+# Note that this does not prevent token leaks via reading `/proc/*/environ` on Linux or
+# via `ps -Eww` on macOS. It only reduces the risk of leaks.
 unset INPUT_TOKEN GITHUB_TOKEN GH_TOKEN DEFAULT_GITHUB_TOKEN
 ref="${INPUT_REF:-"${GITHUB_REF:-}"}"
 
