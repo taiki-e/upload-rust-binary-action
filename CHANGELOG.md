@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Support uploading assets to existing draft releases.
+
 ## [1.30.2] - 2026-04-17
 
 - Enhance security when `dry-run` is true.
