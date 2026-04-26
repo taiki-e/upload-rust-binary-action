@@ -38,9 +38,9 @@ upload_release_assets() {
   if [[ -z "${release_id}" ]]; then
     bail "GitHub release for tag '${tag}' not found; create the release before running this action"
   fi
-  upload_url="$(gh_api "repos/${GITHUB_REPOSITORY}/releases/${release_id}" --jq '.upload_url' | sed 's/{?name,label}//')"
+  upload_url="$(gh_api "repos/${GITHUB_REPOSITORY}/releases/${release_id}" --jq '.upload_url' | sed -E 's/{\?name,label}//')"
   for asset in "${final_assets[@]}"; do
-    asset_name="$(basename "${asset}")"
+    asset_name="$(basename -- "${asset}")"
     asset_id="$(gh_api "repos/${GITHUB_REPOSITORY}/releases/${release_id}/assets" --paginate --jq ".[] | select(.name == \"${asset_name}\") | .id" | head -n1 || true)"
     if [[ -n "${asset_id}" ]]; then
       retry gh_api "repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}" -X DELETE >/dev/null
