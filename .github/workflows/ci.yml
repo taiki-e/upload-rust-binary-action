@@ -91,7 +91,7 @@ jobs:
       - uses: taiki-e/github-actions/install-rust@3c1cac16ef654d1febb66f21f328fa167f0d2fef # main # zizmor: ignore[stale-action-refs]
         with:
           toolchain: stable
-      - uses: taiki-e/setup-cross-toolchain-action@d62f33b587e73b0004731caebc7d2d46b18a7567 # v1.39.2
+      - uses: taiki-e/setup-cross-toolchain-action@129361238c06ff2cc1c4ca5c5d2217af441ffdf6 # v1.40.1
         with:
           target: ${{ matrix.target }}
           runner: none
