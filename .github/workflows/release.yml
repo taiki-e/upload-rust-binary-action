@@ -1,7 +1,6 @@
 name: Release
 
-permissions:
-  contents: read
+permissions: {}
 
 on:
   workflow_dispatch:
@@ -15,10 +14,6 @@ on:
           - minor
           - major
 
-defaults:
-  run:
-    shell: bash --noprofile --norc -CeEuxo pipefail {0}
-
 concurrency:
   group: ${{ github.workflow }}
   cancel-in-progress: false
@@ -26,7 +21,7 @@ concurrency:
 jobs:
   release:
     if: github.repository_owner == 'taiki-e'
-    uses: taiki-e/github-actions/.github/workflows/action-release.yml@3c1cac16ef654d1febb66f21f328fa167f0d2fef # main
+    uses: taiki-e/github-actions/.github/workflows/action-release.yml@1bb80ca038216cd1fb7b6ca6d76240b3772963ab # main
     permissions:
       contents: write # for taiki-e/create-gh-release-action
     secrets:

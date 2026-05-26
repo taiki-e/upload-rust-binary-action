@@ -148,7 +148,7 @@ esac
 build_package="${INPUT_PACKAGE:-}"
 build_packages=()
 if [[ -n "${build_package}" ]]; then
-  while read -rd,; do
+  while IFS= read -rd,; do
     build_packages+=("${REPLY}")
   done < <(normalize_comma_or_space_separated "${build_package}")
 fi
@@ -164,7 +164,7 @@ if [[ -n "${bin_name}" ]]; then
     # "cp: cannot stat 'app-*': No such file or directory".
     bail "glob pattern in 'bin' input option is not supported yet"
   fi
-  while read -rd,; do
+  while IFS= read -rd,; do
     bin_names+=("${REPLY}")
   done < <(normalize_comma_or_space_separated "${bin_name}")
 fi
@@ -183,7 +183,7 @@ if [[ -n "${include}" ]]; then
     # "cp: cannot stat 'LICENSE-*': No such file or directory".
     bail "glob pattern in 'include' input option is not supported yet"
   fi
-  while read -rd,; do
+  while IFS= read -rd,; do
     includes+=("${REPLY}")
   done < <(normalize_comma_or_space_separated "${include}")
 fi
@@ -199,7 +199,7 @@ if [[ -n "${asset}" ]]; then
     # "cp: cannot stat 'LICENSE-*': No such file or directory".
     bail "glob pattern in 'asset' input option is not supported yet"
   fi
-  while read -rd,; do
+  while IFS= read -rd,; do
     assets+=("${REPLY}")
   done < <(normalize_comma_or_space_separated "${asset}")
 fi
@@ -207,7 +207,7 @@ fi
 checksum="${INPUT_CHECKSUM:-}"
 checksums=()
 if [[ -n "${checksum}" ]]; then
-  while read -rd,; do
+  while IFS= read -rd,; do
     checksums+=("${REPLY}")
     case "${REPLY}" in
       b2 | sha256 | sha512 | sha1 | md5) ;;
@@ -464,7 +464,7 @@ esac
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] \
   || [[ "${INPUT_TAR_XZ/all/${platform}}" == "${platform}" ]] \
   || [[ "${INPUT_ZIP/all/${platform}}" == "${platform}" ]]; then
-  cwd=$(pwd)
+  cwd="${PWD}"
   tmpdir=$(mktemp -d)
   mkdir -- "${tmpdir:?}/${archive}"
   if [[ -n "${bin_leading_dir}" ]]; then
