@@ -116,6 +116,17 @@ jobs:
           codesign: '-'
           codesign-prefix: 'com.example.'
           codesign-options: 'runtime'
+      - name: Verify embedded SBOM
+        if: matrix.auditable
+        run: |
+          cargo install rust-audit-info --locked
+          target="${MATRIX_TARGET%%.*}" # strip cargo-zigbuild .<glibc_version> suffix
+          bin="test-crate/target/${target:+${target}/}release/test-crate"
+          # rust-audit-info exits non-zero (and prints "No audit data found") if
+          # the binary does not contain a cargo-auditable SBOM.
+          rust-audit-info "${bin}"
+        env:
+          MATRIX_TARGET: ${{ matrix.target }}
       - name: Check action outputs
         run: |
           printf 'outputs.archive should not be empty\n'
