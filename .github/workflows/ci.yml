@@ -69,6 +69,7 @@ jobs:
           - os: macos-latest
             checksums: sha256 sha512 sha1 md5
             target: aarch64-apple-darwin
+            auditable: true
           - os: macos-latest
             checksums: sha256, sha512, sha1, md5
             target: universal-apple-darwin
@@ -77,6 +78,7 @@ jobs:
             target: universal-apple-darwin
             build-tool: cargo
           - os: windows-latest
+            auditable: true
           - os: windows-latest
             target: x86_64-pc-windows-gnu
           - os: windows-latest
