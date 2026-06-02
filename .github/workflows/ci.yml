@@ -51,9 +51,11 @@ jobs:
             target: aarch64-unknown-linux-gnu
             build-tool: cargo
             package: test-crate,test-crate
+            auditable: true
           - os: ubuntu-24.04
             target: x86_64-unknown-linux-gnu.2.17
             build-tool: cargo-zigbuild
+            auditable: true
           - os: macos-latest
             checksums: sha256,sha512,sha1,md5
           - os: macos-latest
@@ -101,6 +103,7 @@ jobs:
           bin: test-crate
           target: ${{ matrix.target }}
           build-tool: ${{ matrix.build-tool }}
+          auditable: ${{ matrix.auditable || 'false' }}
           no-default-features: true
           all-features: true
           package: ${{ matrix.package }}

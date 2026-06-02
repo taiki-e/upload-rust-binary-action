@@ -228,6 +228,12 @@ if [[ "${build_tool}" == "cargo-zigbuild" ]]; then
   zigbuild_target="${target}"
   target="${target%%.*}"
 fi
+auditable="${INPUT_AUDITABLE:-}"
+case "${auditable}" in
+  true) auditable=1 ;;
+  false | '') auditable='' ;;
+  *) bail "'auditable' input option must be 'true' or 'false': '${auditable}'" ;;
+esac
 case "${target}" in
   wasm*) exe=.wasm ;;
   *-windows*) exe=.exe ;;
@@ -286,6 +292,13 @@ if [[ -z "${build_tool}" ]]; then
       esac
     fi
   fi
+fi
+
+if [[ -n "${auditable}" ]] && [[ "${build_tool}" == "cross" ]]; then
+  # cargo-auditable does not work with cross because cross does not support
+  # custom cargo subcommands. https://github.com/cross-rs/cross/issues/716
+  warn "cargo-auditable is not supported with cross (see https://github.com/cross-rs/cross/issues/716); building without an embedded SBOM"
+  auditable=''
 fi
 
 if [[ "${build_tool}" == "cargo" ]]; then
@@ -386,9 +399,21 @@ if [[ "${rustc_minor_version}" -ge 59 ]] && [[ -z "${CARGO_PROFILE_RELEASE_STRIP
   fi
 fi
 
+install_auditable() {
+  if ! type -P cargo-auditable >/dev/null; then
+    x cargo install cargo-auditable --locked
+  fi
+}
 build() {
   case "${build_tool}" in
-    cargo) x cargo build "${build_options[@]}" "$@" ;;
+    cargo)
+      if [[ -n "${auditable}" ]]; then
+        install_auditable
+        x cargo auditable build "${build_options[@]}" "$@"
+      else
+        x cargo build "${build_options[@]}" "$@"
+      fi
+      ;;
     cross)
       if ! type -P cross >/dev/null; then
         x cargo install cross --locked
@@ -404,7 +429,15 @@ build() {
         universal2-apple-darwin) retry rustup target add aarch64-apple-darwin x86_64-apple-darwin ;;
         *) retry rustup target add "${target}" ;;
       esac
-      x cargo zigbuild "${build_options[@]}" "$@"
+      if [[ -n "${auditable}" ]]; then
+        install_auditable
+        # cargo-auditable must be invoked directly with CARGO pointing at
+        # cargo-zigbuild; invoking it via cargo would reset the CARGO env.
+        # https://github.com/rust-cross/cargo-zigbuild/issues/192
+        x env CARGO=cargo-zigbuild cargo-auditable auditable build "${build_options[@]}" "$@"
+      else
+        x cargo zigbuild "${build_options[@]}" "$@"
+      fi
       ;;
     *) bail "unrecognized build tool '${build_tool}'" ;;
   esac
