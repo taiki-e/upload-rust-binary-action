@@ -121,7 +121,11 @@ jobs:
       - name: Verify embedded SBOM
         if: matrix.auditable
         run: |
-          cargo install rust-audit-info --locked
+          # Install the reader for the host: CARGO_BUILD_TARGET may be set (e.g.
+          # by setup-cross-toolchain-action), which would otherwise cross-compile
+          # rust-audit-info for the build target so it could not run here.
+          host=$(rustc -vV | grep -E '^host:' | cut -d' ' -f2)
+          cargo install rust-audit-info --locked --target "${host}"
           target="${MATRIX_TARGET%%.*}" # strip cargo-zigbuild .<glibc_version> suffix
           bin="test-crate/target/${target:+${target}/}release/test-crate"
           # rust-audit-info exits non-zero (and prints "No audit data found") if
