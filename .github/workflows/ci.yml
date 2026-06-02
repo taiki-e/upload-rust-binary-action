@@ -127,7 +127,9 @@ jobs:
           host=$(rustc -vV | grep -E '^host:' | cut -d' ' -f2)
           cargo install rust-audit-info --locked --target "${host}"
           target="${MATRIX_TARGET%%.*}" # strip cargo-zigbuild .<glibc_version> suffix
-          bin="test-crate/target/${target:+${target}/}release/test-crate"
+          exe=''
+          case "${target:-${host}}" in *-windows*) exe=.exe ;; esac
+          bin="test-crate/target/${target:+${target}/}release/test-crate${exe}"
           # rust-audit-info exits non-zero (and prints "No audit data found") if
           # the binary does not contain a cargo-auditable SBOM.
           rust-audit-info "${bin}"
