@@ -401,7 +401,11 @@ fi
 
 install_auditable() {
   if ! type -P cargo-auditable >/dev/null; then
-    x cargo install cargo-auditable --locked
+    # Build for the host explicitly: CARGO_BUILD_TARGET may be set in the
+    # environment (e.g. by setup-cross-toolchain-action), which would otherwise
+    # cross-compile cargo-auditable for the build target and produce a binary
+    # that cannot run on the host runner.
+    x cargo install cargo-auditable --locked --target "${host}"
   fi
 }
 build() {
