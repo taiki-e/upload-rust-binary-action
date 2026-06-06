@@ -52,6 +52,8 @@ Currently, this action is basically intended to be used in combination with an a
 | checksum | | Algorithms to be used for checksum (sha256, sha512, b2, sha1, or md5) (whitespace or comma separated list).<br>Note: b2 is not available by default on macOS, install `b2sum` to use it. sha1 and md5 are insecure and strongly discouraged. | String | |
 | include | | Additional files to be included to the archive (whitespace or comma separated list) | String | |
 | asset | | Additional files to be uploaded separately (whitespace or comma separated list) | String | |
+| debug-archive | | Preserve debug information in a separate release archive | Boolean | `false` |
+| objcopy | | `objcopy` command to use when separating ELF debug information | String | |
 | leading-dir | | Whether to create the leading directory in the archive or not | Boolean | `false` |
 | bin-leading-dir | | Create extra leading directory(s) for binary file(s) specified by `bin` option | String | |
 | build-tool | | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String | |
@@ -76,6 +78,7 @@ Currently, this action is basically intended to be used in combination with an a
 | zip | `.zip` archive file name. |
 | tar | `.tar.gz` archive file name. |
 | tar-xz | `.tar.xz` archive file name. |
+| debug-archive | Separate debug archive file name. |
 | sha256 | SHA256 checksum file name. |
 | sha512 | SHA512 checksum file name. |
 | b2 | BLAKE2 checksum file name. |
@@ -640,6 +643,25 @@ README.md
 
 - [cargo-hack](https://github.com/taiki-e/cargo-hack/blob/202e6e59d491c9202ce148c9ef423853267226db/.github/workflows/release.yml#L47-L84)
 - [tokio-console](https://github.com/tokio-rs/console/blob/9699300ec7901b71dce0d3555a7be2c86ec4e533/.github/workflows/release.yaml#L28-L43)
+
+### Preserve debug information
+
+Use `debug-archive` to publish a small production binary together with a
+separate archive containing its debug information:
+
+```yaml
+- uses: taiki-e/upload-rust-binary-action@v1
+  with:
+    bin: my-cli
+    debug-archive: true
+```
+
+For macOS Darwin targets this publishes `<archive>.dSYM.tar.gz`. For Linux
+targets it publishes `<archive>.debug.tar.gz` and adds a GNU debug link to the
+binary. The debug archive mirrors the binary archive's leading-directory
+layout. Cargo cross builds can specify the target-compatible tool with the
+`objcopy` input. The `cross` build tool and universal Darwin targets are not
+currently supported by this option. This option requires Rust 1.65 or newer.
 
 ### Optimize Rust binary
 

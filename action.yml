@@ -67,6 +67,16 @@ inputs:
       Additional files to be uploaded separately (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: false
+  debug-archive:
+    description: Preserve debug information in a separate release archive
+    required: false
+  debug_archive:
+    description: Alias for 'debug-archive'
+    required: false
+    default: 'false'
+  objcopy:
+    description: objcopy command to use when separating ELF debug information
+    required: false
   leading-dir:
     description: Whether to create the leading directory in the archive or not
     required: false
@@ -151,6 +161,9 @@ outputs:
   tar-xz:
     description: '.tar.xz archive file name'
     value: ${{ steps.upload-rust-binary-action.outputs.tar-xz }}
+  debug-archive:
+    description: 'Separate debug archive file name'
+    value: ${{ steps.upload-rust-binary-action.outputs.debug-archive }}
   b2:
     description: 'BLAKE2 checksum file name'
     value: ${{ steps.upload-rust-binary-action.outputs.b2 }}
@@ -192,6 +205,8 @@ runs:
         INPUT_ZIP: ${{ inputs.zip }}
         INPUT_INCLUDE: ${{ inputs.include }}
         INPUT_ASSET: ${{ inputs.asset }}
+        INPUT_DEBUG_ARCHIVE: ${{ inputs.debug-archive || inputs.debug_archive }}
+        INPUT_OBJCOPY: ${{ inputs.objcopy }}
         INPUT_LEADING_DIR: ${{ inputs.leading-dir || inputs.leading_dir }}
         INPUT_BIN_LEADING_DIR: ${{ inputs.bin-leading-dir }}
         INPUT_BUILD_TOOL: ${{ inputs.build-tool || inputs.build_tool }}
