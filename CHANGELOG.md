@@ -10,6 +10,8 @@ Note: In this file, do not use the hard wrap in the middle of a sentence for com
 
 ## [Unreleased]
 
+- Add `debug-archive` support for publishing companion debug archives.
+
 ## [1.30.2] - 2026-04-17
 
 - Enhance security when `dry-run` is true.

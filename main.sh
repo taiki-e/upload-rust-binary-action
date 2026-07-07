@@ -204,6 +204,13 @@ if [[ -n "${asset}" ]]; then
   done < <(normalize_comma_or_space_separated "${asset}")
 fi
 
+debug_archive_enabled="${INPUT_DEBUG_ARCHIVE:-}"
+case "${debug_archive_enabled}" in
+  true) debug_archive_enabled=1 ;;
+  false) debug_archive_enabled='' ;;
+  *) bail "'debug-archive' input option must be 'true' or 'false': '${debug_archive_enabled}'" ;;
+esac
+
 checksum="${INPUT_CHECKSUM:-}"
 checksums=()
 if [[ -n "${checksum}" ]]; then
@@ -321,6 +328,39 @@ case "${input_profile}" in
   dev | test) profile_directory=debug ;;
   *) profile_directory=${input_profile} ;;
 esac
+
+if [[ -n "${debug_archive_enabled}" ]]; then
+  if [[ "${rustc_minor_version}" -lt 65 ]]; then
+    bail "'debug-archive' requires Rust 1.65 or newer"
+  fi
+  profile_env=$(tr '[:lower:]' '[:upper:]' <<<"${input_profile}")
+  profile_env=${profile_env//-/_}
+  export "CARGO_PROFILE_${profile_env}_DEBUG=2"
+  case "${target}" in
+    universal-apple-darwin | universal2-apple-darwin)
+      bail "'debug-archive' does not support universal Darwin targets"
+      ;;
+    *-apple-darwin)
+      if [[ "${host_os}" != "macos" ]]; then
+        bail "'debug-archive' for Darwin targets requires a macOS host"
+      fi
+      dsymutil=$(xcrun --find dsymutil)
+      dsymutil_dir=$(mktemp -d)
+      ln -s -- "${dsymutil}" "${dsymutil_dir}/dsymutil"
+      PATH="${dsymutil_dir}:${PATH}"
+      export PATH
+      export "CARGO_PROFILE_${profile_env}_SPLIT_DEBUGINFO=packed"
+      ;;
+    *-linux-*)
+      export "CARGO_PROFILE_${profile_env}_STRIP=none"
+      export "CARGO_PROFILE_${profile_env}_SPLIT_DEBUGINFO=off"
+      ;;
+    *) bail "'debug-archive' does not support target '${target}'" ;;
+  esac
+  if [[ "${build_tool}" == "cross" ]]; then
+    bail "'debug-archive' does not support the cross build tool"
+  fi
+fi
 
 bins=()
 for bin_name in "${bin_names[@]}"; do
@@ -453,6 +493,52 @@ case "${INPUT_TARGET:-}" in
     ;;
 esac
 
+debug_files=()
+debug_archive=''
+if [[ -n "${debug_archive_enabled}" ]]; then
+  case "${target}" in
+    *-apple-darwin)
+      for bin_exe in "${bins[@]}"; do
+        debug="${target_dir}/${bin_exe}.dSYM"
+        if [[ ! -d "${debug}" ]]; then
+          bail "debug bundle not found: ${debug}"
+        fi
+        binary_uuid=$(xcrun dwarfdump --uuid "${target_dir}/${bin_exe}" | awk '{ print $2 }')
+        debug_uuid=$(xcrun dwarfdump --uuid "${debug}" | awk '{ print $2 }')
+        if [[ -z "${binary_uuid}" ]] || [[ "${binary_uuid}" != "${debug_uuid}" ]]; then
+          bail "debug bundle UUID does not match binary: ${debug}"
+        fi
+        debug_files+=("${bin_exe}.dSYM")
+      done
+      debug_archive="${archive}.dSYM.tar.gz"
+      ;;
+    *)
+      objcopy="${INPUT_OBJCOPY:-"${OBJCOPY:-}"}"
+      if [[ -z "${objcopy}" ]]; then
+        if type -P llvm-objcopy >/dev/null; then
+          objcopy=llvm-objcopy
+        elif type -P objcopy >/dev/null; then
+          objcopy=objcopy
+        else
+          bail "'debug-archive' requires objcopy; specify the 'objcopy' input option"
+        fi
+      elif ! type -P "${objcopy}" >/dev/null; then
+        bail "objcopy command not found: ${objcopy}"
+      fi
+      for bin_exe in "${bins[@]}"; do
+        debug="${target_dir}/${bin_exe}.debug"
+        x "${objcopy}" --only-keep-debug "${target_dir}/${bin_exe}" "${debug}"
+        (
+          cd -- "${target_dir}"
+          x "${objcopy}" --strip-debug --add-gnu-debuglink="${bin_exe}.debug" "${bin_exe}"
+        )
+        debug_files+=("${bin_exe}.debug")
+      done
+      debug_archive="${archive}.debug.tar.gz"
+      ;;
+  esac
+fi
+
 case "${host_os}" in
   macos)
     if type -P codesign >/dev/null; then
@@ -460,6 +546,40 @@ case "${host_os}" in
     fi
     ;;
 esac
+
+if [[ -n "${debug_archive}" ]]; then
+  assets+=("${debug_archive}")
+  if [[ -n "${GITHUB_OUTPUT:-}" ]]; then
+    printf 'debug-archive=%s\n' "${debug_archive}" >>"${GITHUB_OUTPUT}"
+  else
+    warn "GITHUB_OUTPUT is not set; skip setting the 'debug-archive' output"
+    printf 'debug-archive: %s\n' "${debug_archive}"
+  fi
+  debug_archive_path="${PWD}/${debug_archive}"
+  debug_tmpdir=$(mktemp -d)
+  mkdir -- "${debug_tmpdir:?}/${archive}"
+  if [[ -n "${bin_leading_dir}" ]]; then
+    mkdir -p -- "${debug_tmpdir}/${archive}/${bin_leading_dir}"/
+    debug_filenames=("${bin_leading_dir%%/*}")
+    debug_destination="${debug_tmpdir}/${archive}/${bin_leading_dir}"
+  else
+    debug_filenames=("${debug_files[@]}")
+    debug_destination="${debug_tmpdir}/${archive}"
+  fi
+  for debug_file in "${debug_files[@]}"; do
+    x cp -rL -- "${target_dir}/${debug_file}" "${debug_destination}"/
+  done
+  pushd -- "${debug_tmpdir}" >/dev/null
+  if [[ -n "${leading_dir}" ]]; then
+    x tar acf "${debug_archive_path}" "${archive}"
+  else
+    pushd -- "${archive}" >/dev/null
+    x tar acf "${debug_archive_path}" "${debug_filenames[@]}"
+    popd >/dev/null
+  fi
+  popd >/dev/null
+  rm -rf -- "${debug_tmpdir:?}"
+fi
 
 if [[ "${INPUT_TAR/all/${platform}}" == "${platform}" ]] \
   || [[ "${INPUT_TAR_XZ/all/${platform}}" == "${platform}" ]] \

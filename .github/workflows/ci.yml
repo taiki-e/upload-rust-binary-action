@@ -43,6 +43,9 @@ jobs:
       matrix:
         include:
           - os: ubuntu-24.04
+            bin-leading-dir: bin
+            debug-archive: true
+            leading-dir: true
           - os: ubuntu-24.04-arm
           - os: ubuntu-24.04
             target: aarch64-unknown-linux-gnu
@@ -66,6 +69,7 @@ jobs:
             workspace: true
           - os: macos-latest
             checksums: sha256 sha512 sha1 md5
+            debug-archive: true
             target: aarch64-apple-darwin
           - os: macos-latest
             checksums: sha256, sha512, sha1, md5
@@ -93,7 +97,19 @@ jobs:
           target: ${{ matrix.target }}
           runner: none
         if: matrix.target != '' && matrix.build-tool == 'cargo'
-      - run: cargo new --bin test-crate
+      - run: |
+          cargo new --bin test-crate
+          cat >| test-crate/src/main.rs <<'EOF'
+          #[unsafe(no_mangle)]
+          #[inline(never)]
+          pub extern "C" fn debug_archive_test() {
+              std::hint::black_box(());
+          }
+
+          fn main() {
+              debug_archive_test();
+          }
+          EOF
       - uses: ./
         id: upload-rust-binary-action
         with:
@@ -110,6 +126,9 @@ jobs:
           tar-xz: all
           zip: all
           manifest-path: test-crate/Cargo.toml
+          debug-archive: ${{ matrix.debug-archive || 'false' }}
+          leading-dir: ${{ matrix.leading-dir || 'false' }}
+          bin-leading-dir: ${{ matrix.bin-leading-dir }}
           codesign: '-'
           codesign-prefix: 'com.example.'
           codesign-options: 'runtime'
@@ -138,15 +157,101 @@ jobs:
 
           printf 'outputs.md5 should be a file\n'
           test -f "${OUTPUT_MD5}"
+
+          if [[ "${DEBUG_ARCHIVE}" == "true" ]]; then
+            printf 'outputs.debug-archive should be a file\n'
+            test -f "${OUTPUT_DEBUG_ARCHIVE}"
+            grep "$(basename -- "${OUTPUT_DEBUG_ARCHIVE}")" "${OUTPUT_SHA256}" >/dev/null
+          fi
         env:
           OUTPUT_ARCHIVE: ${{ steps.upload-rust-binary-action.outputs.archive }}
           OUTPUT_ZIP: ${{ steps.upload-rust-binary-action.outputs.zip }}
           OUTPUT_TAR: ${{ steps.upload-rust-binary-action.outputs.tar }}
           OUTPUT_TAR_XZ: ${{ steps.upload-rust-binary-action.outputs.tar-xz }}
+          OUTPUT_DEBUG_ARCHIVE: ${{ steps.upload-rust-binary-action.outputs.debug-archive }}
           OUTPUT_SHA256: ${{ steps.upload-rust-binary-action.outputs.sha256 }}
           OUTPUT_SHA512: ${{ steps.upload-rust-binary-action.outputs.sha512 }}
           OUTPUT_SHA1: ${{ steps.upload-rust-binary-action.outputs.sha1 }}
           OUTPUT_MD5: ${{ steps.upload-rust-binary-action.outputs.md5 }}
+          DEBUG_ARCHIVE: ${{ matrix.debug-archive || 'false' }}
+      - name: Check debug archive
+        if: ${{ matrix.debug-archive }}
+        env:
+          BIN_LEADING_DIR: ${{ matrix.bin-leading-dir }}
+          LEADING_DIR: ${{ matrix.leading-dir || 'false' }}
+          OUTPUT_ARCHIVE: ${{ steps.upload-rust-binary-action.outputs.archive }}
+          OUTPUT_DEBUG_ARCHIVE: ${{ steps.upload-rust-binary-action.outputs.debug-archive }}
+          OUTPUT_TAR: ${{ steps.upload-rust-binary-action.outputs.tar }}
+        run: |
+          mkdir -- extracted
+          tar -xf "${OUTPUT_TAR}" -C extracted
+          tar -xf "${OUTPUT_DEBUG_ARCHIVE}" -C extracted
+          debug_prefix=''
+          if [[ "${LEADING_DIR}" == "true" ]]; then
+            debug_prefix="${OUTPUT_ARCHIVE}/"
+          fi
+          if [[ -n "${BIN_LEADING_DIR}" ]]; then
+            debug_prefix+="${BIN_LEADING_DIR}/"
+          fi
+          binary="extracted/${debug_prefix}test-crate"
+
+          case "${RUNNER_OS}" in
+            Linux)
+              debug="extracted/${debug_prefix}test-crate.debug"
+              test -f "${debug}"
+              binary_sections="$(objdump -h "${binary}")"
+              debug_sections="$(objdump -h "${debug}")"
+              if grep '\.debug_info' <<<"${binary_sections}" >/dev/null; then
+                exit 1
+              fi
+              grep '\.debug_info' <<<"${debug_sections}" >/dev/null
+              readelf --string-dump=.gnu_debuglink "${binary}" |
+                grep 'test-crate.debug' >/dev/null
+              address="$(
+                nm --defined-only "${binary}" |
+                  awk '$3 == "debug_archive_test" { address = $1 }
+                    END { print address }'
+              )"
+              test -n "${address}"
+              addr2line -e "${binary}" "0x${address}" |
+                grep '/test-crate/src/main.rs:' >/dev/null
+              ;;
+            macOS)
+              debug="extracted/${debug_prefix}test-crate.dSYM"
+              test -d "${debug}"
+              binary_uuid="$(xcrun dwarfdump --uuid "${binary}" | awk '{ print $2 }')"
+              debug_uuid="$(xcrun dwarfdump --uuid "${debug}" | awk '{ print $2 }')"
+              test -n "${binary_uuid}"
+              test "${binary_uuid}" = "${debug_uuid}"
+              load_commands="$(otool -l "${binary}")"
+              if grep '__DWARF' <<<"${load_commands}" >/dev/null; then
+                exit 1
+              fi
+              load_address="$(
+                awk '
+                  $1 == "segname" && $2 == "__TEXT" { text = 1; next }
+                  text && $1 == "vmaddr" && !address { address = $2 }
+                  END { print address }
+                ' <<<"${load_commands}"
+              )"
+              address="$(
+                nm -nm "${binary}" |
+                  awk '$4 == "_debug_archive_test" { address = $1 }
+                    END { print address }'
+              )"
+              dwarf=("${debug}/Contents/Resources/DWARF/"*)
+              test -n "${load_address}"
+              test -n "${address}"
+              test "${#dwarf[@]}" -eq 1
+              xcrun atos \
+                -arch arm64 \
+                -o "${dwarf[0]}" \
+                -l "${load_address}" \
+                "0x${address}" |
+                grep 'main.rs:' >/dev/null
+              ;;
+            *) exit 1 ;;
+          esac
       - name: Check b2 output
         if: ${{ contains(matrix.checksums || 'b2,sha256,sha512,sha1,md5', 'b2') }}
         run: |
