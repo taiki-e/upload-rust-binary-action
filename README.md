@@ -718,6 +718,9 @@ The following two events are supported by default:
       types: [created]
   ```
 
+Draft releases are supported as long as the GitHub release already exists before this action runs.
+This is useful for workflows that create a draft release first, upload all assets, and publish only after every upload succeeds.
+
 You can upload binaries from arbitrary event to arbitrary tag by specifying the `ref` input option.
 
 For example, to upload binaries to the `my_tag` tag, specify `ref` input option as follows:
@@ -726,6 +729,8 @@ For example, to upload binaries to the `my_tag` tag, specify `ref` input option 
 with:
   ref: refs/tags/my_tag
 ```
+
+This also works when the existing release for `my_tag` is still a draft, such as when using release automation that creates draft releases first.
 
 ## Security
 

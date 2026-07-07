@@ -29,6 +29,29 @@ warn() {
 info() {
   printf >&2 'info: %s\n' "$*"
 }
+gh_api() {
+  GH_TOKEN="${token}" gh api "$@"
+}
+upload_release_assets() {
+  local release_id upload_url asset asset_name asset_id
+  release_id="$(gh_api "repos/${GITHUB_REPOSITORY}/releases" --paginate --jq ".[] | select(.tag_name == \"${tag}\") | .id" | head -n1)"
+  if [[ -z "${release_id}" ]]; then
+    bail "GitHub release for tag '${tag}' not found; create the release before running this action"
+  fi
+  upload_url="$(gh_api "repos/${GITHUB_REPOSITORY}/releases/${release_id}" --jq '.upload_url' | sed -E 's/{\?name,label}//')"
+  for asset in "${final_assets[@]}"; do
+    asset_name="$(basename -- "${asset}")"
+    asset_id="$(gh_api "repos/${GITHUB_REPOSITORY}/releases/${release_id}/assets" --paginate --jq ".[] | select(.name == \"${asset_name}\") | .id" | head -n1 || true)"
+    if [[ -n "${asset_id}" ]]; then
+      retry gh_api "repos/${GITHUB_REPOSITORY}/releases/assets/${asset_id}" -X DELETE >/dev/null
+    fi
+    retry curl --fail --silent --show-error \
+      -H "Authorization: Bearer ${token}" \
+      -H "Content-Type: application/octet-stream" \
+      "${upload_url}?name=${asset_name}" \
+      --data-binary "@${asset}" >/dev/null
+  done
+}
 normalize_comma_or_space_separated() {
   # Normalize whitespace characters into space because it's hard to handle single input contains lines with POSIX sed alone.
   local list="${1//[$'\r\n\t']/ }"
@@ -635,6 +658,5 @@ if [[ -n "${dry_run}" ]]; then
   printf 'assets: %s\n' "${final_assets[*]}"
   IFS=$'\n\t'
 else
-  # https://cli.github.com/manual/gh_release_upload
-  GITHUB_TOKEN="${token}" retry gh release upload "${tag}" "${final_assets[@]}" --clobber
+  upload_release_assets
 fi
