@@ -51,9 +51,11 @@ jobs:
             target: aarch64-unknown-linux-gnu
             build-tool: cargo
             package: test-crate,test-crate
+            auditable: true
           - os: ubuntu-24.04
             target: x86_64-unknown-linux-gnu.2.17
             build-tool: cargo-zigbuild
+            auditable: true
           - os: macos-latest
             checksums: sha256,sha512,sha1,md5
           - os: macos-latest
@@ -67,6 +69,7 @@ jobs:
           - os: macos-latest
             checksums: sha256 sha512 sha1 md5
             target: aarch64-apple-darwin
+            auditable: true
           - os: macos-latest
             checksums: sha256, sha512, sha1, md5
             target: universal-apple-darwin
@@ -75,6 +78,7 @@ jobs:
             target: universal-apple-darwin
             build-tool: cargo
           - os: windows-latest
+            auditable: true
           - os: windows-latest
             target: x86_64-pc-windows-gnu
           - os: windows-latest
@@ -101,6 +105,7 @@ jobs:
           bin: test-crate
           target: ${{ matrix.target }}
           build-tool: ${{ matrix.build-tool }}
+          auditable: ${{ matrix.auditable || 'false' }}
           no-default-features: true
           all-features: true
           package: ${{ matrix.package }}
@@ -113,6 +118,23 @@ jobs:
           codesign: '-'
           codesign-prefix: 'com.example.'
           codesign-options: 'runtime'
+      - name: Verify embedded SBOM
+        if: matrix.auditable
+        run: |
+          # Install the reader for the host: CARGO_BUILD_TARGET may be set (e.g.
+          # by setup-cross-toolchain-action), which would otherwise cross-compile
+          # rust-audit-info for the build target so it could not run here.
+          host=$(rustc -vV | grep -E '^host:' | cut -d' ' -f2)
+          cargo install rust-audit-info --locked --target "${host}"
+          target="${MATRIX_TARGET%%.*}" # strip cargo-zigbuild .<glibc_version> suffix
+          exe=''
+          case "${target:-${host}}" in *-windows*) exe=.exe ;; esac
+          bin="test-crate/target/${target:+${target}/}release/test-crate${exe}"
+          # rust-audit-info exits non-zero (and prints "No audit data found") if
+          # the binary does not contain a cargo-auditable SBOM.
+          rust-audit-info "${bin}"
+        env:
+          MATRIX_TARGET: ${{ matrix.target }}
       - name: Check action outputs
         run: |
           printf 'outputs.archive should not be empty\n'
