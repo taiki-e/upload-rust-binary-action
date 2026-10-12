@@ -55,6 +55,7 @@ Currently, this action is basically intended to be used in combination with an a
 | leading-dir | | Whether to create the leading directory in the archive or not | Boolean | `false` |
 | bin-leading-dir | | Create extra leading directory(s) for binary file(s) specified by `bin` option | String | |
 | build-tool | | Tool to build binaries (cargo, cross, or cargo-zigbuild, see [cross-compilation example](#example-workflow-cross-compilation) for more) | String | |
+| auditable | | Embed a dependency SBOM into binaries via [cargo-auditable] (cargo and cargo-zigbuild only; not supported with cross) | Boolean | `true` |
 | ref | | Fully-formed tag ref for this release (see [action.yml](action.yml) for more) | String | |
 | manifest-path | | Path to Cargo.toml | String | `Cargo.toml` |
 | profile | | The cargo profile to build. This defaults to the release profile. | String | `release` |
@@ -755,6 +756,7 @@ Note that what this action installs for its setup (such as above tools) is consi
 - [checkout-action]: GitHub Action for checking out a repository. (Simplified actions/checkout alternative that does not depend on Node.js.)
 
 [cache-cargo-install-action]: https://github.com/taiki-e/cache-cargo-install-action
+[cargo-auditable]: https://github.com/rust-secure-code/cargo-auditable
 [cargo-zigbuild]: https://github.com/rust-cross/cargo-zigbuild
 [checkout-action]: https://github.com/taiki-e/checkout-action
 [create-gh-release-action]: https://github.com/taiki-e/create-gh-release-action

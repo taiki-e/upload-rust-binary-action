@@ -83,6 +83,10 @@ inputs:
   build_tool:
     description: Alias for 'build-tool'
     required: false
+  auditable:
+    description: Embed dependency SBOM into binaries using cargo-auditable (cargo and cargo-zigbuild only)
+    required: false
+    default: 'true'
   checksum:
     description: >
       Algorithms to be used for checksum (sha256, sha512, b2, sha1, or md5) (whitespace or comma separated list)
@@ -195,6 +199,7 @@ runs:
         INPUT_LEADING_DIR: ${{ inputs.leading-dir || inputs.leading_dir }}
         INPUT_BIN_LEADING_DIR: ${{ inputs.bin-leading-dir }}
         INPUT_BUILD_TOOL: ${{ inputs.build-tool || inputs.build_tool }}
+        INPUT_AUDITABLE: ${{ inputs.auditable }}
         INPUT_CHECKSUM: ${{ inputs.checksum }}
         INPUT_TOKEN: ${{ (inputs.dry-run || inputs.dry_run) != 'true' && inputs.token || '' }}
         INPUT_REF: ${{ inputs.ref }}
