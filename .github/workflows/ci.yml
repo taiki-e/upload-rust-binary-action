@@ -94,7 +94,7 @@ jobs:
           runner: none
         if: matrix.target != '' && matrix.build-tool == 'cargo'
       - run: cargo new --bin test-crate
-      - uses: ./
+      - uses: $/
         id: upload-rust-binary-action
         with:
           dry-run: true
