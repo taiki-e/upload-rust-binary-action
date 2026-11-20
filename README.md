@@ -66,7 +66,7 @@ Currently, this action is basically intended to be used in combination with an a
 
 \[1] This is optional but it is recommended that this always be set to clarify which target you are building for if macOS is included in the matrix because GitHub Actions changed the default architecture of macos-latest since macos-14.<br>
 
-(Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available.)
+(Previously, option names were only in "snake_case", but now both "kebab-case" and "snake_case" are available. "snake_case" option names are deprecated since 1.31.0.)
 
 ### Outputs
 
