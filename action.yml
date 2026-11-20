@@ -3,7 +3,7 @@ description: GitHub Action for building and uploading Rust binary to GitHub Rele
 
 inputs:
   bin:
-    description: >
+    description: |
       Binary names (non-extension portion of filename) to build and upload (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: true
@@ -58,12 +58,12 @@ inputs:
     required: false
     default: 'windows'
   include:
-    description: >
+    description: |
       Additional files to be included to the archive (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: false
   asset:
-    description: >
+    description: |
       Additional files to be uploaded separately (whitespace or comma separated list).
       Note that glob pattern is not supported yet.
     required: false
@@ -84,21 +84,21 @@ inputs:
     description: Alias for 'build-tool'
     required: false
   checksum:
-    description: >
+    description: |
       Algorithms to be used for checksum (sha256, sha512, b2, sha1, or md5) (whitespace or comma separated list)
 
       Note: b2 is not available by default on macOS, install `b2sum` to use it.
       sha1 and md5 are insecure and strongly discouraged.
     required: false
   token:
-    description: >
+    description: |
       GitHub token for uploading assets to GitHub Releases.
 
       If not set this option, the GITHUB_TOKEN environment variable will be used.
       If not set both this option and the GITHUB_TOKEN environment variable, github.token will be used.
     required: false
   ref:
-    description: >
+    description: |
       Fully-formed tag ref for this release.
 
       If not set this option, the GITHUB_REF environment variable (automatically set by GitHub Actions) will be used.
@@ -108,13 +108,13 @@ inputs:
     required: false
     default: 'release'
   dry-run:
-    description: >
+    description: |
       Build and compress binaries, but do not upload them.
 
       Note that some errors are downgraded to warnings in this mode.
     required: false
   dry-run-intended:
-    description: >
+    description: |
       Suppress informational warnings for `dru-run` keeping the rest
     required: false
     default: 'false'
@@ -169,7 +169,7 @@ outputs:
 
 # Note:
 # - inputs.* should be manually mapped to INPUT_* due to https://github.com/actions/runner/issues/665
-# - Use GITHUB_*/RUNNER_* instead of github.*/runner.* due to https://github.com/actions/runner/issues/2185
+# - For context containing path, use GITHUB_*/RUNNER_* instead of github.*/runner.* due to https://github.com/actions/runner/issues/2185
 runs:
   using: composite
   steps:
